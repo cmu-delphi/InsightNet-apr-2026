@@ -13,20 +13,18 @@ This notebook covers the first mini-project, focusing on finding indicators and 
 
 ## Load packages
 
-We'll start by loading the necessary packages. We use `pak` to ensure all required Delphi tools are installed.
+`{InsightNetApr26}` package ensures all required Delphi tools and their correct versions/branches are installed.
 
 ```{r}
 #| label: load-packages
 if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
-pkgs <- c(
-  epidatr = "cmu-delphi/epidatr",
-  epiprocess = "cmu-delphi/epiprocess"
-)
-if (any(missing <- !vapply(names(pkgs), requireNamespace, quietly = TRUE, logical(1)))) {
-  pak::pkg_install(pkgs[missing])
+if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
+    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26", dependencies = TRUE)
 }
+InsightNetApr26::verify_setup()
 
-invisible(lapply(names(pkgs), library, character.only = TRUE))
+library(epidatr)
+library(epiprocess)
 ```
 
 ```{r}
@@ -46,12 +44,12 @@ We'll fetch the `smoothed_adj_cli` signal from the `doctor-visits` source for se
 ```{r}
 #| label: fetch-data
 res <- pub_covidcast(
-  source = "doctor-visits",
-  signal = "smoothed_adj_cli",
-  geo_type = "state",
-  time_type = "day",
-  geo_values = c("mi", "ny", "tx", "pa"),
-  time_values = epirange(20220101, 20220301)
+    source = "doctor-visits",
+    signal = "smoothed_adj_cli",
+    geo_type = "state",
+    time_type = "day",
+    geo_values = c("mi", "ny", "tx", "pa"),
+    time_values = epirange(20220101, 20220301)
 )
 ```
 

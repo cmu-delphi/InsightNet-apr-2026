@@ -15,9 +15,21 @@ In this workshop, we explore Delphi's tooling for epidemiological data analysis.
 ## Site Structure
 
 - `index.qmd`: The workshop homepage.
+- `InsightNetApr26/`: A dedicated R package for managing workshop dependencies and environment setup.
 - `scripts/`: Contains the mini-project notebooks and setup scripts.
 - `inputs/`: Data inputs for the activities.
 - `assets/`: Website styling and images.
+
+## Getting Started
+
+To set up the workshop environment and install all necessary Delphi tools, you can use the specialized `{InsightNetApr26}` dependency manager:
+
+```r
+if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26", dependencies = TRUE)
+```
+
+Loading this package will automatically verify your system setup and alert you to any missing components.
 
 ## Rendering the Website
 

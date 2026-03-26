@@ -13,24 +13,23 @@ This notebook covers the third mini-project, focusing on building, customizing, 
 
 ## Load packages
 
-We load the necessary packages, including `epipredict` and `parsnip`.
+`{InsightNetApr26}` package ensures all required Delphi tools and their correct versions/branches are installed.
 
 ```{r}
 #| label: load-packages
 if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
-pkgs <- c(
-  epidatr = "cmu-delphi/epidatr",
-  epiprocess = "cmu-delphi/epiprocess",
-  epipredict = "cmu-delphi/epipredict",
-  dplyr      = "dplyr",
-  ggplot2    = "ggplot2",
-  parsnip    = "parsnip"
-)
-if (any(missing <- !vapply(names(pkgs), requireNamespace, quietly = TRUE, logical(1)))) {
-  pak::pkg_install(pkgs[missing])
+if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
+    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26", dependencies = TRUE)
 }
 
-invisible(lapply(names(pkgs), library, character.only = TRUE))
+InsightNetApr26::verify_setup()
+
+library(epidatr)
+library(epiprocess)
+library(epipredict)
+library(dplyr)
+library(ggplot2)
+library(parsnip)
 ```
 
 ```{r}
@@ -47,12 +46,12 @@ We'll use built-in COVID-19 case and death rates for training.
 #| label: init-setup
 # covid_case_death_rates: built-in daily COVID-19 case and death rates per 100k
 head(covid_case_death_rates)
-forecast_date  <- as.Date("2021-08-01")
+forecast_date <- as.Date("2021-08-01")
 used_locations <- c("mi", "ny", "tx", "pa")
 
 # Training data: everything up to and including the forecast date
 jhu <- covid_case_death_rates |>
-  filter(time_value <= forecast_date, geo_value %in% used_locations)
+    filter(time_value <= forecast_date, geo_value %in% used_locations)
 
 head(jhu)
 autoplot(jhu, death_rate, case_rate)
@@ -64,33 +63,39 @@ We define a helper function to create fan charts of the forecasts.
 
 ```{r}
 #| label: viz-helper
-fan_chart <- function(results, 
-                      window_df = covid_case_death_rates |> 
-                        filter(time_value > "2021-07-01",
-                               geo_value %in% used_locations),
+fan_chart <- function(results,
+                      window_df = covid_case_death_rates |>
+                          filter(
+                              time_value > "2021-07-01",
+                              geo_value %in% used_locations
+                          ),
                       value_name = "death_rate",
                       fcst_date = forecast_date,
                       title = "",
                       subtitle = "") {
-  results |>
-    pivot_quantiles_wider(.pred_distn) |>
-    arrange(geo_value, target_date) |>
-    ggplot(aes(x = target_date)) +
-    geom_vline(xintercept = fcst_date, linetype = "dashed",
-               color = "gray50", linewidth = 0.5) +
-    geom_line(
-      data = window_df,
-      aes(x = time_value, y = .data[[value_name]]),
-      color = "gray20", linewidth = 0.6, inherit.aes = FALSE
-    ) +
-    geom_ribbon(aes(ymin = `0.05`, ymax = `0.95`), fill = "dodgerblue4", alpha = 0.10) +
-    geom_ribbon(aes(ymin = `0.1`,  ymax = `0.9`),  fill = "dodgerblue4", alpha = 0.15) +
-    geom_ribbon(aes(ymin = `0.25`, ymax = `0.75`), fill = "dodgerblue4", alpha = 0.20) +
-    geom_line(aes(y = `0.5`), color = "orange", linewidth = 0.8) +
-    facet_wrap(~geo_value, scales = "free_y") +
-    labs(title = title, subtitle = subtitle,
-         x = "Date", y = "Deaths per 100k (7-day avg)") +
-    theme_bw()
+    results |>
+        pivot_quantiles_wider(.pred_distn) |>
+        arrange(geo_value, target_date) |>
+        ggplot(aes(x = target_date)) +
+        geom_vline(
+            xintercept = fcst_date, linetype = "dashed",
+            color = "gray50", linewidth = 0.5
+        ) +
+        geom_line(
+            data = window_df,
+            aes(x = time_value, y = .data[[value_name]]),
+            color = "gray20", linewidth = 0.6, inherit.aes = FALSE
+        ) +
+        geom_ribbon(aes(ymin = `0.05`, ymax = `0.95`), fill = "dodgerblue4", alpha = 0.10) +
+        geom_ribbon(aes(ymin = `0.1`, ymax = `0.9`), fill = "dodgerblue4", alpha = 0.15) +
+        geom_ribbon(aes(ymin = `0.25`, ymax = `0.75`), fill = "dodgerblue4", alpha = 0.20) +
+        geom_line(aes(y = `0.5`), color = "orange", linewidth = 0.8) +
+        facet_wrap(~geo_value, scales = "free_y") +
+        labs(
+            title = title, subtitle = subtitle,
+            x = "Date", y = "Deaths per 100k (7-day avg)"
+        ) +
+        theme_bw()
 }
 ```
 
@@ -131,19 +136,19 @@ CDC FluSight flat-line baseline.
 ```{r}
 #| label: cdc
 fcst_cdc <- cdc_baseline_forecaster(
-  jhu,
-  outcome = "death_rate",
-  args_list = cdc_baseline_args_list(
-    aheads = seq(1, 28, 7),
-    data_frequency = "1 day"
-  )
+    jhu,
+    outcome = "death_rate",
+    args_list = cdc_baseline_args_list(
+        aheads = seq(1, 28, 7),
+        data_frequency = "1 day"
+    )
 )
 fcst_cdc$predictions |> filter(target_date == "2021-08-09")
 
 fan_chart(
-  fcst_cdc$predictions,
-  title = "CDC baseline forecast: 1–28 day horizon",
-  subtitle = "Flat median; quantiles widen via repeated sampling | dashed = forecast date"
+    fcst_cdc$predictions,
+    title = "CDC baseline forecast: 1–28 day horizon",
+    subtitle = "Flat median; quantiles widen via repeated sampling | dashed = forecast date"
 )
 ```
 
@@ -153,37 +158,38 @@ Predicts the median and quantiles based on historical values around the same dat
 ```{r}
 #| label: climate
 fluview_hhs <- pub_fluview(
-  regions = paste0("hhs", 1:10),
-  epiweeks = epirange(100001,222201)
+    regions = paste0("hhs", 1:10),
+    epiweeks = epirange(100001, 222201)
 )
 fluview <- fluview_hhs |>
-  select(
-    geo_value = region,
-    time_value = epiweek,
-    issue,
-    ili) |>
-  as_epi_archive() |>
-  epix_as_of_current()
+    select(
+        geo_value = region,
+        time_value = epiweek,
+        issue,
+        ili
+    ) |>
+    as_epi_archive() |>
+    epix_as_of_current()
 
 fcst_climate <- climatological_forecaster(
-  fluview |> filter(time_value < "2023-10-08"),
-  outcome = "ili",
-  args_list = climate_args_list(
-    forecast_horizon = seq(0, 28, 7),
-    time_type = "week",
-    quantile_by_key = "geo_value",
-    forecast_date = as.Date("2023-10-08")
-  )
+    fluview |> filter(time_value < "2023-10-08"),
+    outcome = "ili",
+    args_list = climate_args_list(
+        forecast_horizon = seq(0, 28, 7),
+        time_type = "week",
+        quantile_by_key = "geo_value",
+        forecast_date = as.Date("2023-10-08")
+    )
 )
 fcst_climate$predictions
 
 fan_chart(
-  fcst_climate$predictions,
-  fluview |>
-    filter(time_value >= "2023-10-08", time_value < "2024-05-01") |>
-    mutate(geo_value = factor(geo_value, levels = paste0("hhs", 1:10))),
-  "ili",
-  fcst_date =  as.Date("2023-10-08")
+    fcst_climate$predictions,
+    fluview |>
+        filter(time_value >= "2023-10-08", time_value < "2024-05-01") |>
+        mutate(geo_value = factor(geo_value, levels = paste0("hhs", 1:10))),
+    "ili",
+    fcst_date = as.Date("2023-10-08")
 )
 ```
 
@@ -200,47 +206,55 @@ We can customize the training engine and hyperparameters.
 lags <- arx_args_list(lags = c(0, 7, 14), ahead = 28)
 
 fcst_linear <- arx_forecaster(jhu, "death_rate", "death_rate",
-                              trainer = linear_reg(), 
-                              args_list = lags)
+    trainer = linear_reg(),
+    args_list = lags
+)
 fcst_qr <- arx_forecaster(jhu, "death_rate", "death_rate",
-                          trainer = quantile_reg(), 
-                          args_list = lags)
+    trainer = quantile_reg(),
+    args_list = lags
+)
 
 # Compare engines: 80% interval + median, color-coded by model
 bind_rows(
-  fcst_linear$predictions |> mutate(model = "Linear"),
-  fcst_qr$predictions     |> mutate(model = "Quantile reg")
+    fcst_linear$predictions |> mutate(model = "Linear"),
+    fcst_qr$predictions |> mutate(model = "Quantile reg")
 ) |>
-  pivot_quantiles_wider(.pred_distn) |>
-  filter(geo_value %in% used_locations) |>
-  ggplot(aes(x = target_date, color = model, fill = model)) +
-  geom_vline(xintercept = forecast_date, linetype = "dashed",
-             color = "gray50", linewidth = 0.5) +
-  geom_line(
-    data = filter(covid_case_death_rates, 
-                  geo_value %in% used_locations,
-                  time_value > forecast_date - 30,
-                  time_value <= forecast_date + 30),
-    aes(x = time_value, y = death_rate),
-    color = "black", linewidth = 0.5, inherit.aes = FALSE
-  ) +
-  geom_linerange(
-    aes(ymin = `0.1`, ymax = `0.9`),
-    linewidth = 4, alpha = 0.3,
-    position = position_dodge(width = 1.5)
-  ) +
-  geom_point(aes(y = .pred), size = 3,
-             position = position_dodge(width = 1.5)) +
-  scale_color_brewer(palette = "Set1") +
-  scale_fill_brewer(palette = "Set1") +
-  facet_wrap(~geo_value, scales = "free_y") +
-  labs(
-    title    = "14-day ahead forecast: model comparison",
-    subtitle = "Points = median; bars = 80% prediction interval | dashed = forecast date",
-    x = "Date", y = "Deaths per 100k (7-day avg)", color = "Model", fill = "Model"
-  ) +
-  theme_bw() +
-  theme(legend.position = "bottom")
+    pivot_quantiles_wider(.pred_distn) |>
+    filter(geo_value %in% used_locations) |>
+    ggplot(aes(x = target_date, color = model, fill = model)) +
+    geom_vline(
+        xintercept = forecast_date, linetype = "dashed",
+        color = "gray50", linewidth = 0.5
+    ) +
+    geom_line(
+        data = filter(
+            covid_case_death_rates,
+            geo_value %in% used_locations,
+            time_value > forecast_date - 30,
+            time_value <= forecast_date + 30
+        ),
+        aes(x = time_value, y = death_rate),
+        color = "black", linewidth = 0.5, inherit.aes = FALSE
+    ) +
+    geom_linerange(
+        aes(ymin = `0.1`, ymax = `0.9`),
+        linewidth = 4, alpha = 0.3,
+        position = position_dodge(width = 1.5)
+    ) +
+    geom_point(aes(y = .pred),
+        size = 3,
+        position = position_dodge(width = 1.5)
+    ) +
+    scale_color_brewer(palette = "Set1") +
+    scale_fill_brewer(palette = "Set1") +
+    facet_wrap(~geo_value, scales = "free_y") +
+    labs(
+        title = "14-day ahead forecast: model comparison",
+        subtitle = "Points = median; bars = 80% prediction interval | dashed = forecast date",
+        x = "Date", y = "Deaths per 100k (7-day avg)", color = "Model", fill = "Model"
+    ) +
+    theme_bw() +
+    theme(legend.position = "bottom")
 ```
 
 ## Multi-Signal and Trajectory Forecasting
@@ -251,23 +265,23 @@ We can use multiple predictors and forecast over a range of horizons.
 #| label: trajectory
 # Fit one arx model per horizon (0–28 days ahead), and plot as a fan chart.
 all_arx <- lapply(
-  seq(0, 28, 7),
-  \(h) arx_forecaster(
-    jhu,
-    outcome    = "death_rate",
-    predictors = c("case_rate", "death_rate"),
-    trainer    = quantile_reg(),
-    args_list  = arx_args_list(
-      lags  = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
-      ahead = h
+    seq(0, 28, 7),
+    \(h) arx_forecaster(
+        jhu,
+        outcome = "death_rate",
+        predictors = c("case_rate", "death_rate"),
+        trainer = quantile_reg(),
+        args_list = arx_args_list(
+            lags  = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
+            ahead = h
+        )
     )
-  )
 )
 results_arx <- lapply(all_arx, \(x) x$predictions) |> bind_rows()
 fan_chart(
-  results_arx,
-  title    = "ARX forecast: 0–28 day horizon",
-  subtitle = "Predictors: case rate + death rate | bands = 90% / 80% / 50% | dashed = forecast date"
+    results_arx,
+    title    = "ARX forecast: 0–28 day horizon",
+    subtitle = "Predictors: case rate + death rate | bands = 90% / 80% / 50% | dashed = forecast date"
 )
 ```
 
@@ -278,15 +292,15 @@ Finally, we can using `arx_classifier` to predict categories of growth rates.
 ```{r}
 #| label: classifier
 classifier <- arx_classifier(
-  covid_case_death_rates |>
-    filter(geo_value %in% used_locations, time_value < forecast_date),
-  outcome    = "death_rate",
-  predictors = c("death_rate", "case_rate"),
-  args_list  = arx_class_args_list(
-    lags   = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
-    ahead  = 2 * 7,
-    breaks = 0.25 / 7
-  )
+    covid_case_death_rates |>
+        filter(geo_value %in% used_locations, time_value < forecast_date),
+    outcome = "death_rate",
+    predictors = c("death_rate", "case_rate"),
+    args_list = arx_class_args_list(
+        lags   = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
+        ahead  = 2 * 7,
+        breaks = 0.25 / 7
+    )
 )
 
 classifier$predictions

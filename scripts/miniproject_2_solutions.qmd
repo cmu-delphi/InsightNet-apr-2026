@@ -13,22 +13,20 @@ This notebook covers the second mini-project, focusing on exploratory data analy
 
 ## Load packages
 
-We'll start by loading the necessary packages.
+`{InsightNetApr26}` package ensures all required Delphi tools and their correct versions/branches are installed.
 
 ```{r}
 #| label: load-packages
 if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
-pkgs <- c(
-  epidatr = "cmu-delphi/epidatr",
-  epiprocess = "cmu-delphi/epiprocess",
-  dplyr = "dplyr",
-  ggplot2 = "ggplot2"
-)
-if (any(missing <- !vapply(names(pkgs), requireNamespace, quietly = TRUE, logical(1)))) {
-  pak::pkg_install(pkgs[missing])
+if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
+    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26", dependencies = TRUE)
 }
+InsightNetApr26::verify_setup()
 
-invisible(lapply(names(pkgs), library, character.only = TRUE))
+library(epidatr)
+library(epiprocess)
+library(dplyr)
+library(ggplot2)
 ```
 
 ```{r}
@@ -54,8 +52,8 @@ First, we fetch a candidate indicator (Doctor visits CLI) to explore.
 ```{r}
 #| label: fetch-candidate
 res_cand <- pub_covidcast("doctor-visits", "smoothed_adj_cli", "state", "day",
-  geo_values = c("mi", "ny", "tx", "pa"),
-  time_values = epirange(start_date, end_date)
+    geo_values = c("mi", "ny", "tx", "pa"),
+    time_values = epirange(start_date, end_date)
 )
 edf_cand <- as_epi_df(res_cand)
 
@@ -70,15 +68,15 @@ We use `epi_slide` to calculate moving averages and growth rates.
 #| label: sliding
 # Use epi_slide to calculate moving averages
 edf_cand |>
-  group_by(geo_value) |>
-  epi_slide(smoothed_value = mean(value, na.rm = TRUE), .window_size = 7) |>
-  autoplot(value, smoothed_value)
+    group_by(geo_value) |>
+    epi_slide(smoothed_value = mean(value, na.rm = TRUE), .window_size = 7) |>
+    autoplot(value, smoothed_value)
 
 # Use epi_slide to calculate growth rate
 edf_cand |>
-  group_by(geo_value) |>
-  mutate(growth_rate = growth_rate(value, time_value, method = "rel_change")) |>
-  autoplot(value, growth_rate)
+    group_by(geo_value) |>
+    mutate(growth_rate = growth_rate(value, time_value, method = "rel_change")) |>
+    autoplot(value, growth_rate)
 ```
 
 ### Summary Statistics and Visualization
@@ -103,18 +101,18 @@ We fetch a second indicator (HHS COVID admissions) and join them into a single `
 ```{r}
 #| label: compare-indicators
 res_guid <- pub_covidcast("hhs", "confirmed_admissions_covid_1d", "state", "day",
-  geo_values = c("mi", "ny", "tx", "pa"),
-  time_values = epirange(start_date, end_date)
+    geo_values = c("mi", "ny", "tx", "pa"),
+    time_values = epirange(start_date, end_date)
 )
 edf_guid <- as_epi_df(res_guid)
 
 joined_edf <- edf_cand |>
-  select(geo_value, time_value, candidate = value) |>
-  full_join(
-    edf_guid |> select(geo_value, time_value, guiding = value),
-    by = c("geo_value", "time_value")
-  ) |>
-  as_epi_df()
+    select(geo_value, time_value, candidate = value) |>
+    full_join(
+        edf_guid |> select(geo_value, time_value, guiding = value),
+        by = c("geo_value", "time_value")
+    ) |>
+    as_epi_df()
 
 # autoplot with two indicators
 autoplot(joined_edf, candidate, guiding)
@@ -134,9 +132,9 @@ head(cor_temporal)
 cor_spatial <- epi_cor(joined_edf, candidate, guiding, cor_by = time_value)
 
 ggplot(cor_spatial, aes(x = time_value, y = cor)) +
-  geom_line() +
-  labs(title = "Spatial correlation over time", y = "Correlation") +
-  scale_y_continuous(limits = c(-1, 1))
+    geom_line() +
+    labs(title = "Spatial correlation over time", y = "Correlation") +
+    scale_y_continuous(limits = c(-1, 1))
 ```
 
 ### Lagged Correlation Analysis
@@ -148,20 +146,20 @@ We sweep lags from -14 to +14 days to see if the candidate leads the guiding ind
 # Sweep lags from -14 to +14 days
 # Positive means candidate leads guiding
 cor_lagged <- lapply(-14:14, \(x) {
-  epi_cor(joined_edf, candidate, guiding,
-    cor_by = geo_value, dt1 = -x
-  ) |> mutate(lag = x)
+    epi_cor(joined_edf, candidate, guiding,
+        cor_by = geo_value, dt1 = -x
+    ) |> mutate(lag = x)
 }) |> bind_rows()
 
 cor_lagged |>
-  group_by(lag) |>
-  summarize(mean_cor = mean(cor, na.rm = TRUE)) |>
-  ggplot(aes(x = lag, y = mean_cor)) +
-  geom_line() +
-  geom_point() +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
-  scale_y_continuous(limits = c(-1, 1)) +
-  labs(title = "Mean correlation vs. lag", x = "Lag (days)", y = "Correlation")
+    group_by(lag) |>
+    summarize(mean_cor = mean(cor, na.rm = TRUE)) |>
+    ggplot(aes(x = lag, y = mean_cor)) +
+    geom_line() +
+    geom_point() +
+    geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+    scale_y_continuous(limits = c(-1, 1)) +
+    labs(title = "Mean correlation vs. lag", x = "Lag (days)", y = "Correlation")
 ```
 
 ## Revision behavior
@@ -172,16 +170,16 @@ Finally, we analyze the revision history of the candidate indicator.
 #| label: revision-analysis
 # Fetch data versions by setting the issues parameter
 archive_res <- pub_covidcast("doctor-visits", "smoothed_adj_cli",
-  "state", "day",
-  geo_values = c("mi", "ny", "tx", "pa"),
-  time_values = epirange(start_date, end_date),
-  issues = epirange(start_date, 20220401)
+    "state", "day",
+    geo_values = c("mi", "ny", "tx", "pa"),
+    time_values = epirange(start_date, end_date),
+    issues = epirange(start_date, 20220401)
 )
 
 # For version processing
 archive_data <- archive_res |>
-  rename(version = issue) |>
-  as_epi_archive()
+    rename(version = issue) |>
+    as_epi_archive()
 
 # Plot the revision history
 autoplot(archive_data, value, .versions = "week")
