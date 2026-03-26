@@ -18,7 +18,7 @@ Imports:
 Suggests: 
     dplyr,
     epidatasets,
-    epidatr (>= 1.2.2),
+    epidatr,
     epipredict,
     epiprocess,
     ggplot2,
