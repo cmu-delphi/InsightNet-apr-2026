@@ -1,0 +1,30 @@
+project:
+  type: website
+  lib-dir: site_libs
+  render:
+    - index.qmd
+    - scripts/*.qmd
+
+execute:
+  freeze: false
+
+editor: source
+
+website:
+  title: "InsightNet Apr 2026"
+  page-footer:
+    left: "This work by the [Delphi Research Group](https://delphi.cmu.edu) is licensed under the [MIT license](/LICENSE.md)."
+    right: "Supported in part by the [CSTE](https://www.cste.org) and the [CDC](https://www.cdc.gov)."
+  navbar:
+    pinned: false
+    title: "<i class='bi bi-graph-down'></i> InsightNet Apr 2026"
+    right:
+      - text: Delphi
+        url: https://delphi.cmu.edu/
+      - text: GitHub
+        url: https://github.com/cmu-delphi/InsightNet-apr-2026
+        icon: github
+
+format:
+  html:
+    theme: [cosmo, assets/styles.scss]
