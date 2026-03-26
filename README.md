@@ -1,5 +1,7 @@
 # InsightNet-apr-2026
 
+Website: [cmu-delphi.github.io/InsightNet-apr-2026](https://cmu-delphi.github.io/InsightNet-apr-2026/)
+
 This repository contains materials for the InsightNet Workshop in April 2026.
 
 ## Overview
@@ -26,3 +28,11 @@ quarto render
 ```
 
 The output will be generated in the `_site/` directory.
+
+To update the repository website:
+
+```bash
+quarto publish gh-pages
+```
+
+
