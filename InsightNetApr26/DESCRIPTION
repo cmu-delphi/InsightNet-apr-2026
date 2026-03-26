@@ -17,14 +17,15 @@ Imports:
     tibble
 Suggests: 
     dplyr,
-    epidatasets (>= 0.0.1),
+    epidatasets,
     epidatr (>= 1.2.2),
-    epipredict (>= 0.1.5),
-    epiprocess (>= 0.12.0),
+    epipredict,
+    epiprocess,
     ggplot2,
     parsnip
 Remotes: 
     cmu-delphi/epidatasets,
+    cmu-delphi/epidatr,
     cmu-delphi/epipredict@dev,
     cmu-delphi/epiprocess@jmr/mult-plot
 Roxygen: list(markdown = TRUE)
