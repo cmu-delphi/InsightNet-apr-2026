@@ -4,7 +4,7 @@ required_pkgs <- tibble::tribble(
   "epidatasets", ">=", "0.0.1",
   "epidatr", ">=", "1.2.2",
   "epipredict", ">=", "0.1.5",
-  "epiprocess", ">=", "0.12.1",
+  "epiprocess", ">=", "0.12.0",
   "ggplot2", NA, NA,
   "parsnip", NA, NA
 )
