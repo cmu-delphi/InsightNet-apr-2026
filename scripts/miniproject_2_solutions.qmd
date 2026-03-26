@@ -1,0 +1,192 @@
+---
+title: "MINI-PROJECT 2: EDA and correlation analysis"
+author: "Delphi Tooling Team"
+date: today
+execute:
+  warning: false
+  message: false
+---
+
+## Introduction
+
+This notebook covers the second mini-project, focusing on exploratory data analysis (EDA) and correlation analysis of Delphi indicators.
+
+## Load packages
+
+We'll start by loading the necessary packages.
+
+```{r}
+#| label: load-packages
+if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
+pkgs <- c(
+  epidatr = "cmu-delphi/epidatr",
+  epiprocess = "cmu-delphi/epiprocess",
+  dplyr = "dplyr",
+  ggplot2 = "ggplot2"
+)
+if (any(missing <- !vapply(names(pkgs), requireNamespace, quietly = TRUE, logical(1)))) {
+  pak::pkg_install(pkgs[missing])
+}
+
+invisible(lapply(names(pkgs), library, character.only = TRUE))
+```
+
+```{r}
+#| label: setup
+#| include: false
+source("setup.R")
+```
+
+## Standard Timeframe
+
+We define a standard timeframe for our analysis.
+
+```{r}
+#| label: timeframe
+start_date <- 20220101
+end_date <- 20220301
+```
+
+## General EDA utilities
+
+First, we fetch a candidate indicator (Doctor visits CLI) to explore.
+
+```{r}
+#| label: fetch-candidate
+res_cand <- pub_covidcast("doctor-visits", "smoothed_adj_cli", "state", "day",
+  geo_values = c("mi", "ny", "tx", "pa"),
+  time_values = epirange(start_date, end_date)
+)
+edf_cand <- as_epi_df(res_cand)
+
+head(edf_cand)
+```
+
+### Sliding Averages and Growth Rates
+
+We use `epi_slide` to calculate moving averages and growth rates.
+
+```{r}
+#| label: sliding
+# Use epi_slide to calculate moving averages
+edf_cand |>
+  group_by(geo_value) |>
+  epi_slide(smoothed_value = mean(value, na.rm = TRUE), .window_size = 7) |>
+  autoplot(value, smoothed_value)
+
+# Use epi_slide to calculate growth rate
+edf_cand |>
+  group_by(geo_value) |>
+  mutate(growth_rate = growth_rate(value, time_value, method = "rel_change")) |>
+  autoplot(value, growth_rate)
+```
+
+### Summary Statistics and Visualization
+
+General summary statistics and data exploration using `autoplot` and `plot_heatmap`.
+
+```{r}
+#| label: eda-vis
+# Get general summary statistics
+summary(edf_cand)
+
+# Use autoplot and plot_heatmap to explore the data.
+autoplot(edf_cand, value, .facet_by = "geo_value")
+autoplot(edf_cand, value, .interactive = T)
+plot_heatmap(edf_cand, value)
+```
+
+## Compare two indicators
+
+We fetch a second indicator (HHS COVID admissions) and join them into a single `epi_df`.
+
+```{r}
+#| label: compare-indicators
+res_guid <- pub_covidcast("hhs", "confirmed_admissions_covid_1d", "state", "day",
+  geo_values = c("mi", "ny", "tx", "pa"),
+  time_values = epirange(start_date, end_date)
+)
+edf_guid <- as_epi_df(res_guid)
+
+joined_edf <- edf_cand |>
+  select(geo_value, time_value, candidate = value) |>
+  full_join(
+    edf_guid |> select(geo_value, time_value, guiding = value),
+    by = c("geo_value", "time_value")
+  ) |>
+  as_epi_df()
+
+# autoplot with two indicators
+autoplot(joined_edf, candidate, guiding)
+```
+
+## Correlation Analysis
+
+We calculate correlations using `epiprocess::epi_cor`.
+
+```{r}
+#| label: correlation
+## Temporal correlation (within each location over time)
+cor_temporal <- epi_cor(joined_edf, candidate, guiding, cor_by = geo_value)
+head(cor_temporal)
+
+## Spatial correlation (across all locations at each point in time)
+cor_spatial <- epi_cor(joined_edf, candidate, guiding, cor_by = time_value)
+
+ggplot(cor_spatial, aes(x = time_value, y = cor)) +
+  geom_line() +
+  labs(title = "Spatial correlation over time", y = "Correlation") +
+  scale_y_continuous(limits = c(-1, 1))
+```
+
+### Lagged Correlation Analysis
+
+We sweep lags from -14 to +14 days to see if the candidate leads the guiding indicator.
+
+```{r}
+#| label: lagged-correlation
+# Sweep lags from -14 to +14 days
+# Positive means candidate leads guiding
+cor_lagged <- lapply(-14:14, \(x) {
+  epi_cor(joined_edf, candidate, guiding,
+    cor_by = geo_value, dt1 = -x
+  ) |> mutate(lag = x)
+}) |> bind_rows()
+
+cor_lagged |>
+  group_by(lag) |>
+  summarize(mean_cor = mean(cor, na.rm = TRUE)) |>
+  ggplot(aes(x = lag, y = mean_cor)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "grey50") +
+  scale_y_continuous(limits = c(-1, 1)) +
+  labs(title = "Mean correlation vs. lag", x = "Lag (days)", y = "Correlation")
+```
+
+## Revision behavior
+
+Finally, we analyze the revision history of the candidate indicator.
+
+```{r}
+#| label: revision-analysis
+# Fetch data versions by setting the issues parameter
+archive_res <- pub_covidcast("doctor-visits", "smoothed_adj_cli",
+  "state", "day",
+  geo_values = c("mi", "ny", "tx", "pa"),
+  time_values = epirange(start_date, end_date),
+  issues = epirange(start_date, 20220401)
+)
+
+# For version processing
+archive_data <- archive_res |>
+  rename(version = issue) |>
+  as_epi_archive()
+
+# Plot the revision history
+autoplot(archive_data, value, .versions = "week")
+
+# Generate revision metrics
+rev_metrics <- revision_analysis(archive_data, value)
+rev_metrics
+```
