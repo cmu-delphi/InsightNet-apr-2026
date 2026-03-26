@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Delphi Tooling Team">
+<meta name="dcterms.date" content="2026-03-26">
+
+<title>MINI-PROJECT 2: EDA and correlation analysis – InsightNet Apr 2026</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-f5081daa3b7b4c487c0aafb739bd7a50.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<link href="../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="../site_libs/plotly-binding-4.12.0/plotly.js"></script>
+<script src="../site_libs/typedarray-0.1/typedarray.min.js"></script>
+<script src="../site_libs/jquery-3.5.1/jquery.min.js"></script>
+<link href="../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+<script src="../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+<link href="../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+<script src="../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+
+
+</head>
+
+<body class="nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title"><i class="bi bi-graph-down"></i> InsightNet Apr 2026</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://delphi.cmu.edu/"> 
+<span class="menu-text">Delphi</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/cmu-delphi/InsightNet-apr-2026"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">GitHub</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">MINI-PROJECT 2: EDA and correlation analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Delphi Tooling Team </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 26, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>This notebook covers the second mini-project, focusing on exploratory data analysis (EDA) and correlation analysis of Delphi indicators.</p>
+</section>
+<section id="load-packages" class="level2">
+<h2 class="anchored" data-anchor-id="load-packages">Load packages</h2>
+<p>We’ll start by loading the necessary packages.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pak"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"pak"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>pkgs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">epidatr =</span> <span class="st">"cmu-delphi/epidatr"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">epiprocess =</span> <span class="st">"cmu-delphi/epiprocess"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">dplyr =</span> <span class="st">"dplyr"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ggplot2 =</span> <span class="st">"ggplot2"</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">any</span>(missing <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">vapply</span>(<span class="fu">names</span>(pkgs), requireNamespace, <span class="at">quietly =</span> <span class="cn">TRUE</span>, <span class="fu">logical</span>(<span class="dv">1</span>)))) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  pak<span class="sc">::</span><span class="fu">pkg_install</span>(pkgs[missing])</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">invisible</span>(<span class="fu">lapply</span>(<span class="fu">names</span>(pkgs), library, <span class="at">character.only =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="standard-timeframe" class="level2">
+<h2 class="anchored" data-anchor-id="standard-timeframe">Standard Timeframe</h2>
+<p>We define a standard timeframe for our analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>start_date <span class="ot">&lt;-</span> <span class="dv">20220101</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>end_date <span class="ot">&lt;-</span> <span class="dv">20220301</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="general-eda-utilities" class="level2">
+<h2 class="anchored" data-anchor-id="general-eda-utilities">General EDA utilities</h2>
+<p>First, we fetch a candidate indicator (Doctor visits CLI) to explore.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>res_cand <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(<span class="st">"doctor-visits"</span>, <span class="st">"smoothed_adj_cli"</span>, <span class="st">"state"</span>, <span class="st">"day"</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(start_date, end_date)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>edf_cand <span class="ot">&lt;-</span> <span class="fu">as_epi_df</span>(res_cand)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(edf_cand)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An `epi_df` object, 6 x 15 with metadata:
+* geo_type  = state
+* time_type = day
+* as_of     = 2022-05-11
+
+# A tibble: 6 × 15
+  geo_value time_value signal     source geo_type time_type direction issue     
+  &lt;chr&gt;     &lt;date&gt;     &lt;chr&gt;      &lt;chr&gt;  &lt;fct&gt;    &lt;fct&gt;         &lt;dbl&gt; &lt;date&gt;    
+1 mi        2022-01-01 smoothed_… docto… state    day              NA 2022-03-15
+2 ny        2022-01-01 smoothed_… docto… state    day              NA 2022-03-15
+3 pa        2022-01-01 smoothed_… docto… state    day              NA 2022-03-15
+4 tx        2022-01-01 smoothed_… docto… state    day              NA 2022-03-15
+5 mi        2022-01-02 smoothed_… docto… state    day              NA 2022-03-16
+6 ny        2022-01-02 smoothed_… docto… state    day              NA 2022-03-16
+# ℹ 7 more variables: lag &lt;dbl&gt;, missing_value &lt;dbl&gt;, missing_stderr &lt;dbl&gt;,
+#   missing_sample_size &lt;dbl&gt;, value &lt;dbl&gt;, stderr &lt;dbl&gt;, sample_size &lt;dbl&gt;</code></pre>
+</div>
+</div>
+<section id="sliding-averages-and-growth-rates" class="level3">
+<h3 class="anchored" data-anchor-id="sliding-averages-and-growth-rates">Sliding Averages and Growth Rates</h3>
+<p>We use <code>epi_slide</code> to calculate moving averages and growth rates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use epi_slide to calculate moving averages</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>edf_cand <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(geo_value) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide</span>(<span class="at">smoothed_value =</span> <span class="fu">mean</span>(value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.window_size =</span> <span class="dv">7</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(value, smoothed_value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/sliding-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use epi_slide to calculate growth rate</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>edf_cand <span class="sc">|&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(geo_value) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">growth_rate =</span> <span class="fu">growth_rate</span>(value, time_value, <span class="at">method =</span> <span class="st">"rel_change"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(value, growth_rate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/sliding-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="summary-statistics-and-visualization" class="level3">
+<h3 class="anchored" data-anchor-id="summary-statistics-and-visualization">Summary Statistics and Visualization</h3>
+<p>General summary statistics and data exploration using <code>autoplot</code> and <code>plot_heatmap</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get general summary statistics</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(edf_cand)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>An `epi_df` x, with metadata:
+* geo_type  = state
+* as_of     = 2022-05-11
+----------
+* min time value              = 2022-01-01
+* max time value              = 2022-03-01
+* average rows per time value = 4</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use autoplot and plot_heatmap to explore the data.</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf_cand, value, <span class="at">.facet_by =</span> <span class="st">"geo_value"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/eda-vis-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf_cand, value, <span class="at">.interactive =</span> T)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-ed7e80ea7b9392880bad" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-ed7e80ea7b9392880bad">{"x":{"data":[{"x":[18993,18994,18995,18996,18997,18998,18999,19000,19001,19002,19003,19004,19005,19006,19007,19008,19009,19010,19011,19012,19013,19014,19015,19016,19017,19018,19019,19020,19021,19022,19023,19024,19025,19026,19027,19028,19029,19030,19031,19032,19033,19034,19035,19036,19037,19038,19039,19040,19041,19042,19043,19044,19045,19046,19047,19048,19049,19050,19051,19052],"y":[18.788625,17.320675000000001,16.64537,16.008337000000001,15.843938,15.245938000000001,14.718162,13.906280000000001,13.463111,13.261257000000001,13.040737999999999,12.936064,12.686427999999999,12.568004999999999,11.791180000000001,11.383307,11.096323999999999,10.573103,10.14269,9.6069279999999999,8.9759080000000004,8.7862930000000006,8.2120139999999999,7.6519599999999999,6.9502290000000002,6.5687720000000001,6.0780810000000001,5.6366329999999998,5.6035500000000003,5.3961509999999997,5.082166,4.6217230000000002,4.1893279999999997,3.9346510000000001,3.735824,4.0353000000000003,3.867,3.5011709999999998,3.2889689999999998,3.124044,3.0771639999999998,2.9226740000000002,2.91845,2.9707379999999999,2.8294229999999998,2.660676,2.5643180000000001,2.7448769999999998,2.8885329999999998,3.0805769999999999,3.1591480000000001,2.7852769999999998,2.535765,2.3949280000000002,2.3823729999999999,2.3273199999999998,2.3725559999999999,2.0658919999999998,1.772537,1.595037],"text":["time_value: 2022-01-01<br />.response: 18.788625<br />.colours: mi","time_value: 2022-01-02<br />.response: 17.320675<br />.colours: mi","time_value: 2022-01-03<br />.response: 16.645370<br />.colours: mi","time_value: 2022-01-04<br />.response: 16.008337<br />.colours: mi","time_value: 2022-01-05<br />.response: 15.843938<br />.colours: mi","time_value: 2022-01-06<br />.response: 15.245938<br />.colours: mi","time_value: 2022-01-07<br />.response: 14.718162<br />.colours: mi","time_value: 2022-01-08<br />.response: 13.906280<br />.colours: mi","time_value: 2022-01-09<br />.response: 13.463111<br />.colours: mi","time_value: 2022-01-10<br />.response: 13.261257<br />.colours: mi","time_value: 2022-01-11<br />.response: 13.040738<br />.colours: mi","time_value: 2022-01-12<br />.response: 12.936064<br />.colours: mi","time_value: 2022-01-13<br />.response: 12.686428<br />.colours: mi","time_value: 2022-01-14<br />.response: 12.568005<br />.colours: mi","time_value: 2022-01-15<br />.response: 11.791180<br />.colours: mi","time_value: 2022-01-16<br />.response: 11.383307<br />.colours: mi","time_value: 2022-01-17<br />.response: 11.096324<br />.colours: mi","time_value: 2022-01-18<br />.response: 10.573103<br />.colours: mi","time_value: 2022-01-19<br />.response: 10.142690<br />.colours: mi","time_value: 2022-01-20<br />.response:  9.606928<br />.colours: mi","time_value: 2022-01-21<br />.response:  8.975908<br />.colours: mi","time_value: 2022-01-22<br />.response:  8.786293<br />.colours: mi","time_value: 2022-01-23<br />.response:  8.212014<br />.colours: mi","time_value: 2022-01-24<br />.response:  7.651960<br />.colours: mi","time_value: 2022-01-25<br />.response:  6.950229<br />.colours: mi","time_value: 2022-01-26<br />.response:  6.568772<br />.colours: mi","time_value: 2022-01-27<br />.response:  6.078081<br />.colours: mi","time_value: 2022-01-28<br />.response:  5.636633<br />.colours: mi","time_value: 2022-01-29<br />.response:  5.603550<br />.colours: mi","time_value: 2022-01-30<br />.response:  5.396151<br />.colours: mi","time_value: 2022-01-31<br />.response:  5.082166<br />.colours: mi","time_value: 2022-02-01<br />.response:  4.621723<br />.colours: mi","time_value: 2022-02-02<br />.response:  4.189328<br />.colours: mi","time_value: 2022-02-03<br />.response:  3.934651<br />.colours: mi","time_value: 2022-02-04<br />.response:  3.735824<br />.colours: mi","time_value: 2022-02-05<br />.response:  4.035300<br />.colours: mi","time_value: 2022-02-06<br />.response:  3.867000<br />.colours: mi","time_value: 2022-02-07<br />.response:  3.501171<br />.colours: mi","time_value: 2022-02-08<br />.response:  3.288969<br />.colours: mi","time_value: 2022-02-09<br />.response:  3.124044<br />.colours: mi","time_value: 2022-02-10<br />.response:  3.077164<br />.colours: mi","time_value: 2022-02-11<br />.response:  2.922674<br />.colours: mi","time_value: 2022-02-12<br />.response:  2.918450<br />.colours: mi","time_value: 2022-02-13<br />.response:  2.970738<br />.colours: mi","time_value: 2022-02-14<br />.response:  2.829423<br />.colours: mi","time_value: 2022-02-15<br />.response:  2.660676<br />.colours: mi","time_value: 2022-02-16<br />.response:  2.564318<br />.colours: mi","time_value: 2022-02-17<br />.response:  2.744877<br />.colours: mi","time_value: 2022-02-18<br />.response:  2.888533<br />.colours: mi","time_value: 2022-02-19<br />.response:  3.080577<br />.colours: mi","time_value: 2022-02-20<br />.response:  3.159148<br />.colours: mi","time_value: 2022-02-21<br />.response:  2.785277<br />.colours: mi","time_value: 2022-02-22<br />.response:  2.535765<br />.colours: mi","time_value: 2022-02-23<br />.response:  2.394928<br />.colours: mi","time_value: 2022-02-24<br />.response:  2.382373<br />.colours: mi","time_value: 2022-02-25<br />.response:  2.327320<br />.colours: mi","time_value: 2022-02-26<br />.response:  2.372556<br />.colours: mi","time_value: 2022-02-27<br />.response:  2.065892<br />.colours: mi","time_value: 2022-02-28<br />.response:  1.772537<br />.colours: mi","time_value: 2022-03-01<br />.response:  1.595037<br />.colours: mi"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(68,1,84,1)","dash":"solid"},"hoveron":"points","name":"mi","legendgroup":"mi","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18993,18994,18995,18996,18997,18998,18999,19000,19001,19002,19003,19004,19005,19006,19007,19008,19009,19010,19011,19012,19013,19014,19015,19016,19017,19018,19019,19020,19021,19022,19023,19024,19025,19026,19027,19028,19029,19030,19031,19032,19033,19034,19035,19036,19037,19038,19039,19040,19041,19042,19043,19044,19045,19046,19047,19048,19049,19050,19051,19052],"y":[15.360937,14.895496,14.872831,14.788217,14.429582,13.963277,13.444315,12.214615,11.370937,11.037139,10.773227,10.604445999999999,10.224583000000001,9.5520359999999993,8.6443159999999999,8.019584,8.0323550000000008,7.8424040000000002,7.7748330000000001,7.5862170000000004,7.0845919999999998,6.2586320000000004,5.7905430000000004,5.5918850000000004,5.2486730000000001,5.1751849999999999,5.0892770000000001,4.7704300000000002,4.3072080000000001,4.1889909999999997,4.1244009999999998,4.0872400000000004,4.1902189999999999,4.4612930000000004,4.2249689999999998,3.8268629999999999,3.773692,3.6076250000000001,3.6043509999999999,3.5267840000000001,3.580104,3.3636330000000001,3.024124,2.8623959999999999,2.8121559999999999,2.936868,3.285841,3.461576,3.4606629999999998,3.200901,3.0961449999999999,2.8847139999999998,2.7676210000000001,2.859696,2.870717,2.696056,2.4334289999999998,2.513655,2.5263599999999999,2.5811850000000001],"text":["time_value: 2022-01-01<br />.response: 15.360937<br />.colours: ny","time_value: 2022-01-02<br />.response: 14.895496<br />.colours: ny","time_value: 2022-01-03<br />.response: 14.872831<br />.colours: ny","time_value: 2022-01-04<br />.response: 14.788217<br />.colours: ny","time_value: 2022-01-05<br />.response: 14.429582<br />.colours: ny","time_value: 2022-01-06<br />.response: 13.963277<br />.colours: ny","time_value: 2022-01-07<br />.response: 13.444315<br />.colours: ny","time_value: 2022-01-08<br />.response: 12.214615<br />.colours: ny","time_value: 2022-01-09<br />.response: 11.370937<br />.colours: ny","time_value: 2022-01-10<br />.response: 11.037139<br />.colours: ny","time_value: 2022-01-11<br />.response: 10.773227<br />.colours: ny","time_value: 2022-01-12<br />.response: 10.604446<br />.colours: ny","time_value: 2022-01-13<br />.response: 10.224583<br />.colours: ny","time_value: 2022-01-14<br />.response:  9.552036<br />.colours: ny","time_value: 2022-01-15<br />.response:  8.644316<br />.colours: ny","time_value: 2022-01-16<br />.response:  8.019584<br />.colours: ny","time_value: 2022-01-17<br />.response:  8.032355<br />.colours: ny","time_value: 2022-01-18<br />.response:  7.842404<br />.colours: ny","time_value: 2022-01-19<br />.response:  7.774833<br />.colours: ny","time_value: 2022-01-20<br />.response:  7.586217<br />.colours: ny","time_value: 2022-01-21<br />.response:  7.084592<br />.colours: ny","time_value: 2022-01-22<br />.response:  6.258632<br />.colours: ny","time_value: 2022-01-23<br />.response:  5.790543<br />.colours: ny","time_value: 2022-01-24<br />.response:  5.591885<br />.colours: ny","time_value: 2022-01-25<br />.response:  5.248673<br />.colours: ny","time_value: 2022-01-26<br />.response:  5.175185<br />.colours: ny","time_value: 2022-01-27<br />.response:  5.089277<br />.colours: ny","time_value: 2022-01-28<br />.response:  4.770430<br />.colours: ny","time_value: 2022-01-29<br />.response:  4.307208<br />.colours: ny","time_value: 2022-01-30<br />.response:  4.188991<br />.colours: ny","time_value: 2022-01-31<br />.response:  4.124401<br />.colours: ny","time_value: 2022-02-01<br />.response:  4.087240<br />.colours: ny","time_value: 2022-02-02<br />.response:  4.190219<br />.colours: ny","time_value: 2022-02-03<br />.response:  4.461293<br />.colours: ny","time_value: 2022-02-04<br />.response:  4.224969<br />.colours: ny","time_value: 2022-02-05<br />.response:  3.826863<br />.colours: ny","time_value: 2022-02-06<br />.response:  3.773692<br />.colours: ny","time_value: 2022-02-07<br />.response:  3.607625<br />.colours: ny","time_value: 2022-02-08<br />.response:  3.604351<br />.colours: ny","time_value: 2022-02-09<br />.response:  3.526784<br />.colours: ny","time_value: 2022-02-10<br />.response:  3.580104<br />.colours: ny","time_value: 2022-02-11<br />.response:  3.363633<br />.colours: ny","time_value: 2022-02-12<br />.response:  3.024124<br />.colours: ny","time_value: 2022-02-13<br />.response:  2.862396<br />.colours: ny","time_value: 2022-02-14<br />.response:  2.812156<br />.colours: ny","time_value: 2022-02-15<br />.response:  2.936868<br />.colours: ny","time_value: 2022-02-16<br />.response:  3.285841<br />.colours: ny","time_value: 2022-02-17<br />.response:  3.461576<br />.colours: ny","time_value: 2022-02-18<br />.response:  3.460663<br />.colours: ny","time_value: 2022-02-19<br />.response:  3.200901<br />.colours: ny","time_value: 2022-02-20<br />.response:  3.096145<br />.colours: ny","time_value: 2022-02-21<br />.response:  2.884714<br />.colours: ny","time_value: 2022-02-22<br />.response:  2.767621<br />.colours: ny","time_value: 2022-02-23<br />.response:  2.859696<br />.colours: ny","time_value: 2022-02-24<br />.response:  2.870717<br />.colours: ny","time_value: 2022-02-25<br />.response:  2.696056<br />.colours: ny","time_value: 2022-02-26<br />.response:  2.433429<br />.colours: ny","time_value: 2022-02-27<br />.response:  2.513655<br />.colours: ny","time_value: 2022-02-28<br />.response:  2.526360<br />.colours: ny","time_value: 2022-03-01<br />.response:  2.581185<br />.colours: ny"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(49,104,142,1)","dash":"solid"},"hoveron":"points","name":"ny","legendgroup":"ny","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18993,18994,18995,18996,18997,18998,18999,19000,19001,19002,19003,19004,19005,19006,19007,19008,19009,19010,19011,19012,19013,19014,19015,19016,19017,19018,19019,19020,19021,19022,19023,19024,19025,19026,19027,19028,19029,19030,19031,19032,19033,19034,19035,19036,19037,19038,19039,19040,19041,19042,19043,19044,19045,19046,19047,19048,19049,19050,19051,19052],"y":[13.080009,12.569813999999999,12.542221,12.206397000000001,11.710298999999999,11.759963000000001,11.268037,10.252243,9.7398500000000006,9.9137570000000004,9.6416989999999991,9.2388440000000003,9.3045080000000002,8.9395260000000007,8.0078150000000008,7.3288460000000004,7.9735050000000003,8.0863169999999993,7.6623760000000001,7.4937290000000001,6.9050880000000001,6.1292530000000003,5.6668669999999999,5.7325619999999997,5.470275,5.063053,4.9033249999999997,4.5993380000000004,3.9721060000000001,3.7373270000000001,3.855639,3.7136870000000002,3.3642430000000001,3.4809030000000001,3.3115169999999998,3.0527700000000002,2.9081100000000002,3.013998,2.9609570000000001,2.7977029999999998,2.9152149999999999,2.6180680000000001,2.4094669999999998,2.4580250000000001,2.4852099999999999,2.4012220000000002,2.3147720000000001,2.4152819999999999,2.038853,1.7883020000000001,1.565712,1.7776860000000001,1.696868,1.5677700000000001,1.828613,1.6446719999999999,1.571159,1.5379529999999999,1.585896,1.5375540000000001],"text":["time_value: 2022-01-01<br />.response: 13.080009<br />.colours: pa","time_value: 2022-01-02<br />.response: 12.569814<br />.colours: pa","time_value: 2022-01-03<br />.response: 12.542221<br />.colours: pa","time_value: 2022-01-04<br />.response: 12.206397<br />.colours: pa","time_value: 2022-01-05<br />.response: 11.710299<br />.colours: pa","time_value: 2022-01-06<br />.response: 11.759963<br />.colours: pa","time_value: 2022-01-07<br />.response: 11.268037<br />.colours: pa","time_value: 2022-01-08<br />.response: 10.252243<br />.colours: pa","time_value: 2022-01-09<br />.response:  9.739850<br />.colours: pa","time_value: 2022-01-10<br />.response:  9.913757<br />.colours: pa","time_value: 2022-01-11<br />.response:  9.641699<br />.colours: pa","time_value: 2022-01-12<br />.response:  9.238844<br />.colours: pa","time_value: 2022-01-13<br />.response:  9.304508<br />.colours: pa","time_value: 2022-01-14<br />.response:  8.939526<br />.colours: pa","time_value: 2022-01-15<br />.response:  8.007815<br />.colours: pa","time_value: 2022-01-16<br />.response:  7.328846<br />.colours: pa","time_value: 2022-01-17<br />.response:  7.973505<br />.colours: pa","time_value: 2022-01-18<br />.response:  8.086317<br />.colours: pa","time_value: 2022-01-19<br />.response:  7.662376<br />.colours: pa","time_value: 2022-01-20<br />.response:  7.493729<br />.colours: pa","time_value: 2022-01-21<br />.response:  6.905088<br />.colours: pa","time_value: 2022-01-22<br />.response:  6.129253<br />.colours: pa","time_value: 2022-01-23<br />.response:  5.666867<br />.colours: pa","time_value: 2022-01-24<br />.response:  5.732562<br />.colours: pa","time_value: 2022-01-25<br />.response:  5.470275<br />.colours: pa","time_value: 2022-01-26<br />.response:  5.063053<br />.colours: pa","time_value: 2022-01-27<br />.response:  4.903325<br />.colours: pa","time_value: 2022-01-28<br />.response:  4.599338<br />.colours: pa","time_value: 2022-01-29<br />.response:  3.972106<br />.colours: pa","time_value: 2022-01-30<br />.response:  3.737327<br />.colours: pa","time_value: 2022-01-31<br />.response:  3.855639<br />.colours: pa","time_value: 2022-02-01<br />.response:  3.713687<br />.colours: pa","time_value: 2022-02-02<br />.response:  3.364243<br />.colours: pa","time_value: 2022-02-03<br />.response:  3.480903<br />.colours: pa","time_value: 2022-02-04<br />.response:  3.311517<br />.colours: pa","time_value: 2022-02-05<br />.response:  3.052770<br />.colours: pa","time_value: 2022-02-06<br />.response:  2.908110<br />.colours: pa","time_value: 2022-02-07<br />.response:  3.013998<br />.colours: pa","time_value: 2022-02-08<br />.response:  2.960957<br />.colours: pa","time_value: 2022-02-09<br />.response:  2.797703<br />.colours: pa","time_value: 2022-02-10<br />.response:  2.915215<br />.colours: pa","time_value: 2022-02-11<br />.response:  2.618068<br />.colours: pa","time_value: 2022-02-12<br />.response:  2.409467<br />.colours: pa","time_value: 2022-02-13<br />.response:  2.458025<br />.colours: pa","time_value: 2022-02-14<br />.response:  2.485210<br />.colours: pa","time_value: 2022-02-15<br />.response:  2.401222<br />.colours: pa","time_value: 2022-02-16<br />.response:  2.314772<br />.colours: pa","time_value: 2022-02-17<br />.response:  2.415282<br />.colours: pa","time_value: 2022-02-18<br />.response:  2.038853<br />.colours: pa","time_value: 2022-02-19<br />.response:  1.788302<br />.colours: pa","time_value: 2022-02-20<br />.response:  1.565712<br />.colours: pa","time_value: 2022-02-21<br />.response:  1.777686<br />.colours: pa","time_value: 2022-02-22<br />.response:  1.696868<br />.colours: pa","time_value: 2022-02-23<br />.response:  1.567770<br />.colours: pa","time_value: 2022-02-24<br />.response:  1.828613<br />.colours: pa","time_value: 2022-02-25<br />.response:  1.644672<br />.colours: pa","time_value: 2022-02-26<br />.response:  1.571159<br />.colours: pa","time_value: 2022-02-27<br />.response:  1.537953<br />.colours: pa","time_value: 2022-02-28<br />.response:  1.585896<br />.colours: pa","time_value: 2022-03-01<br />.response:  1.537554<br />.colours: pa"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(53,183,121,1)","dash":"solid"},"hoveron":"points","name":"pa","legendgroup":"pa","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[18993,18994,18995,18996,18997,18998,18999,19000,19001,19002,19003,19004,19005,19006,19007,19008,19009,19010,19011,19012,19013,19014,19015,19016,19017,19018,19019,19020,19021,19022,19023,19024,19025,19026,19027,19028,19029,19030,19031,19032,19033,19034,19035,19036,19037,19038,19039,19040,19041,19042,19043,19044,19045,19046,19047,19048,19049,19050,19051,19052],"y":[15.47353,14.573933,14.835875,14.874637,14.664581999999999,14.262475999999999,13.959581,13.587649000000001,12.861447,12.893859000000001,13.060509,13.297231999999999,13.480228,13.63588,13.267628,12.124692,12.298579999999999,12.376863,12.20956,11.800772,11.479013,11.197044,10.388309,9.9491440000000004,9.367502,8.6560670000000002,7.9544129999999997,7.3111309999999996,6.9897340000000003,6.3752700000000004,5.7342219999999999,4.9923970000000004,4.3394599999999999,3.850946,3.8674089999999999,4.0854429999999997,3.9472139999999998,3.5906560000000001,3.520032,3.1309529999999999,2.7957510000000001,2.5335960000000002,2.4502329999999999,2.3887870000000002,2.1733790000000002,2.0142060000000002,1.8559060000000001,1.7634049999999999,2.1657660000000001,2.175392,2.084435,1.949762,1.8383590000000001,1.6884999999999999,1.6400939999999999,1.583197,1.6374010000000001,1.654576,1.5404100000000001,1.4125509999999999],"text":["time_value: 2022-01-01<br />.response: 15.473530<br />.colours: tx","time_value: 2022-01-02<br />.response: 14.573933<br />.colours: tx","time_value: 2022-01-03<br />.response: 14.835875<br />.colours: tx","time_value: 2022-01-04<br />.response: 14.874637<br />.colours: tx","time_value: 2022-01-05<br />.response: 14.664582<br />.colours: tx","time_value: 2022-01-06<br />.response: 14.262476<br />.colours: tx","time_value: 2022-01-07<br />.response: 13.959581<br />.colours: tx","time_value: 2022-01-08<br />.response: 13.587649<br />.colours: tx","time_value: 2022-01-09<br />.response: 12.861447<br />.colours: tx","time_value: 2022-01-10<br />.response: 12.893859<br />.colours: tx","time_value: 2022-01-11<br />.response: 13.060509<br />.colours: tx","time_value: 2022-01-12<br />.response: 13.297232<br />.colours: tx","time_value: 2022-01-13<br />.response: 13.480228<br />.colours: tx","time_value: 2022-01-14<br />.response: 13.635880<br />.colours: tx","time_value: 2022-01-15<br />.response: 13.267628<br />.colours: tx","time_value: 2022-01-16<br />.response: 12.124692<br />.colours: tx","time_value: 2022-01-17<br />.response: 12.298580<br />.colours: tx","time_value: 2022-01-18<br />.response: 12.376863<br />.colours: tx","time_value: 2022-01-19<br />.response: 12.209560<br />.colours: tx","time_value: 2022-01-20<br />.response: 11.800772<br />.colours: tx","time_value: 2022-01-21<br />.response: 11.479013<br />.colours: tx","time_value: 2022-01-22<br />.response: 11.197044<br />.colours: tx","time_value: 2022-01-23<br />.response: 10.388309<br />.colours: tx","time_value: 2022-01-24<br />.response:  9.949144<br />.colours: tx","time_value: 2022-01-25<br />.response:  9.367502<br />.colours: tx","time_value: 2022-01-26<br />.response:  8.656067<br />.colours: tx","time_value: 2022-01-27<br />.response:  7.954413<br />.colours: tx","time_value: 2022-01-28<br />.response:  7.311131<br />.colours: tx","time_value: 2022-01-29<br />.response:  6.989734<br />.colours: tx","time_value: 2022-01-30<br />.response:  6.375270<br />.colours: tx","time_value: 2022-01-31<br />.response:  5.734222<br />.colours: tx","time_value: 2022-02-01<br />.response:  4.992397<br />.colours: tx","time_value: 2022-02-02<br />.response:  4.339460<br />.colours: tx","time_value: 2022-02-03<br />.response:  3.850946<br />.colours: tx","time_value: 2022-02-04<br />.response:  3.867409<br />.colours: tx","time_value: 2022-02-05<br />.response:  4.085443<br />.colours: tx","time_value: 2022-02-06<br />.response:  3.947214<br />.colours: tx","time_value: 2022-02-07<br />.response:  3.590656<br />.colours: tx","time_value: 2022-02-08<br />.response:  3.520032<br />.colours: tx","time_value: 2022-02-09<br />.response:  3.130953<br />.colours: tx","time_value: 2022-02-10<br />.response:  2.795751<br />.colours: tx","time_value: 2022-02-11<br />.response:  2.533596<br />.colours: tx","time_value: 2022-02-12<br />.response:  2.450233<br />.colours: tx","time_value: 2022-02-13<br />.response:  2.388787<br />.colours: tx","time_value: 2022-02-14<br />.response:  2.173379<br />.colours: tx","time_value: 2022-02-15<br />.response:  2.014206<br />.colours: tx","time_value: 2022-02-16<br />.response:  1.855906<br />.colours: tx","time_value: 2022-02-17<br />.response:  1.763405<br />.colours: tx","time_value: 2022-02-18<br />.response:  2.165766<br />.colours: tx","time_value: 2022-02-19<br />.response:  2.175392<br />.colours: tx","time_value: 2022-02-20<br />.response:  2.084435<br />.colours: tx","time_value: 2022-02-21<br />.response:  1.949762<br />.colours: tx","time_value: 2022-02-22<br />.response:  1.838359<br />.colours: tx","time_value: 2022-02-23<br />.response:  1.688500<br />.colours: tx","time_value: 2022-02-24<br />.response:  1.640094<br />.colours: tx","time_value: 2022-02-25<br />.response:  1.583197<br />.colours: tx","time_value: 2022-02-26<br />.response:  1.637401<br />.colours: tx","time_value: 2022-02-27<br />.response:  1.654576<br />.colours: tx","time_value: 2022-02-28<br />.response:  1.540410<br />.colours: tx","time_value: 2022-03-01<br />.response:  1.412551<br />.colours: tx"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(253,231,37,1)","dash":"solid"},"hoveron":"points","name":"tx","legendgroup":"tx","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":23.970112079701121,"r":7.9701120797011216,"b":40.647571606475722,"l":40.647571606475722},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[18990.049999999999,19054.950000000001],"tickmode":"array","ticktext":["Jan 01","Jan 15","Feb 01","Feb 15","Mar 01"],"tickvals":[18993,19007,19024,19038,19052],"categoryorder":"array","categoryarray":["Jan 01","Jan 15","Feb 01","Feb 15","Mar 01"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505603,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"Lato","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(229,229,229,1)","gridwidth":0.39850560398505613,"zeroline":false,"anchor":"y","title":{"text":"time_value","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.54374729999999993,19.657428700000001],"tickmode":"array","ticktext":["5","10","15"],"tickvals":[5,10,14.999999999999998],"categoryorder":"array","categoryarray":["5","10","15"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"Lato","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(229,229,229,1)","gridwidth":0.39850560398505613,"zeroline":false,"anchor":"x","title":{"text":"value","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}},"hoverformat":".2f","fixedrange":true},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(242,242,242,1)","width":0.72455564360919289,"linetype":"solid"},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"Lato","size":12.7521793275218},"orientation":"h","x":0.5,"y":1.02,"xanchor":"center","yanchor":"bottom","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"modeBarButtonsToRemove":["zoomIn2d","zoomOut2d"]},"source":"A","attrs":{"1451a78a5cb47":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"1451a78a5cb47","visdat":{"1451a78a5cb47":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_heatmap</span>(edf_cand, value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/eda-vis-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="compare-two-indicators" class="level2">
+<h2 class="anchored" data-anchor-id="compare-two-indicators">Compare two indicators</h2>
+<p>We fetch a second indicator (HHS COVID admissions) and join them into a single <code>epi_df</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>res_guid <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(<span class="st">"hhs"</span>, <span class="st">"confirmed_admissions_covid_1d"</span>, <span class="st">"state"</span>, <span class="st">"day"</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(start_date, end_date)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>edf_guid <span class="ot">&lt;-</span> <span class="fu">as_epi_df</span>(res_guid)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>joined_edf <span class="ot">&lt;-</span> edf_cand <span class="sc">|&gt;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, <span class="at">candidate =</span> value) <span class="sc">|&gt;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    edf_guid <span class="sc">|&gt;</span> <span class="fu">select</span>(geo_value, time_value, <span class="at">guiding =</span> value),</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"geo_value"</span>, <span class="st">"time_value"</span>)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_df</span>()</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># autoplot with two indicators</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(joined_edf, candidate, guiding)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/compare-indicators-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="correlation-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-analysis">Correlation Analysis</h2>
+<p>We calculate correlations using <code>epiprocess::epi_cor</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Temporal correlation (within each location over time)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cor_temporal <span class="ot">&lt;-</span> <span class="fu">epi_cor</span>(joined_edf, candidate, guiding, <span class="at">cor_by =</span> geo_value)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cor_temporal)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  geo_value   cor
+  &lt;chr&gt;     &lt;dbl&gt;
+1 mi        0.898
+2 ny        0.944
+3 pa        0.937
+4 tx        0.853</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Spatial correlation (across all locations at each point in time)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cor_spatial <span class="ot">&lt;-</span> <span class="fu">epi_cor</span>(joined_edf, candidate, guiding, <span class="at">cor_by =</span> time_value)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cor_spatial, <span class="fu">aes</span>(<span class="at">x =</span> time_value, <span class="at">y =</span> cor)) <span class="sc">+</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Spatial correlation over time"</span>, <span class="at">y =</span> <span class="st">"Correlation"</span>) <span class="sc">+</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/correlation-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="lagged-correlation-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="lagged-correlation-analysis">Lagged Correlation Analysis</h3>
+<p>We sweep lags from -14 to +14 days to see if the candidate leads the guiding indicator.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sweep lags from -14 to +14 days</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Positive means candidate leads guiding</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>cor_lagged <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="sc">-</span><span class="dv">14</span><span class="sc">:</span><span class="dv">14</span>, \(x) {</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_cor</span>(joined_edf, candidate, guiding,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cor_by =</span> geo_value, <span class="at">dt1 =</span> <span class="sc">-</span>x</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">lag =</span> x)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>cor_lagged <span class="sc">|&gt;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(lag) <span class="sc">|&gt;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean_cor =</span> <span class="fu">mean</span>(cor, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lag, <span class="at">y =</span> mean_cor)) <span class="sc">+</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Mean correlation vs. lag"</span>, <span class="at">x =</span> <span class="st">"Lag (days)"</span>, <span class="at">y =</span> <span class="st">"Correlation"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/lagged-correlation-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="revision-behavior" class="level2">
+<h2 class="anchored" data-anchor-id="revision-behavior">Revision behavior</h2>
+<p>Finally, we analyze the revision history of the candidate indicator.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fetch data versions by setting the issues parameter</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>archive_res <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(<span class="st">"doctor-visits"</span>, <span class="st">"smoothed_adj_cli"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"state"</span>, <span class="st">"day"</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(start_date, end_date),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">issues =</span> <span class="fu">epirange</span>(start_date, <span class="dv">20220401</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># For version processing</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>archive_data <span class="ot">&lt;-</span> archive_res <span class="sc">|&gt;</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">version =</span> issue) <span class="sc">|&gt;</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_archive</span>()</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the revision history</span></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(archive_data, value, <span class="at">.versions =</span> <span class="st">"week"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_2_solutions_files/figure-html/revision-analysis-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate revision metrics</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>rev_metrics <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>rev_metrics</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     min median     mean    max
+  4 days 4 days 4.4 days 8 days</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     min  median      mean     max
+  4 days 17 days 16.2 days 27 days</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>This work by the <a href="https://delphi.cmu.edu">Delphi Research Group</a> is licensed under the <a href="../LICENSE.md">MIT license</a>.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>Supported in part by the <a href="https://www.cste.org">CSTE</a> and the <a href="https://www.cdc.gov">CDC</a>.</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
