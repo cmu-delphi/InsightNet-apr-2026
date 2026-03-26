@@ -2,8 +2,11 @@ Type: Package
 Package: InsightNetApr26
 Title: Workshop Dependency Manager
 Version: 1.0.0
-Author: Delphi Tooling Team
-Maintainer: Delphi Tooling Team
+Authors@R: c(
+    person("Daniel J.", "McDonald", , "daniel@stat.ubc.ca", role = c("aut", "cre")),
+    person("Ryan", "Tibshirani", , "ryantibs@cmu.edu", role = "aut"),
+    person("Delphi Research Group", role = c("cph", "fnd"))
+  )
 Description: Manages dependencies and setup for the InsightNet Workshop Apr 2026.
 License: MIT + file LICENSE
 Encoding: UTF-8
