@@ -1,0 +1,33 @@
+Type: Package
+Package: InsightNetApr26
+Title: Workshop Dependency Manager
+Version: 1.0.0
+Author: Delphi Tooling Team
+Maintainer: Delphi Tooling Team
+Description: Manages dependencies and setup for the InsightNet Workshop Apr 2026.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 4.1)
+Imports: 
+    cli (>= 3.0.0),
+    pak (>= 0.5.0),
+    rlang,
+    tibble
+Suggests: 
+    dplyr,
+    epidatasets (>= 0.0.1),
+    epidatr (>= 1.2.2),
+    epipredict (>= 0.1.5),
+    epiprocess (>= 0.12.1),
+    ggplot2,
+    parsnip
+Remotes: 
+    cmu-delphi/epidatasets,
+    cmu-delphi/epipredict@dev,
+    cmu-delphi/epiprocess@jmr/mult-plot
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
