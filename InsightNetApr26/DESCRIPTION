@@ -27,7 +27,5 @@ Remotes:
     cmu-delphi/epidatasets,
     cmu-delphi/epipredict@dev,
     cmu-delphi/epiprocess@jmr/mult-plot
-Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
