@@ -109,7 +109,7 @@
     "href": "index.html#mini-projects",
     "title": "InsightNet Apr 2026",
     "section": "Mini-Projects",
-    "text": "Mini-Projects\nIn this workshop, we will explore Delphi’s tooling for epidemiological data analysis. These interactive activities naturally build on each other, covering data fetching, exploratory analysis, and forecasting.\n\nMini-Project 1: Finding indicators and fetching data\nMini-Project 2: EDA and correlation analysis\nMini-Project 3: Forecasting with epipredict"
+    "text": "Mini-Projects\nIn this workshop, we will explore Delphi’s tooling for epidemiological data analysis. These interactive activities naturally build on each other, covering data fetching, exploratory analysis, and forecasting.\n\nMini-Project 1: Finding indicators and fetching data\nMini-Project 2: EDA and correlation analysis\nMini-Project 3: Forecasting with epipredict\n\nAs an example of what can be done with Delphi’s tools, see this correlation analysis notebook (source code)."
   },
   {
     "objectID": "index.html#instructors",
