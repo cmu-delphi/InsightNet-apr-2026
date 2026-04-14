@@ -34,6 +34,8 @@ In this workshop, we will explore Delphi's tooling for epidemiological data anal
 2. [Mini-Project 2: EDA and correlation analysis](scripts/miniproject_2_solutions.qmd)
 3. [Mini-Project 3: Forecasting with `epipredict`](scripts/miniproject_3_solutions.qmd)
 
+As an example of what can be done with Delphi's tools, see this [correlation analysis notebook](https://cmu-delphi.github.io/analysis-notebooks/indicator_analysis/eval_hhs_vs_doctor_visits_api_state.html) ([source code](https://github.com/cmu-delphi/analysis-notebooks/tree/main/indicator_analysis)).
+
 ## Instructors
 
 * Logan C. Brooks
