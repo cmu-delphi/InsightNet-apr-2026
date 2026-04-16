@@ -19,7 +19,7 @@ This notebook covers the second mini-project, focusing on exploratory data analy
 #| label: load-packages
 if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
 if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
-    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26", dependencies = TRUE)
+    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
 }
 InsightNetApr26::verify_setup()
 
