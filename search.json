@@ -18,7 +18,7 @@
     "href": "scripts/miniproject_3_solutions.html#load-packages",
     "title": "MINI-PROJECT 3: Customizing models",
     "section": "Load packages",
-    "text": "Load packages\n{InsightNetApr26} package ensures all required Delphi tools and their correct versions/branches are installed.\n\nif (!requireNamespace(\"pak\", quietly = TRUE)) install.packages(\"pak\")\nif (!requireNamespace(\"InsightNetApr26\", quietly = TRUE)) {\n    pak::pkg_install(\"cmu-delphi/InsightNet-apr-2026/InsightNetApr26\", dependencies = TRUE)\n}\n\nInsightNetApr26::verify_setup()\n\nlibrary(epidatr)\nlibrary(epiprocess)\nlibrary(epipredict)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(parsnip)"
+    "text": "Load packages\n{InsightNetApr26} package ensures all required Delphi tools and their correct versions/branches are installed.\n\nif (!requireNamespace(\"pak\", quietly = TRUE)) install.packages(\"pak\")\nif (!requireNamespace(\"InsightNetApr26\", quietly = TRUE)) {\n    pak::pkg_install(\"cmu-delphi/InsightNet-apr-2026/InsightNetApr26\")\n}\n\nInsightNetApr26::verify_setup()\n\nlibrary(epidatr)\nlibrary(epiprocess)\nlibrary(epipredict)\nlibrary(dplyr)\nlibrary(ggplot2)\nlibrary(parsnip)"
   },
   {
     "objectID": "scripts/miniproject_3_solutions.html#initial-setup",
@@ -81,7 +81,7 @@
     "href": "scripts/miniproject_1_solutions.html#load-packages",
     "title": "MINI-PROJECT 1: Finding indicators and fetching data",
     "section": "Load packages",
-    "text": "Load packages\n{InsightNetApr26} package ensures all required Delphi tools and their correct versions/branches are installed.\n\nif (!requireNamespace(\"pak\", quietly = TRUE)) install.packages(\"pak\")\nif (!requireNamespace(\"InsightNetApr26\", quietly = TRUE)) {\n    pak::pkg_install(\"cmu-delphi/InsightNet-apr-2026/InsightNetApr26\", dependencies = TRUE)\n}\nInsightNetApr26::verify_setup()\n\nlibrary(epidatr)\nlibrary(epiprocess)"
+    "text": "Load packages\n{InsightNetApr26} package ensures all required Delphi tools and their correct versions/branches are installed.\n\nif (!requireNamespace(\"pak\", quietly = TRUE)) install.packages(\"pak\")\nif (!requireNamespace(\"InsightNetApr26\", quietly = TRUE)) {\n    pak::pkg_install(\"cmu-delphi/InsightNet-apr-2026/InsightNetApr26\")\n}\nInsightNetApr26::verify_setup()\n\nlibrary(epidatr)\nlibrary(epiprocess)"
   },
   {
     "objectID": "scripts/miniproject_1_solutions.html#finding-indicators",
@@ -137,7 +137,7 @@
     "href": "scripts/miniproject_2_solutions.html#load-packages",
     "title": "MINI-PROJECT 2: EDA and correlation analysis",
     "section": "Load packages",
-    "text": "Load packages\n{InsightNetApr26} package ensures all required Delphi tools and their correct versions/branches are installed.\n\nif (!requireNamespace(\"pak\", quietly = TRUE)) install.packages(\"pak\")\nif (!requireNamespace(\"InsightNetApr26\", quietly = TRUE)) {\n    pak::pkg_install(\"cmu-delphi/InsightNet-apr-2026/InsightNetApr26\", dependencies = TRUE)\n}\nInsightNetApr26::verify_setup()\n\nlibrary(epidatr)\nlibrary(epiprocess)\nlibrary(dplyr)\nlibrary(ggplot2)"
+    "text": "Load packages\n{InsightNetApr26} package ensures all required Delphi tools and their correct versions/branches are installed.\n\nif (!requireNamespace(\"pak\", quietly = TRUE)) install.packages(\"pak\")\nif (!requireNamespace(\"InsightNetApr26\", quietly = TRUE)) {\n    pak::pkg_install(\"cmu-delphi/InsightNet-apr-2026/InsightNetApr26\")\n}\nInsightNetApr26::verify_setup()\n\nlibrary(epidatr)\nlibrary(epiprocess)\nlibrary(dplyr)\nlibrary(ggplot2)"
   },
   {
     "objectID": "scripts/miniproject_2_solutions.html#standard-timeframe",
