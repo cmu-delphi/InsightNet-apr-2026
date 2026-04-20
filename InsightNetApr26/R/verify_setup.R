@@ -7,8 +7,7 @@ required_pkgs <- tibble::tribble(
   "epipredict",  ">=", "0.1.5",      "cmu-delphi/epipredict@dev",
   "epiprocess",  ">=", "0.12.0",     "cmu-delphi/epiprocess@dev",
   "ggplot2",     NA,   NA,           "ggplot2",
-  "parsnip",     NA,   NA,           "parsnip",
-  "rtestim",     NA,   NA,           "dajmcdon/rtestim"
+  "parsnip",     NA,   NA,           "parsnip"
 )
 
 #' Verify and install system setup
