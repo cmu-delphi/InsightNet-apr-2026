@@ -8,6 +8,7 @@ library(httr2)
 library(readr)
 library(glue)
 library(magrittr)
+library(scales)
 
 # Helper Functions ---
 EPIDATA_V2_URL <- "https://delphi.cmu.edu/cast-api/epidata/v2"
@@ -163,7 +164,8 @@ recent_archive %>%
   scale_y_continuous(n.breaks = 3) +
   # ylim(0, NA) +
   scale_x_date(breaks = breaks_pretty(), label = label_date_short()) +
-  labs(title = "Mean Revision Spread of NSSP COVID-19 ED Visits")
+  labs(title = "Revision History of NSSP COVID-19 ED Visits (% of ED Visits)",
+subtitle = NULL)
 
 
 # Save plot
@@ -175,7 +177,7 @@ ggsave(paste0("plots/archive.png"),
        dpi = 300)
 
 last_plot() +
-  labs(title = "Mean Revision Spread of \nNSSP COVID-19 ED Visits")
+  labs(title = "Revision History of NSSP \nCOVID-19 ED Visits (% of ED Visits)")
 
 ggsave(paste0("plots/archive_sq.png"),
        bg = "transparent",
