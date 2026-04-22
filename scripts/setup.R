@@ -27,6 +27,7 @@ if (requireNamespace("ggplot2", quietly = TRUE)) {
               panel.grid = ggplot2::element_line(linetype = 2, linewidth = 0.3, color = "gray90"),
               panel.grid.minor = ggplot2::element_blank(),
               legend.position = "top",
+              legend.key.width = ggplot2::unit(3, "lines"),
               strip.background = ggplot2::element_rect(fill = "gray95", linetype = "blank"),
               panel.border = ggplot2::element_rect(color = "gray95", fill = NA)
           )

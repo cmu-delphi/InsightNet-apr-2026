@@ -282,7 +282,7 @@ archive_raw <- pub_covidcast(
   geo_type = "state",
   time_type = "day",
   geo_values = c("mi", "ny", "tx", "pa"),
-  time_values = epirange(20200101, 20210601),
+  time_values = epirange(20200101, 20200601),
   issues = "*"
 )
 ```
@@ -294,7 +294,7 @@ archive_raw <- pub_covidcast(
 ```{r}
 #| label: to-archive
 archive_data <- archive_raw |>
-  rename(version = issue) |>
+  select(geo_value, time_value, version = issue, value) |>
   as_epi_archive()
 ```
 
@@ -304,7 +304,7 @@ archive_data <- archive_raw |>
 
 ```{r}
 #| label: autoplot-archive
-autoplot(archive_data, value, .versions = "month")
+autoplot(archive_data, value)
 ```
 
 > 🛈 Look at the divergence in the `autoplot()` lines. Which version tends to be the most "optimistic" or "pessimistic" compared to the final data (in black)? Do you notice any systematic bias in the initial reports?
