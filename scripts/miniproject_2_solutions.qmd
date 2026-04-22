@@ -61,7 +61,7 @@ edf
 summary(edf)
 ```
 
-> 🛈 Look at the "Latency" section in the `summary()` output. The `(!)` symbol appears when there is a "notable" lag. For an up-to-date indicator, you would see no warning and typically a lag of only a few days. If your chosen indicator has a notable lag, how does that impact its use for real-time surveillance?
+> ⓘ Look at the "Latency" section in the `summary()` output. The `(!)` symbol appears when there is a "notable" lag. For an up-to-date indicator, you would see no warning and typically a lag of only a few days. If your chosen indicator has a notable lag, how does that impact its use for real-time surveillance?
 
   - Use `epi_slide_mean()` and `epi_slide_sum()` to calculate moving averages and weekly totals in a new column of your `epi_df`. 
     - Try `.window_size` and `.align` parameters to control the sliding window size and the alignment of the sliding window, respectively.
@@ -82,7 +82,7 @@ edf |>
   head(10)
 ```
 
-> 🛈 Plot the different columns you calculated, and compare the results. How does changing the `.window_size` from 1 to 8 weeks impact the "noise" in your plot? Is there a trade-off between smoothness and time-accuracy?
+> ⓘ Plot the different columns you calculated, and compare the results. How does changing the `.window_size` from 1 to 8 weeks impact the "noise" in your plot? Is there a trade-off between smoothness and time-accuracy?
 
 ```{r}
 #| label: sliding-plot
@@ -106,7 +106,7 @@ plot_heatmap(edf, value) +
   coord_cartesian(xlim = as.Date(c("2025-06-01", "2026-01-01")))
 ```
 
-> 🛈 If not included already, try selecting all states and use `plot_heatmap()` to identify which states show the most synchronous highs or lows of the metric you're viewing. Can you spot any regional clusters or outliers? Do you see a pattern in where data is most frequently missing?
+> ⓘ If not included already, try selecting all states and use `plot_heatmap()` to identify which states show the most synchronous highs or lows of the metric you're viewing. Can you spot any regional clusters or outliers? Do you see a pattern in where data is most frequently missing?
 
   - Estimate the indicator's relative change using `growth_rate()` and plot it side by side using `autoplot()`.
 
@@ -124,7 +124,7 @@ edf |>
   autoplot(value, gr)
 ```
 
-> 🛈 What does the growth rate measure? How is it changing as your data changes?
+> ⓘ What does the growth rate measure? How is it changing as your data changes?
 
 ⚔️ Explore `rtestim` to estimate the effective reproductive number, Rt, using an indicator based on actual case counts. The main entry point is `cv_estimate_rt()`, which selects the smoothness parameter through cross-validation. Pass it a numeric vector of case counts from a single location.
 
@@ -266,7 +266,7 @@ ggplot(lag_summary, aes(x = lag)) +
     title = "NCHS flu deaths vs. weighted ILI:\nmean correlation by lag")
 ```
 
-> 🛈 If you see a high spatial correlation but a low temporal correlation, what does that tell you about the relationship between the two indicators? Is it possible for two signals to be highly correlated in space but not in time?
+> ⓘ If you see a high spatial correlation but a low temporal correlation, what does that tell you about the relationship between the two indicators? Is it possible for two signals to be highly correlated in space but not in time?
 
 ## 2.3 Revision behavior - Understanding how data matures over time
 
@@ -307,7 +307,7 @@ archive_data <- archive_raw |>
 autoplot(archive_data, value)
 ```
 
-> 🛈 Look at the divergence in the `autoplot()` lines. Which version tends to be the most "optimistic" or "pessimistic" compared to the final data (in black)? Do you notice any systematic bias in the initial reports?
+> ⓘ Look at the divergence in the `autoplot()` lines. Which version tends to be the most "optimistic" or "pessimistic" compared to the final data (in black)? Do you notice any systematic bias in the initial reports?
 
   - "Slice" the archive at a specific version date using `epix_as_of()`. [Documentation](https://cmu-delphi.github.io/epiprocess/dev/reference/epix_as_of.html)
 
@@ -316,9 +316,9 @@ autoplot(archive_data, value)
 snapshot_early <- epix_as_of(archive_data, version = as.Date("2020-06-01"))
 ```
 
-> 🛈 When you extract a snapshot using `epix_as_of()`, you are essentially "time-travelling" to see the state of knowledge on that date. If the preliminary values on a date were much lower than the final values, how might that lead to a false sense of security during an emerging surge?
+> ⓘ When you extract a snapshot using `epix_as_of()`, you are essentially "time-travelling" to see the state of knowledge on that date. If the preliminary values on a date were much lower than the final values, how might that lead to a false sense of security during an emerging surge?
 
-> 🛈 How might this ability to view history and current in a report assist in decision-making around a particular metric? Do you handle this in any particular way at your institution/agency?
+> ⓘ How might this ability to view history and current in a report assist in decision-making around a particular metric? Do you handle this in any particular way at your institution/agency?
 
 ⚔️ Instead of fetching the entire history, use the `as_of` parameter in `pub_covidcast()` to fetch the data exactly as it was reported on a specific date. Convert it to an `epi_df` and compare it to the slice you took above.
 
@@ -359,7 +359,7 @@ rev_result <- revision_analysis(archive_data, value)
 rev_result$revision_behavior
 ```
 
-> 🛈 A key metric generated by `revision_analysis()` is `lag_near_latest` (often called stabilization lag), which measures the number of days it takes for a data point to "settle" within a reliable threshold (e.g., 20%) of its final backfilled value.
+> ⓘ A key metric generated by `revision_analysis()` is `lag_near_latest` (often called stabilization lag), which measures the number of days it takes for a data point to "settle" within a reliable threshold (e.g., 20%) of its final backfilled value.
 
 > If the average stabilization lag is 20 days, what does that imply for a public health official trying to use yesterday's data to make a decision? How might you adjust your confidence in a signal based on these maturity metrics?
 
