@@ -53,7 +53,7 @@ edf <- epidata_nhsn_state |>
   as_epi_df()
 ```
 
-Check out your dataset! Type the object's name for a quick look. Then use `summary()` to view the dataset's metadata and overall statistics. For information on what each section means, visit <https://cmu-delphi.github.io/epiprocess/dev/reference/print.epi_df.html>
+  - Check out your dataset! Type the object's name for a quick look. Then use `summary()` to view the dataset's metadata and overall statistics. For information on what each section means, visit <https://cmu-delphi.github.io/epiprocess/dev/reference/print.epi_df.html>
 
 ```{r}
 #| label: eda-view
@@ -84,11 +84,9 @@ edf |>
 
 > 🛈 Plot the different columns you calculated, and compare the results. How does changing the `.window_size` from 1 to 8 weeks impact the "noise" in your plot? Is there a trade-off between smoothness and time-accuracy?
 
-> **Hint:** use `.facet_by = "geo_value"` to view each state in its own panel.
-
 ```{r}
 #| label: sliding-plot
-autoplot(edf, value, value_8wav, .facet_by = "geo_value")
+autoplot(edf, value, value_8wav)
 ```
 
   - Use `autoplot()` and `plot_heatmap()` to explore the spatial and temporal trends in the data.
