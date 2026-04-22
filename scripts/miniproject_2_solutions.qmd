@@ -47,7 +47,7 @@ epidata_nhsn_state <- pub_covidcast(
   geo_values = "ca,mi,ny,pa",
   time_values = epirange(202501, 202601)
 ) |>
-  select(geo_value, time_value, value)
+  select(geo_value, time_value, value, issue)
 
 edf <- epidata_nhsn_state |> 
   as_epi_df()
