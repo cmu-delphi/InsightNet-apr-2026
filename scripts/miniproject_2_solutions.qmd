@@ -132,12 +132,12 @@ edf |>
 #| label: rtestim
 library(rtestim)
 
-edf_mi_rt <- edf |>
-  filter(geo_value == "mi") |>
-  arrange(time_value) |>
-  filter(!is.na(value))
-
-mod_rt <- cv_estimate_rt(observed_counts = edf_mi_rt$value)
+# This example uses the history of real Covid-19 case counts in Canada
+# It is available with the rtestim package
+mod_rt <- cv_estimate_rt(
+  observed_counts = cancovid$incident_cases,
+  x = cancovid$date
+  )
 
 plot(mod_rt, which_lambda = "lambda.1se")
 ```
