@@ -313,7 +313,7 @@ autoplot(archive_data, value)
 
 ```{r}
 #| label: as-of
-snapshot_early <- epix_as_of(archive_data, version = as.Date("2021-06-01"))
+snapshot_early <- epix_as_of(archive_data, version = as.Date("2020-06-01"))
 ```
 
 > 🛈 When you extract a snapshot using `epix_as_of()`, you are essentially "time-travelling" to see the state of knowledge on that date. If the preliminary values on a date were much lower than the final values, how might that lead to a false sense of security during an emerging surge?
@@ -330,8 +330,8 @@ edf_as_of <- pub_covidcast(
   geo_type = "state",
   time_type = "day",
   geo_values = c("mi", "ny", "tx", "pa"),
-  time_values = epirange(20200101, 20210601),
-  as_of = as.Date("2021-06-01")
+  time_values = epirange(20200101, 20200601),
+  as_of = as.Date("2020-06-01")
 ) |>
   as_epi_df()
 
