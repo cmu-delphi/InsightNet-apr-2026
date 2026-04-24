@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Delphi Tooling Team">
-<meta name="dcterms.date" content="2026-04-22">
+<meta name="dcterms.date" content="2026-04-24">
 
 <title>MINI-PROJECT 3: Customizing models – InsightNet Apr 2026</title>
 <style>
@@ -171,7 +171,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 22, 2026</p>
+      <p class="date">April 24, 2026</p>
     </div>
   </div>
   
@@ -183,13 +183,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>This notebook covers the third mini-project, focusing on building, customizing, and evaluating forecasting models using <code>epipredict</code>.</p>
-</section>
 <section id="load-packages" class="level2">
 <h2 class="anchored" data-anchor-id="load-packages">Load packages</h2>
-<p><code>{InsightNetApr26}</code> package ensures all required Delphi tools and their correct versions/branches are installed.</p>
+<p>The <code>{InsightNetApr26}</code> package ensures all required Delphi tools and their correct versions/branches are installed.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pak"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"pak"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"InsightNetApr26"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
@@ -206,128 +202,89 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parsnip)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
-<section id="initial-setup" class="level2">
-<h2 class="anchored" data-anchor-id="initial-setup">Initial Setup</h2>
-<p>We’ll use built-in COVID-19 case and death rates for training.</p>
+<section id="basic-modelling" class="level2">
+<h2 class="anchored" data-anchor-id="basic-modelling">3.1 Basic Modelling</h2>
+<p>⭐ We will use the built-in <code>covid_case_death_rates</code> dataset provided by the <code>epidatasets</code> package, which automatically loads with the other Delphi tools.</p>
+<blockquote class="blockquote">
+<p>Hint: You can get a partial view of the dataset by entering <code>covid_case_death_rates</code> in the R console.</p>
+</blockquote>
+<ul>
+<li>Filter out the observations after August 1, 2021, to create a training set.</li>
+</ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># covid_case_death_rates: built-in daily COVID-19 case and death rates per 100k</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(covid_case_death_rates)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>An `epi_df` object, 6 x 4 with metadata:
-* geo_type  = state
-* time_type = day
-* as_of     = 2023-03-10
-Latency (lag from as_of to latest observation by time series):
-* lag across all time series = 799 days
-
-# A tibble: 6 × 4
-  geo_value time_value case_rate death_rate
-  &lt;chr&gt;     &lt;date&gt;         &lt;dbl&gt;      &lt;dbl&gt;
-1 ak        2020-12-31      35.9      0.158
-2 al        2020-12-31      65.1      0.438
-3 ar        2020-12-31      66.0      1.27 
-4 as        2020-12-31       0        0    
-5 az        2020-12-31      76.8      1.10 
-6 ca        2020-12-31      95.9      0.755</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We define our forecast date and filter the data to only include </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># what was available at that time.</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>forecast_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-08-01"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>training_set <span class="ot">&lt;-</span> covid_case_death_rates <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time_value <span class="sc">&lt;=</span> forecast_date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>forecast_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-08-01"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>used_locations <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Training data: everything up to and including the forecast date</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>jhu <span class="ot">&lt;-</span> covid_case_death_rates <span class="sc">|&gt;</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(time_value <span class="sc">&lt;=</span> forecast_date, geo_value <span class="sc">%in%</span> used_locations)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(jhu)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>An `epi_df` object, 6 x 4 with metadata:
-* geo_type  = state
-* time_type = day
-* as_of     = 2023-03-10
-Latency (lag from as_of to latest observation by time series):
-* lag across all time series = 798–799 days
-
-# A tibble: 6 × 4
-  geo_value time_value case_rate death_rate
-  &lt;chr&gt;     &lt;date&gt;         &lt;dbl&gt;      &lt;dbl&gt;
-1 mi        2020-12-31      27.9      0.850
-2 ny        2020-12-31      58.3      0.704
-3 pa        2020-12-31      55.9      1.41 
-4 tx        2020-12-31      83.0      0.576
-5 mi        2021-01-01      27.9      0.850
-6 ny        2021-01-01      61.3      0.735</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(jhu, death_rate, case_rate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn’t actually available at the time of the forecast, how would this “data leakage” give you a misleading impression of your model’s accuracy?</p>
+</blockquote>
+<ul>
+<li>Filter to four states of your choosing and use <code>autoplot()</code> to explore the <code>death_rate</code> and <code>case_rate</code> columns.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick four states and visualize the trends</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>target_states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ca"</span>, <span class="st">"fl"</span>, <span class="st">"ny"</span>, <span class="st">"pa"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>training_set <span class="ot">&lt;-</span> training_set <span class="sc">|&gt;</span> </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> target_states)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(training_set, death_rate, case_rate) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproject_3_solutions_files/figure-html/init-setup-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproject_3_solutions_files/figure-html/exploration-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-</section>
-<section id="visualization-helper" class="level2">
-<h2 class="anchored" data-anchor-id="visualization-helper">Visualization Helper</h2>
-<p>We define a helper function to create fan charts of the forecasts.</p>
+<ul>
+<li>Let’s fit an autoregressive model using lagged values of the <code>death_rate</code> column as features with <code>arx_forecaster()</code> on our training set. &gt; Hint: you need to provide the dataset and the outcome argument to <code>arx_forecaster()</code></li>
+</ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fan_chart <span class="ot">&lt;-</span> <span class="cf">function</span>(results,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">window_df =</span> covid_case_death_rates <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">filter</span>(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                              time_value <span class="sc">&gt;</span> <span class="st">"2021-07-01"</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                              geo_value <span class="sc">%in%</span> used_locations</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                          ),</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">value_name =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">fcst_date =</span> forecast_date,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">title =</span> <span class="st">""</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">subtitle =</span> <span class="st">""</span>) {</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    results <span class="sc">|&gt;</span></span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pivot_quantiles_wider</span>(.pred_distn) <span class="sc">|&gt;</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">arrange</span>(geo_value, target_date) <span class="sc">|&gt;</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> target_date)) <span class="sc">+</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_vline</span>(</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            <span class="at">xintercept =</span> fcst_date, <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"gray50"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>(</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> window_df,</span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>            <span class="fu">aes</span>(<span class="at">x =</span> time_value, <span class="at">y =</span> .data[[value_name]]),</span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"gray20"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span></span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">0.05</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">0.95</span><span class="st">`</span>), <span class="at">fill =</span> <span class="st">"dodgerblue4"</span>, <span class="at">alpha =</span> <span class="fl">0.10</span>) <span class="sc">+</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">0.1</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">0.9</span><span class="st">`</span>), <span class="at">fill =</span> <span class="st">"dodgerblue4"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_ribbon</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">0.25</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">0.75</span><span class="st">`</span>), <span class="at">fill =</span> <span class="st">"dodgerblue4"</span>, <span class="at">alpha =</span> <span class="fl">0.20</span>) <span class="sc">+</span></span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="st">`</span><span class="at">0.5</span><span class="st">`</span>), <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>        <span class="fu">facet_wrap</span>(<span class="sc">~</span>geo_value, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">labs</span>(</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>            <span class="at">title =</span> title, <span class="at">subtitle =</span> subtitle,</span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>            <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Deaths per 100k (7-day avg)"</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        ) <span class="sc">+</span></span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>()</span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a default AR model</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fcst_ar <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  training_set, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-</section>
-<section id="basic-modeling" class="level2">
-<h2 class="anchored" data-anchor-id="basic-modeling">Basic Modeling</h2>
-<p>We start with three baseline forecasters.</p>
-<section id="arx-forecaster" class="level3">
-<h3 class="anchored" data-anchor-id="arx-forecaster">ARX Forecaster</h3>
-<p>Autoregressive model using lagged values as features.</p>
+<ul>
+<li>When you run a forecaster, it returns an object containing several useful components.
+<ul>
+<li>Use <code>autoplot(your_forecast)</code> for a quick plot.</li>
+<li>Use <code>your_forecast$predictions</code> on the object returned by the forecast to view the results. Use <code>pivot_quantiles_wider()</code> to expand the quantile distribution column into individual columns.</li>
+<li>Use <code>your_forecast$epi_workflow</code> to access the underlying model. To see exactly how much weight the model gave to each lag, pass this object to <code>hardhat::extract_fit_engine()</code>.</li>
+</ul></li>
+</ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fcst_arx <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(jhu, <span class="at">outcome =</span> <span class="st">"death_rate"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fcst_arx</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>fcst_arx<span class="sc">$</span>predictions</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick plot</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_ar)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_3_solutions_files/figure-html/forecast-components-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect predictions and pivot quantiles</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fcst_ar<span class="sc">$</span>predictions <span class="sc">|&gt;</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_quantiles_wider</span>(.pred_distn) <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  geo_value  .pred .pred_distn forecast_date target_date
-  &lt;chr&gt;      &lt;dbl&gt;   &lt;qtls(7)&gt; &lt;date&gt;        &lt;date&gt;     
-1 mi        0.0691    [0.0691] 2021-08-01    2021-08-08 
-2 ny        0.0529    [0.0529] 2021-08-01    2021-08-08 
-3 pa        0.0488    [0.0488] 2021-08-01    2021-08-08 
-4 tx        0.141      [0.141] 2021-08-01    2021-08-08 </code></pre>
+<pre><code># A tibble: 4 × 11
+  geo_value  .pred forecast_date target_date `0.05`  `0.1`  `0.25`  `0.5` `0.75`
+  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1 ca        0.102  2021-08-01    2021-08-08   0     0.0256 0.0653  0.102  0.138 
+2 fl        0.253  2021-08-01    2021-08-08   0.131 0.177  0.217   0.253  0.290 
+3 ny        0.0447 2021-08-01    2021-08-08   0     0      0.00811 0.0447 0.0813
+4 pa        0.0413 2021-08-01    2021-08-08   0     0      0.00471 0.0413 0.0779
+# ℹ 2 more variables: `0.9` &lt;dbl&gt;, `0.95` &lt;dbl&gt;</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect fitted coefficients</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># It shows how each lag contributes to the forecast</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>hardhat<span class="sc">::</span><span class="fu">extract_fit_engine</span>(fcst_arx<span class="sc">$</span>epi_workflow)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Access model weights</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>hardhat<span class="sc">::</span><span class="fu">extract_fit_engine</span>(fcst_ar<span class="sc">$</span>epi_workflow)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -335,266 +292,189 @@ stats::lm(formula = ..y ~ ., data = data)
 
 Coefficients:
       (Intercept)   lag_0_death_rate   lag_7_death_rate  lag_14_death_rate  
-          0.02366            0.85465            0.21921           -0.21633  </code></pre>
+          0.01513            0.82169            0.26770           -0.21301  </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use pivot_quantiles_wider to expand a quantile distribution column</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co"># into individual columns</span></span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pivot_quantiles_wider</span>(fcst_arx<span class="sc">$</span>predictions, .pred_distn)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<blockquote class="blockquote">
+<p>ⓘ How heavily does the model weigh data from exactly one week ago compared to yesterday? Try running <code>hardhat::extract_fit_engine(your_forecast$epi_workflow)</code> to examine the fitted coefficients for each lag. Which lag contributes the most to the forecast?</p>
+</blockquote>
+<p>⚔️ Compare your autoregressive model fitted with <code>arx_forecaster()</code> to a simple model. The flatline forecaster is a common baseline that assumes the future will be exactly the last observed value, with uncertainty that grows as the forecast horizon grows. Fit a flatline model using <code>flatline_forecaster()</code> and examine the predictions to see how the quantiles behave.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a flatline baseline model</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fcst_flat <span class="ot">&lt;-</span> <span class="fu">flatline_forecaster</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  training_set, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Observe how quantiles widen over time</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>fcst_flat<span class="sc">$</span>predictions <span class="sc">|&gt;</span> </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_quantiles_wider</span>(.pred_distn)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 11
-  geo_value  .pred forecast_date target_date `0.05`  `0.1` `0.25`  `0.5` `0.75`
-  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-1 mi        0.0691 2021-08-01    2021-08-08  0      0      0.0404 0.0691 0.0978
-2 ny        0.0529 2021-08-01    2021-08-08  0      0      0.0242 0.0529 0.0817
-3 pa        0.0488 2021-08-01    2021-08-08  0      0      0.0201 0.0488 0.0775
-4 tx        0.141  2021-08-01    2021-08-08  0.0164 0.0670 0.112  0.141  0.169 
+  geo_value  .pred forecast_date target_date `0.05` `0.1` `0.25`  `0.5` `0.75`
+  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1 ca        0.103  2021-08-01    2021-08-08  0      0     0.0561 0.103  0.151 
+2 fl        0.269  2021-08-01    2021-08-08  0.0876 0.152 0.222  0.269  0.316 
+3 ny        0.0347 2021-08-01    2021-08-08  0      0     0      0.0347 0.0820
+4 pa        0.0324 2021-08-01    2021-08-08  0      0     0      0.0324 0.0797
 # ℹ 2 more variables: `0.9` &lt;dbl&gt;, `0.95` &lt;dbl&gt;</code></pre>
 </div>
 </div>
 </section>
-<section id="flatline-forecaster" class="level3">
-<h3 class="anchored" data-anchor-id="flatline-forecaster">Flatline Forecaster</h3>
-<p>Predicts the most recently observed value with increasingly wide quantiles.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fcst_flat <span class="ot">&lt;-</span> <span class="fu">flatline_forecaster</span>(jhu, <span class="at">outcome =</span> <span class="st">"death_rate"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fcst_flat<span class="sc">$</span>predictions</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  geo_value  .pred .pred_distn forecast_date target_date
-  &lt;chr&gt;      &lt;dbl&gt;   &lt;qtls(7)&gt; &lt;date&gt;        &lt;date&gt;     
-1 mi        0.0573    [0.0573] 2021-08-01    2021-08-08 
-2 ny        0.0347    [0.0347] 2021-08-01    2021-08-08 
-3 pa        0.0324    [0.0324] 2021-08-01    2021-08-08 
-4 tx        0.136      [0.136] 2021-08-01    2021-08-08 </code></pre>
-</div>
-</div>
-</section>
-<section id="cdc-baseline-forecaster" class="level3">
-<h3 class="anchored" data-anchor-id="cdc-baseline-forecaster">CDC Baseline Forecaster</h3>
-<p>CDC FluSight flat-line baseline.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fcst_cdc <span class="ot">&lt;-</span> <span class="fu">cdc_baseline_forecaster</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    jhu,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">args_list =</span> <span class="fu">cdc_baseline_args_list</span>(</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">aheads =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">7</span>),</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">data_frequency =</span> <span class="st">"1 day"</span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>fcst_cdc<span class="sc">$</span>predictions <span class="sc">|&gt;</span> <span class="fu">filter</span>(target_date <span class="sc">==</span> <span class="st">"2021-08-09"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 6
-  geo_value  .pred ahead .pred_distn forecast_date target_date
-  &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;qtls(23)&gt; &lt;date&gt;        &lt;date&gt;     
-1 mi        0.0573     8    [0.0573] 2021-08-01    2021-08-09 
-2 ny        0.0347     8    [0.0347] 2021-08-01    2021-08-09 
-3 pa        0.0324     8    [0.0324] 2021-08-01    2021-08-09 
-4 tx        0.136      8     [0.136] 2021-08-01    2021-08-09 </code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fan_chart</span>(</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    fcst_cdc<span class="sc">$</span>predictions,</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"CDC baseline forecast: 1–28 day horizon"</span>,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Flat median; quantiles widen via repeated sampling | dashed = forecast date"</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="miniproject_3_solutions_files/figure-html/cdc-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="climatological-forecaster" class="level3">
-<h3 class="anchored" data-anchor-id="climatological-forecaster">Climatological Forecaster</h3>
-<p>Predicts the median and quantiles based on historical values around the same date in previous years.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fluview_hhs <span class="ot">&lt;-</span> <span class="fu">pub_fluview</span>(</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">regions =</span> <span class="fu">paste0</span>(<span class="st">"hhs"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>),</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">epiweeks =</span> <span class="fu">epirange</span>(<span class="dv">100001</span>, <span class="dv">222201</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>fluview <span class="ot">&lt;-</span> fluview_hhs <span class="sc">|&gt;</span></span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">geo_value =</span> region,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">time_value =</span> epiweek,</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>        issue,</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        ili</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_epi_archive</span>() <span class="sc">|&gt;</span></span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">epix_as_of_current</span>()</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>fcst_climate <span class="ot">&lt;-</span> <span class="fu">climatological_forecaster</span>(</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    fluview <span class="sc">|&gt;</span> <span class="fu">filter</span>(time_value <span class="sc">&lt;</span> <span class="st">"2023-10-08"</span>),</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> <span class="st">"ili"</span>,</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">args_list =</span> <span class="fu">climate_args_list</span>(</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">forecast_horizon =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">28</span>, <span class="dv">7</span>),</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">time_type =</span> <span class="st">"week"</span>,</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">quantile_by_key =</span> <span class="st">"geo_value"</span>,</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">forecast_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-10-08"</span>)</span>
-<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>fcst_climate<span class="sc">$</span>predictions</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 50 × 5
-   geo_value forecast_date target_date .pred .pred_distn
-   &lt;chr&gt;     &lt;date&gt;        &lt;date&gt;      &lt;dbl&gt;   &lt;qtls(7)&gt;
- 1 hhs1      2023-10-08    2023-10-08  0.658     [0.648]
- 2 hhs10     2023-10-08    2023-10-08  1.03       [1.03]
- 3 hhs2      2023-10-08    2023-10-08  1.46       [1.45]
- 4 hhs3      2023-10-08    2023-10-08  1.37       [1.37]
- 5 hhs4      2023-10-08    2023-10-08  1.30       [1.27]
- 6 hhs5      2023-10-08    2023-10-08  1.16       [1.14]
- 7 hhs6      2023-10-08    2023-10-08  1.90        [1.9]
- 8 hhs7      2023-10-08    2023-10-08  0.927     [0.938]
- 9 hhs8      2023-10-08    2023-10-08  0.845     [0.834]
-10 hhs9      2023-10-08    2023-10-08  1.42        [1.4]
-# ℹ 40 more rows</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fan_chart</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    fcst_climate<span class="sc">$</span>predictions,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>    fluview <span class="sc">|&gt;</span></span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(time_value <span class="sc">&gt;=</span> <span class="st">"2023-10-08"</span>, time_value <span class="sc">&lt;</span> <span class="st">"2024-05-01"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mutate</span>(<span class="at">geo_value =</span> <span class="fu">factor</span>(geo_value, <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"hhs"</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))),</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"ili"</span>,</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">fcst_date =</span> <span class="fu">as.Date</span>(<span class="st">"2023-10-08"</span>)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="miniproject_3_solutions_files/figure-html/climate-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-</section>
 <section id="model-customization" class="level2">
-<h2 class="anchored" data-anchor-id="model-customization">Model Customization</h2>
-<p>We can customize the training engine and hyperparameters.</p>
+<h2 class="anchored" data-anchor-id="model-customization">3.2 Model Customization</h2>
+<p>⭐ While “canned” forecasters such as <code>arx_forecaster()</code> are useful for establishing baselines, you will often want to customize your models. Use the <code>arx_forecaster()</code> arguments to customize your model.</p>
+<ul>
+<li>So far, we have only used the outcome itself as a predictor. However, many signals serve as leading indicators. For example, changes in case rates often precede changes in death rates. Use both <code>case_rate</code> and <code>death_rate</code> as predictors of <code>death_rate</code> in <code>arx_forecaster()</code>. [Hint: use the <code>predictors</code> argument.]</li>
+</ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Swap the training engine via the trainer:</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># linear_reg() — default</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># quantile_reg() — optimizes quantile loss directly</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>lags <span class="ot">&lt;-</span> <span class="fu">arx_args_list</span>(<span class="at">lags =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>), <span class="at">ahead =</span> <span class="dv">28</span>)</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>fcst_linear <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(jhu, <span class="st">"death_rate"</span>, <span class="st">"death_rate"</span>,</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">trainer =</span> <span class="fu">linear_reg</span>(),</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">args_list =</span> lags</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>fcst_qr <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(jhu, <span class="st">"death_rate"</span>, <span class="st">"death_rate"</span>,</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">trainer =</span> <span class="fu">quantile_reg</span>(),</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">args_list =</span> lags</span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare engines: 80% interval + median, color-coded by model</span></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>    fcst_linear<span class="sc">$</span>predictions <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Linear"</span>),</span>
-<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>    fcst_qr<span class="sc">$</span>predictions <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">model =</span> <span class="st">"Quantile reg"</span>)</span>
-<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_quantiles_wider</span>(.pred_distn) <span class="sc">|&gt;</span></span>
-<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> used_locations) <span class="sc">|&gt;</span></span>
-<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> target_date, <span class="at">color =</span> model, <span class="at">fill =</span> model)) <span class="sc">+</span></span>
-<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_vline</span>(</span>
-<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">xintercept =</span> forecast_date, <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
-<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">"gray50"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span></span>
-<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(</span>
-<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> <span class="fu">filter</span>(</span>
-<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>            covid_case_death_rates,</span>
-<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a>            geo_value <span class="sc">%in%</span> used_locations,</span>
-<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>            time_value <span class="sc">&gt;</span> forecast_date <span class="sc">-</span> <span class="dv">30</span>,</span>
-<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>            time_value <span class="sc">&lt;=</span> forecast_date <span class="sc">+</span> <span class="dv">30</span></span>
-<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a>        ),</span>
-<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">x =</span> time_value, <span class="at">y =</span> death_rate),</span>
-<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a>        <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">0.5</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span></span>
-<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_linerange</span>(</span>
-<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="st">`</span><span class="at">0.1</span><span class="st">`</span>, <span class="at">ymax =</span> <span class="st">`</span><span class="at">0.9</span><span class="st">`</span>),</span>
-<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>        <span class="at">linewidth =</span> <span class="dv">4</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>,</span>
-<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a>        <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">1.5</span>)</span>
-<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> .pred),</span>
-<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a>        <span class="at">size =</span> <span class="dv">3</span>,</span>
-<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>        <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="at">width =</span> <span class="fl">1.5</span>)</span>
-<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
-<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
-<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_wrap</span>(<span class="sc">~</span>geo_value, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
-<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">"14-day ahead forecast: model comparison"</span>,</span>
-<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a>        <span class="at">subtitle =</span> <span class="st">"Points = median; bars = 80% prediction interval | dashed = forecast date"</span>,</span>
-<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a>        <span class="at">x =</span> <span class="st">"Date"</span>, <span class="at">y =</span> <span class="st">"Deaths per 100k (7-day avg)"</span>, <span class="at">color =</span> <span class="st">"Model"</span>, <span class="at">fill =</span> <span class="st">"Model"</span></span>
-<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
-<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use multiple signals to improve the forecast</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fcst_multi <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>fcst_multi</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_multi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="miniproject_3_solutions_files/figure-html/customization-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="miniproject_3_solutions_files/figure-html/multi-predictor-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>By default, <code>arx_forecaster()</code> uses linear regression. Swap this for <code>quantile_reg()</code>.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use Quantile Regression for better uncertainty estimation</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>fcst_qr <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">trainer =</span> <span class="fu">quantile_reg</span>()</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>fcst_qr</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_qr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_3_solutions_files/figure-html/quantile-reg-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>Further customize your model by modifying the <code>arx_args_list()</code> arguments via the <code>args_list</code> parameter in <code>arx_forecaster()</code>.</li>
+</ul>
+<blockquote class="blockquote">
+<p>Hint: you can access the <code>arx_args_list()</code> documentation by typing <code>?arx_args_list</code> in R.</p>
+</blockquote>
+<ul>
+<li>Use the <code>lags</code> argument in <code>arx_args_list()</code> to specify provide a vector of integers representing the historical days for each indicator.</li>
+</ul>
+<blockquote class="blockquote">
+<p>Hint: <code>lags = c(0, 7, 14)</code> tells the model to use data from today, one week ago, and two weeks ago as predictors. If you are using multiple indicators as predictors, you can provide a list of vectors (e.g., <code>lags = list(c(0, 7), c(0, 14))</code>) where each vector corresponds to one of your indicators.</p>
+</blockquote>
+<ul>
+<li>Set the <code>ahead</code> argument to 28.</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Customize lags and horizon</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>custom_args <span class="ot">&lt;-</span> <span class="fu">arx_args_list</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lags =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>)), <span class="co"># Lags for case_rate and death_rate</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ahead =</span> <span class="dv">28</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>fcst_custom <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> custom_args</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_custom)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_3_solutions_files/figure-html/custom-args-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>⚔️ Create a forecast trajectory over a range of dates and plot it with <code>autoplot()</code>. This creates a full trajectory showing how uncertainty grows with the horizon.</p>
+<blockquote class="blockquote">
+<p>Hint: see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads</p>
+</blockquote>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We loop over horizons to create a trajectory (0 to 28 days)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>all_canned_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">28</span>, \(days_ahead) {</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arx_forecaster</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    training_set,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">trainer =</span> <span class="fu">quantile_reg</span>(),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">args_list =</span> <span class="fu">arx_args_list</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">lags =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">14</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>)),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">ahead =</span> days_ahead</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract and combine predictions from all horizons</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(<span class="fu">lapply</span>(all_canned_results, \(x) x<span class="sc">$</span>predictions))</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> all_canned_results[[<span class="dv">1</span>]]<span class="sc">$</span>epi_workflow,</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictions =</span> results,</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">observed_response =</span> covid_case_death_rates <span class="sc">|&gt;</span></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> target_states, time_value <span class="sc">&gt;</span> <span class="st">"2021-07-01"</span>)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="miniproject_3_solutions_files/figure-html/trajectory-plot-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="multi-signal-and-trajectory-forecasting" class="level2">
-<h2 class="anchored" data-anchor-id="multi-signal-and-trajectory-forecasting">Multi-Signal and Trajectory Forecasting</h2>
-<p>We can use multiple predictors and forecast over a range of horizons.</p>
+<section id="use-delphi-data-in-other-model-types" class="level2">
+<h2 class="anchored" data-anchor-id="use-delphi-data-in-other-model-types">3.3 Use Delphi data in other model types</h2>
+<p>⭐ We will use <code>arx_classifier()</code> to predict disease growth categories. This model doesn’t just predict a value, but it predicts the probability that the growth rate falls into specific categories.</p>
+<ul>
+<li>Create a classifier to predict whether <code>death_rate</code> is <code>&lt;= 0.01</code> or <code>&gt; 0.01</code> using <code>case_rate</code> and <code>death_rate</code> as predictors.</li>
+</ul>
+<blockquote class="blockquote">
+<p>Hint: to configure the classifier, we use <code>arx_class_args_list()</code> as input in the <code>args_list</code> argument. The key parameter is <code>breaks</code>, which defines the thresholds for our categories.</p>
+</blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit one arx model per horizon (0–28 days ahead), and plot as a fan chart.</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>all_arx <span class="ot">&lt;-</span> <span class="fu">lapply</span>(</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">28</span>, <span class="dv">7</span>),</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    \(h) <span class="fu">arx_forecaster</span>(</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        jhu,</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">trainer =</span> <span class="fu">quantile_reg</span>(),</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">args_list =</span> <span class="fu">arx_args_list</span>(</span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">lags  =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">14</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>)),</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">ahead =</span> h</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>        )</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>results_arx <span class="ot">&lt;-</span> <span class="fu">lapply</span>(all_arx, \(x) x<span class="sc">$</span>predictions) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="fu">fan_chart</span>(</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    results_arx,</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"ARX forecast: 0–28 day horizon"</span>,</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Predictors: case rate + death rate | bands = 90% / 80% / 50% | dashed = forecast date"</span></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="miniproject_3_solutions_files/figure-html/trajectory-1.png" class="img-fluid figure-img" width="672"></p>
-</figure>
-</div>
-</div>
-</div>
-</section>
-<section id="growth-rate-classification" class="level2">
-<h2 class="anchored" data-anchor-id="growth-rate-classification">Growth Rate Classification</h2>
-<p>Finally, we can using <code>arx_classifier</code> to predict categories of growth rates.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>classifier <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    covid_case_death_rates <span class="sc">|&gt;</span></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>        <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> used_locations, time_value <span class="sc">&lt;</span> forecast_date),</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"death_rate"</span>, <span class="st">"case_rate"</span>),</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">lags   =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">14</span>), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">7</span>, <span class="dv">14</span>)),</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">ahead  =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="dv">7</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">breaks =</span> <span class="fl">0.25</span> <span class="sc">/</span> <span class="dv">7</span></span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>classifier<span class="sc">$</span>predictions</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical prediction: is death_rate low (&lt;= 0.01) or high (&gt; 0.01)?</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 4
-  geo_value .pred_class   forecast_date target_date
-  &lt;chr&gt;     &lt;fct&gt;         &lt;date&gt;        &lt;date&gt;     
-1 mi        (-Inf,0.0357] 2021-07-31    2021-08-14 
-2 ny        (0.0357, Inf] 2021-07-31    2021-08-14 
-3 pa        (0.0357, Inf] 2021-07-31    2021-08-14 
-4 tx        (0.0357, Inf] 2021-07-31    2021-08-14 </code></pre>
+  geo_value .pred_class forecast_date target_date
+  &lt;chr&gt;     &lt;fct&gt;       &lt;date&gt;        &lt;date&gt;     
+1 ca        (0.01, Inf] 2021-08-01    2021-08-08 
+2 fl        (0.01, Inf] 2021-08-01    2021-08-08 
+3 ny        (0.01, Inf] 2021-08-01    2021-08-08 
+4 pa        (0.01, Inf] 2021-08-01    2021-08-08 </code></pre>
 </div>
 </div>
 
