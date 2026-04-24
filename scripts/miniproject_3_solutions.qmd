@@ -4,16 +4,12 @@ author: "Delphi Tooling Team"
 date: today
 execute:
   warning: false
-  message: false
+  message: true
 ---
-
-## Introduction
-
-This notebook covers the third mini-project, focusing on building, customizing, and evaluating forecasting models using `epipredict`.
 
 ## Load packages
 
-`{InsightNetApr26}` package ensures all required Delphi tools and their correct versions/branches are installed.
+The `{InsightNetApr26}` package ensures all required Delphi tools and their correct versions/branches are installed.
 
 ```{r}
 #| label: load-packages
@@ -35,273 +31,215 @@ library(parsnip)
 ```{r}
 #| label: setup
 #| include: false
-source("setup.R")
+source(here::here("scripts", "setup.R"))
 ```
 
-## Initial Setup
+## 3.1 Basic Modelling
 
-We'll use built-in COVID-19 case and death rates for training.
+⭐ We will use the built-in `covid_case_death_rates` dataset provided by the `epidatasets` package, which automatically loads with the other Delphi tools. 
+
+> Hint: You can get a partial view of the dataset by entering `covid_case_death_rates` in the R console.
+
+- Filter out the observations after August 1, 2021, to create a training set.
 
 ```{r}
-#| label: init-setup
-# covid_case_death_rates: built-in daily COVID-19 case and death rates per 100k
-head(covid_case_death_rates)
+#| label: training-set
+# We define our forecast date and filter the data to only include 
+# what was available at that time.
 forecast_date <- as.Date("2021-08-01")
-used_locations <- c("mi", "ny", "tx", "pa")
 
-# Training data: everything up to and including the forecast date
-jhu <- covid_case_death_rates |>
-    filter(time_value <= forecast_date, geo_value %in% used_locations)
-
-head(jhu)
-autoplot(jhu, death_rate, case_rate)
+training_set <- covid_case_death_rates |>
+  filter(time_value <= forecast_date)
 ```
 
-## Visualization Helper
+> ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn't actually available at the time of the forecast, how would this "data leakage" give you a misleading impression of your model's accuracy?
 
-We define a helper function to create fan charts of the forecasts.
+- Filter to four states of your choosing and use `autoplot()` to explore the `death_rate` and `case_rate` columns.
 
 ```{r}
-#| label: viz-helper
-fan_chart <- function(results,
-                      window_df = covid_case_death_rates |>
-                          filter(
-                              time_value > "2021-07-01",
-                              geo_value %in% used_locations
-                          ),
-                      value_name = "death_rate",
-                      fcst_date = forecast_date,
-                      title = "",
-                      subtitle = "") {
-    results |>
-        pivot_quantiles_wider(.pred_distn) |>
-        arrange(geo_value, target_date) |>
-        ggplot(aes(x = target_date)) +
-        geom_vline(
-            xintercept = fcst_date, linetype = "dashed",
-            color = "gray50", linewidth = 0.5
-        ) +
-        geom_line(
-            data = window_df,
-            aes(x = time_value, y = .data[[value_name]]),
-            color = "gray20", linewidth = 0.6, inherit.aes = FALSE
-        ) +
-        geom_ribbon(aes(ymin = `0.05`, ymax = `0.95`), fill = "dodgerblue4", alpha = 0.10) +
-        geom_ribbon(aes(ymin = `0.1`, ymax = `0.9`), fill = "dodgerblue4", alpha = 0.15) +
-        geom_ribbon(aes(ymin = `0.25`, ymax = `0.75`), fill = "dodgerblue4", alpha = 0.20) +
-        geom_line(aes(y = `0.5`), color = "orange", linewidth = 0.8) +
-        facet_wrap(~geo_value, scales = "free_y") +
-        labs(
-            title = title, subtitle = subtitle,
-            x = "Date", y = "Deaths per 100k (7-day avg)"
-        ) +
-        theme_bw()
-}
+#| label: exploration
+# Pick four states and visualize the trends
+target_states <- c("ca", "fl", "ny", "pa")
+
+training_set <- training_set |> 
+  filter(geo_value %in% target_states)
+
+autoplot(training_set, death_rate, case_rate) 
 ```
 
-## Basic Modeling
-
-We start with three baseline forecasters.
-
-### ARX Forecaster
-Autoregressive model using lagged values as features.
+- Let’s fit an autoregressive model using lagged values of the `death_rate` column as features with `arx_forecaster()` on our training set.
+> Hint: you need to provide the dataset and the outcome argument to `arx_forecaster()`
 
 ```{r}
-#| label: arx
-fcst_arx <- arx_forecaster(jhu, outcome = "death_rate")
-fcst_arx
-fcst_arx$predictions
+#| label: basic-ar
+# Fit a default AR model
+fcst_ar <- arx_forecaster(
+  training_set, 
+  outcome = "death_rate"
+)
 
-# Inspect fitted coefficients
-# It shows how each lag contributes to the forecast
-hardhat::extract_fit_engine(fcst_arx$epi_workflow)
-
-# Use pivot_quantiles_wider to expand a quantile distribution column
-# into individual columns
-pivot_quantiles_wider(fcst_arx$predictions, .pred_distn)
+fcst_ar
 ```
 
-### Flatline Forecaster
-Predicts the most recently observed value with increasingly wide quantiles.
+- When you run a forecaster, it returns an object containing several useful components. 
+  - Use `autoplot(your_forecast)` for a quick plot.
+  - Use `your_forecast$predictions` on the object returned by the forecast to view the results. Use `pivot_quantiles_wider()` to expand the quantile distribution column into individual columns.
+  - Use `your_forecast$epi_workflow` to access the underlying model. To see exactly how much weight the model gave to each lag, pass this object to `hardhat::extract_fit_engine()`.
 
 ```{r}
-#| label: flatline
-fcst_flat <- flatline_forecaster(jhu, outcome = "death_rate")
-fcst_flat$predictions
+#| label: forecast-components
+# Quick plot
+autoplot(fcst_ar)
+
+# Inspect predictions and pivot quantiles
+fcst_ar$predictions |> 
+  pivot_quantiles_wider(.pred_distn) |>
+  head()
+
+# Access model weights
+hardhat::extract_fit_engine(fcst_ar$epi_workflow)
 ```
 
-### CDC Baseline Forecaster
-CDC FluSight flat-line baseline.
+> ⓘ How heavily does the model weigh data from exactly one week ago compared to yesterday? Try running `hardhat::extract_fit_engine(your_forecast$epi_workflow)` to examine the fitted coefficients for each lag. Which lag contributes the most to the forecast?
+
+⚔️ Compare your autoregressive model fitted with `arx_forecaster()` to a simple model. The flatline forecaster is a common baseline that assumes the future will be exactly the last observed value, with uncertainty that grows as the forecast horizon grows. Fit a flatline model using `flatline_forecaster()` and examine the predictions to see how the quantiles behave.
 
 ```{r}
-#| label: cdc
-fcst_cdc <- cdc_baseline_forecaster(
-    jhu,
+#| label: flatline-baseline
+# Fit a flatline baseline model
+fcst_flat <- flatline_forecaster(
+  training_set, 
+  outcome = "death_rate"
+)
+
+fcst_flat
+
+# Observe how quantiles widen over time
+fcst_flat$predictions |> 
+  pivot_quantiles_wider(.pred_distn)
+```
+
+## 3.2 Model Customization
+
+⭐ While “canned” forecasters such as `arx_forecaster()` are useful for establishing baselines, you will often want to customize your models. Use the `arx_forecaster()` arguments to customize your model. 
+
+- So far, we have only used the outcome itself as a predictor. However, many signals serve as leading indicators. For example, changes in case rates often precede changes in death rates. Use both `case_rate` and `death_rate` as predictors of `death_rate` in `arx_forecaster()`. [Hint: use the `predictors` argument.]
+
+```{r}
+#| label: multi-predictor
+# Use multiple signals to improve the forecast
+fcst_multi <- arx_forecaster(
+  training_set,
+  outcome = "death_rate",
+  predictors = c("case_rate", "death_rate")
+)
+
+fcst_multi
+
+autoplot(fcst_multi)
+```
+
+- By default, `arx_forecaster()` uses linear regression. Swap this for `quantile_reg()`. 
+
+```{r}
+#| label: quantile-reg
+# Use Quantile Regression for better uncertainty estimation
+fcst_qr <- arx_forecaster(
+  training_set,
+  outcome = "death_rate",
+  trainer = quantile_reg()
+)
+
+fcst_qr
+
+autoplot(fcst_qr)
+```
+
+- Further customize your model by modifying the `arx_args_list()` arguments via the `args_list` parameter in `arx_forecaster()`. 
+
+> Hint: you can access the `arx_args_list()` documentation by typing `?arx_args_list` in R.
+
+  - Use the `lags` argument in `arx_args_list()` to specify provide a vector of integers representing the historical days for each indicator. 
+
+> Hint: `lags = c(0, 7, 14)` tells the model to use data from today, one week ago, and two weeks ago as predictors. If you are using multiple indicators as predictors, you can provide a list of vectors (e.g., `lags = list(c(0, 7), c(0, 14))`) where each vector corresponds to one of your indicators.
+
+  - Set the `ahead` argument to 28. 
+
+```{r}
+#| label: custom-args
+# Customize lags and horizon
+custom_args <- arx_args_list(
+  lags = list(c(0, 7, 14), c(0, 7, 14)), # Lags for case_rate and death_rate
+  ahead = 28
+)
+
+fcst_custom <- arx_forecaster(
+  training_set,
+  outcome = "death_rate",
+  predictors = c("case_rate", "death_rate"),
+  args_list = custom_args
+)
+
+fcst_custom
+
+autoplot(fcst_custom)
+```
+
+⚔️ Create a forecast trajectory over a range of dates and plot it with `autoplot()`. This creates a full trajectory showing how uncertainty grows with the horizon.
+
+> Hint: see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads
+
+```{r}
+#| label: trajectory-plot
+# We loop over horizons to create a trajectory (0 to 28 days)
+all_canned_results <- lapply(0:28, \(days_ahead) {
+  arx_forecaster(
+    training_set,
     outcome = "death_rate",
-    args_list = cdc_baseline_args_list(
-        aheads = seq(1, 28, 7),
-        data_frequency = "1 day"
-    )
-)
-fcst_cdc$predictions |> filter(target_date == "2021-08-09")
-
-fan_chart(
-    fcst_cdc$predictions,
-    title = "CDC baseline forecast: 1–28 day horizon",
-    subtitle = "Flat median; quantiles widen via repeated sampling | dashed = forecast date"
-)
-```
-
-### Climatological Forecaster
-Predicts the median and quantiles based on historical values around the same date in previous years.
-
-```{r}
-#| label: climate
-fluview_hhs <- pub_fluview(
-    regions = paste0("hhs", 1:10),
-    epiweeks = epirange(100001, 222201)
-)
-fluview <- fluview_hhs |>
-    select(
-        geo_value = region,
-        time_value = epiweek,
-        issue,
-        ili
-    ) |>
-    as_epi_archive() |>
-    epix_as_of_current()
-
-fcst_climate <- climatological_forecaster(
-    fluview |> filter(time_value < "2023-10-08"),
-    outcome = "ili",
-    args_list = climate_args_list(
-        forecast_horizon = seq(0, 28, 7),
-        time_type = "week",
-        quantile_by_key = "geo_value",
-        forecast_date = as.Date("2023-10-08")
-    )
-)
-fcst_climate$predictions
-
-fan_chart(
-    fcst_climate$predictions,
-    fluview |>
-        filter(time_value >= "2023-10-08", time_value < "2024-05-01") |>
-        mutate(geo_value = factor(geo_value, levels = paste0("hhs", 1:10))),
-    "ili",
-    fcst_date = as.Date("2023-10-08")
-)
-```
-
-## Model Customization
-
-We can customize the training engine and hyperparameters.
-
-```{r}
-#| label: customization
-# Swap the training engine via the trainer:
-# linear_reg() — default
-# quantile_reg() — optimizes quantile loss directly
-
-lags <- arx_args_list(lags = c(0, 7, 14), ahead = 28)
-
-fcst_linear <- arx_forecaster(jhu, "death_rate", "death_rate",
-    trainer = linear_reg(),
-    args_list = lags
-)
-fcst_qr <- arx_forecaster(jhu, "death_rate", "death_rate",
+    predictors = c("case_rate", "death_rate"),
     trainer = quantile_reg(),
-    args_list = lags
-)
-
-# Compare engines: 80% interval + median, color-coded by model
-bind_rows(
-    fcst_linear$predictions |> mutate(model = "Linear"),
-    fcst_qr$predictions |> mutate(model = "Quantile reg")
-) |>
-    pivot_quantiles_wider(.pred_distn) |>
-    filter(geo_value %in% used_locations) |>
-    ggplot(aes(x = target_date, color = model, fill = model)) +
-    geom_vline(
-        xintercept = forecast_date, linetype = "dashed",
-        color = "gray50", linewidth = 0.5
-    ) +
-    geom_line(
-        data = filter(
-            covid_case_death_rates,
-            geo_value %in% used_locations,
-            time_value > forecast_date - 30,
-            time_value <= forecast_date + 30
-        ),
-        aes(x = time_value, y = death_rate),
-        color = "black", linewidth = 0.5, inherit.aes = FALSE
-    ) +
-    geom_linerange(
-        aes(ymin = `0.1`, ymax = `0.9`),
-        linewidth = 4, alpha = 0.3,
-        position = position_dodge(width = 1.5)
-    ) +
-    geom_point(aes(y = .pred),
-        size = 3,
-        position = position_dodge(width = 1.5)
-    ) +
-    scale_color_brewer(palette = "Set1") +
-    scale_fill_brewer(palette = "Set1") +
-    facet_wrap(~geo_value, scales = "free_y") +
-    labs(
-        title = "14-day ahead forecast: model comparison",
-        subtitle = "Points = median; bars = 80% prediction interval | dashed = forecast date",
-        x = "Date", y = "Deaths per 100k (7-day avg)", color = "Model", fill = "Model"
-    ) +
-    theme_bw() +
-    theme(legend.position = "bottom")
-```
-
-## Multi-Signal and Trajectory Forecasting
-
-We can use multiple predictors and forecast over a range of horizons.
-
-```{r}
-#| label: trajectory
-# Fit one arx model per horizon (0–28 days ahead), and plot as a fan chart.
-all_arx <- lapply(
-    seq(0, 28, 7),
-    \(h) arx_forecaster(
-        jhu,
-        outcome = "death_rate",
-        predictors = c("case_rate", "death_rate"),
-        trainer = quantile_reg(),
-        args_list = arx_args_list(
-            lags  = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
-            ahead = h
-        )
+    args_list = arx_args_list(
+      lags = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
+      ahead = days_ahead
     )
-)
-results_arx <- lapply(all_arx, \(x) x$predictions) |> bind_rows()
-fan_chart(
-    results_arx,
-    title    = "ARX forecast: 0–28 day horizon",
-    subtitle = "Predictors: case rate + death rate | bands = 90% / 80% / 50% | dashed = forecast date"
+  )
+})
+
+# Extract and combine predictions from all horizons
+results <- bind_rows(lapply(all_canned_results, \(x) x$predictions))
+
+autoplot(
+  object = all_canned_results[[1]]$epi_workflow,
+  predictions = results,
+  observed_response = covid_case_death_rates |>
+    filter(geo_value %in% target_states, time_value > "2021-07-01")
 )
 ```
 
-## Growth Rate Classification
+## 3.3 Use Delphi data in other model types 
 
-Finally, we can using `arx_classifier` to predict categories of growth rates.
+⭐ We will use `arx_classifier()` to predict disease growth categories. This model doesn't just predict a value, but it predicts the probability that the growth rate falls into specific categories.
+
+- Create a classifier to predict whether `death_rate` is `<= 0.01` or `> 0.01` using `case_rate` and `death_rate` as predictors.
+
+> Hint: to configure the classifier, we use `arx_class_args_list()` as input in the `args_list` argument. The key parameter is `breaks`, which defines the thresholds for our categories.
 
 ```{r}
-#| label: classifier
-classifier <- arx_classifier(
-    covid_case_death_rates |>
-        filter(geo_value %in% used_locations, time_value < forecast_date),
-    outcome = "death_rate",
-    predictors = c("death_rate", "case_rate"),
-    args_list = arx_class_args_list(
-        lags   = list(c(0, 1, 2, 3, 7, 14), c(0, 7, 14)),
-        ahead  = 2 * 7,
-        breaks = 0.25 / 7
-    )
+#| label: classification-model
+# Categorical prediction: is death_rate low (<= 0.01) or high (> 0.01)?
+classifier_fcst <- arx_classifier(
+  training_set,
+  outcome = "death_rate",
+  predictors = c("case_rate", "death_rate"),
+  args_list = arx_class_args_list(
+    breaks = 0.01,
+    ahead = 7
+  )
 )
 
-classifier$predictions
+classifier_fcst
+
+# View the classification probabilities
+classifier_fcst$predictions |>
+  head()
 ```
