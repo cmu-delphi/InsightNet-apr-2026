@@ -25,7 +25,7 @@ Suggests:
     epiprocess,
     ggplot2,
     parsnip,
-    rtestim (>= 1.0.0)
+    rtestim
 Remotes: 
     cmu-delphi/epidatasets,
     cmu-delphi/epidatr,
