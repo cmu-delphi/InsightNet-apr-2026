@@ -75,6 +75,11 @@ edf
 summary(edf)
 ```
 
+::: {.callout-important}
+## Note
+In this summary output, you can notice that American Samoa (as) is lagging, meaning its reporting delay is notably higher than other locations. Additionally, one geographic key combination out of 56 total regions has gaps in its coverage. This is a crucial first step in data analysis. Usually, you would need to explore the data further by plotting the "as" indicator specifically or checking for the exact distribution of `NA` values across your dataset.
+:::
+
 ::: {.callout-note appearance="simple"}
 ## 
 Look at the "Latency" section in the `summary()` output. The `(!)` symbol appears when there is a "notable" lag. For an up-to-date indicator, you would see no warning and typically a lag of only a few days. If your chosen indicator has a notable lag, how does that impact its use for real-time surveillance?
@@ -123,6 +128,7 @@ autoplot(edf, value, value_8wav)
 
 ```{r}
 #| label: autoplot-heatmap
+#| fig-height: 10
 
 autoplot(edf, value, .facet_by = "geo_value", .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
 
@@ -204,7 +210,7 @@ edf_flu_death_rate <- pub_covidcast(
 
 # ILINet: weighted percent influenza-like illness
 edf_ili_raw <- pub_fluview(
-  regions = "al,ak,az,ar,ca,co,ct,de,dc,fl,ga,hi,id,il,in,ia,ks,ky,la,me,md,ma,mi,mn,ms,mo,mt,ne,nv,nh,nj,nm,ny,nc,nd,oh,ok,or,pa,ri,sc,sd,tn,tx,ut,vt,va,wa,wv,wi,wy",
+  regions = paste(unique(edf_flu_death_rate$geo_value), collapse = ","),
   epiweeks = epirange(202004, 202520)
 )
 
@@ -234,6 +240,11 @@ autoplot(edf_joined, flu_death_rate, wili,
          .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
 ```
 
+::: {.callout-important}
+## Note
+Notice that the `flu_death_rate` indicator contains many `NA` and `0` values. This sparsity is important to note here, as it will be highly relevant for interpreting the correlation results in the next section.
+:::
+
   - Calculate a correlation using `epiprocess::epi_cor()`.
 
     - Set `cor_by` to `geo_value` and `time_value` to estimate the correlation over time within the same location (per-location temporal correlation) and across regions at a specific moment (correlation over time).
@@ -262,7 +273,7 @@ epi_cor(edf_joined, flu_death_rate, wili,
   drop_na()
 ```
 
-Use `ggplot2` or any other plotting package to analyze how the correlation changes over time.
+- Use `ggplot2` or any other plotting package to analyze how the correlation changes over time.
 
 ```{r}
 #| label: correlation-plot
@@ -280,9 +291,12 @@ cor_spatial |>
     x = NULL, y = "Spearman rho",
     title = "NCHS flu death rate vs. weighted %ILI: spatial correlation over time"
   )
-# ^ skipped time values are from NA correlations due to mortality being
-#   0 across all locations
 ```
+
+::: {.callout-important}
+## Note
+While the code executes successfully, the resulting correlations should be interpreted with caution. The gaps in flu presence often lead to `NA` correlations, which can make temporal trends difficult to analyze. Additionally, calculating spatial correlations (across regions at a single point in time) is statistically fragile when performed on a small number of locations.
+:::
 
 ⚔️ Use the `dt1` and `dt2` parameters in `epi_cor()` to find the exact lag that maximizes the correlation between your candidate and guiding indicators. You can even wrap this in a `lapply()` over a range of lags to build a "lag-lead" visualization of the relationship between the two signals.
 
@@ -428,6 +442,11 @@ bind_rows(
     lty = ""
   )
 ```
+
+::: {.callout-important}
+## Note
+In the plot above, you can notice a perfect overlap between the two methods of retrieving a data snapshot. This confirms that `epix_as_of()` correctly extracts the state of knowledge on a given date from the full version history. However, as observed earlier with the `autoplot()` function for archives, these snapshots can vary significantly depending on the `as_of` date chosen, reflecting the impact of data revisions over time.
+:::
 
   - Use `revision_analysis()` to explore how signals change across revisions.
 

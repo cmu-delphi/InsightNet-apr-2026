@@ -88,9 +88,10 @@ autoplot(training_set, death_rate, case_rate, .facet_filter = geo_value %in% tar
 
 
 - Let’s fit an autoregressive model using lagged values of the `death_rate` column as features with `arx_forecaster()` on our training set.
+
 ::: {.callout-tip}
 ## Hint
-you need to provide the dataset and the outcome argument to `arx_forecaster()`
+You need to provide the dataset and the outcome argument to `arx_forecaster()`
 :::
 
 ```{r}
@@ -185,7 +186,7 @@ autoplot(fcst_qr, .facet_filter = geo_value %in% target_states)
 
 ::: {.callout-tip}
 ## Hint
-you can access the `arx_args_list()` documentation by typing `?arx_args_list` in R.
+You can access the `arx_args_list()` documentation by typing `?arx_args_list` in R.
 :::
 
   - Use the `lags` argument in `arx_args_list()` to specify provide a vector of integers representing the historical days for each indicator. 
@@ -221,7 +222,7 @@ autoplot(fcst_custom, .facet_filter = geo_value %in% target_states)
 
 ::: {.callout-tip}
 ## Hint
-see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads
+See this example on creating models for multiple ahead arguments: [cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads](https://cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads)
 :::
 
 ```{r}
@@ -260,7 +261,7 @@ autoplot(
 
 ::: {.callout-tip}
 ## Hint
-to configure the classifier, we use `arx_class_args_list()` as input in the `args_list` argument. The key parameter is `breaks`, which defines the thresholds for our categories.
+To configure the classifier, we use `arx_class_args_list()` as input in the `args_list` argument. The key parameter is `breaks`, which defines the thresholds for our categories.
 :::
 
 ```{r}
