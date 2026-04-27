@@ -127,12 +127,16 @@ autoplot(edf, value, value_8wav)
     - Change the x-axis range using `+ coord_cartesian()`
 
 ```{r}
-#| label: autoplot-heatmap
-#| fig-height: 10
+#| label: autoplot-s
 
 autoplot(edf, value, .facet_by = "geo_value", .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
 
 autoplot(edf, value, .interactive = TRUE, .max_keys = Inf, .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
+```
+
+```{r}
+#| label: heatmap
+#| fig-height: 10
 
 plot_heatmap(edf, value) +
   coord_cartesian(xlim = as.Date(c("2025-06-01", "2026-01-01")))
