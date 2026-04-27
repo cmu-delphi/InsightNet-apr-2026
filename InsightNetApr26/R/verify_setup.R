@@ -4,10 +4,11 @@ required_pkgs <- tibble::tribble(
   "dplyr",       NA,   NA,           "dplyr",
   "epidatasets", ">=", "0.0.1",      "cmu-delphi/epidatasets",
   "epidatr",     ">=", "1.2.2",      "cmu-delphi/epidatr",
-  "epipredict",  ">=", "0.1.5",      "cmu-delphi/epipredict@dev",
-  "epiprocess",  ">=", "0.12.0",     "cmu-delphi/epiprocess@dev",
+  "epipredict",  ">=", "0.1.5",      "cmu-delphi/epipredict",
+  "epiprocess",  ">=", "0.12.0",     "cmu-delphi/epiprocess",
   "ggplot2",     NA,   NA,           "ggplot2",
-  "parsnip",     NA,   NA,           "parsnip"
+  "parsnip",     NA,   NA,           "parsnip",
+  "rtestim",     ">=", "1.0.0", "dajmcdon/rtestim"
 )
 
 #' Verify and install system setup
