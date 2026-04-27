@@ -11,15 +11,15 @@ page-layout: custom
 ![](assets/img/cover-art.svg){fig-align="center"}
 
 
-::: {layout-ncol=4}
-![](assets/img/delphi.jpg)
+<!-- ::: {layout-ncol=4} -->
+<!-- ![](assets/img/delphi.jpg) -->
 
-![](assets/img/cmu.png)
+<!-- ![](assets/img/cmu.png) -->
 
-![](assets/img/berkeley.jpg)
+<!-- ![](assets/img/berkeley.jpg) -->
 
-![](assets/img/ubc.jpg)
-:::
+<!-- ![](assets/img/ubc.jpg) -->
+<!-- ::: -->
 
 
 :::
@@ -39,8 +39,13 @@ As an example of what can be done with Delphi's tools, see this [correlation ana
 ## Instructors
 
 * Logan C. Brooks
+* Julie (Jules) Gilbert
 * Nolan Gormley
 
+## Other Mini-Project Authors
+
+* Nat DeFries
+* Javier Martinez-Rodriguez
 
 :::
 

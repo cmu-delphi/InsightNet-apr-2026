@@ -1,6 +1,6 @@
 ---
 title: "MINI-PROJECT 3: Customizing models"
-author: "Delphi Tooling Team"
+author: "Delphi + MICOM"
 date: today
 execute:
   warning: false
@@ -15,7 +15,7 @@ The `{InsightNetApr26}` package ensures all required Delphi tools and their corr
 #| label: load-packages
 if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
 if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
-    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
+  pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
 }
 InsightNetApr26::verify_setup()
 
@@ -54,15 +54,22 @@ source(here::here("scripts", "setup.R"))
 
 ```{r}
 #| label: training-set
-# We define our forecast date and filter the data to only include 
+# We define our forecast date and filter the data to only include
 # what was available at that time.
 forecast_date <- as.Date("2021-08-01")
 
 training_set <- covid_case_death_rates |>
-  filter(time_value <= forecast_date)
+  # pretend we have one day of latency:
+  filter(time_value <= forecast_date - 1L)
 ```
 
 > ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn't actually available at the time of the forecast, how would this "data leakage" give you a misleading impression of your model's accuracy?
+
+NOTE: this is why, for serious applications, we want to use
+`epi_archive`s and `epix_as_of` or `epix_slide` rather than the
+filtering approach above, in order to faithfully reflecting reflecting
+the data that would have been fed into a model and how the model would
+have behaved.
 
 - Filter to four states of your choosing and use `autoplot()` to explore the `death_rate` and `case_rate` columns.
 
@@ -71,10 +78,10 @@ training_set <- covid_case_death_rates |>
 # Pick four states and visualize the trends
 target_states <- c("ca", "fl", "ny", "pa")
 
-training_set <- training_set |> 
+training_set <- training_set |>
   filter(geo_value %in% target_states)
 
-autoplot(training_set, death_rate, case_rate) 
+autoplot(training_set, death_rate, case_rate)
 ```
 
 - Let’s fit an autoregressive model using lagged values of the `death_rate` column as features with `arx_forecaster()` on our training set.
@@ -84,7 +91,7 @@ autoplot(training_set, death_rate, case_rate)
 #| label: basic-ar
 # Fit a default AR model
 fcst_ar <- arx_forecaster(
-  training_set, 
+  training_set,
   outcome = "death_rate"
 )
 
@@ -102,7 +109,7 @@ fcst_ar
 autoplot(fcst_ar)
 
 # Inspect predictions and pivot quantiles
-fcst_ar$predictions |> 
+fcst_ar$predictions |>
   pivot_quantiles_wider(.pred_distn) |>
   head()
 
@@ -118,14 +125,14 @@ hardhat::extract_fit_engine(fcst_ar$epi_workflow)
 #| label: flatline-baseline
 # Fit a flatline baseline model
 fcst_flat <- flatline_forecaster(
-  training_set, 
+  training_set,
   outcome = "death_rate"
 )
 
 fcst_flat
 
 # Observe how quantiles widen over time
-fcst_flat$predictions |> 
+fcst_flat$predictions |>
   pivot_quantiles_wider(.pred_distn)
 ```
 

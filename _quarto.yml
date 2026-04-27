@@ -13,7 +13,7 @@ editor: source
 website:
   title: "InsightNet Apr 2026"
   page-footer:
-    left: "This work by the [Delphi Research Group](https://delphi.cmu.edu) is licensed under the [MIT license](/LICENSE.md)."
+    left: "Workshop at Insight-Net 2026 meeting, by [Delphi](https://delphi.cmu.edu) and [MICOM](https://www.micom-insight.net/) centers."
     right: "Supported in part by the [CSTE](https://www.cste.org) and the [CDC](https://www.cdc.gov)."
   navbar:
     pinned: false
