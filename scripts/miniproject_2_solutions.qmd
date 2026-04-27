@@ -17,6 +17,17 @@ if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
 }
 InsightNetApr26::verify_setup()
 
+# If pak demands Rtools and you don't have it, you can use this instead:
+#
+# if (!requireNamespace("remotes", quietly = TRUE)) {
+# install.packages("remotes")
+# }
+# remotes::install_github("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
+# remotes::install_github("cmu-delphi/epidatr")
+# remotes::install_github("cmu-delphi/epidatasets")
+# remotes::install_github("cmu-delphi/epiprocess")
+# remotes::install_github("cmu-delphi/epipredict")
+
 library(epidatr)
 library(epiprocess)
 library(dplyr)
