@@ -62,8 +62,8 @@ We convert the raw API response into an `epi_df` for easier analysis and plottin
 # Convert the data into epi_df format
 edf <- as_epi_df(res)
 
-# View the header of the resulting epi_df
-head(edf)
+# Show description + head of the resulting epi_df
+edf
 
 # Quickly plot the data using epiprocess::autoplot
 autoplot(edf, value)
