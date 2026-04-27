@@ -284,7 +284,7 @@ Note
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Quick plot</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_ar)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_ar, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> target_states)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -371,7 +371,7 @@ Coefficients:
 <span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>fcst_multi</span>
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_multi)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_multi, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> target_states)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -393,7 +393,7 @@ Coefficients:
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>fcst_qr</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_qr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_qr, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> target_states)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -433,7 +433,7 @@ Coefficients:
 <span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>fcst_custom</span>
 <span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_custom)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(fcst_custom, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> target_states)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -468,8 +468,9 @@ Coefficients:
 <span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> all_canned_results[[<span class="dv">1</span>]]<span class="sc">$</span>epi_workflow,</span>
 <span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictions =</span> results,</span>
 <span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">observed_response =</span> covid_case_death_rates <span class="sc">|&gt;</span></span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> target_states, time_value <span class="sc">&gt;</span> <span class="st">"2021-07-01"</span>)</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(time_value <span class="sc">&gt;</span> <span class="st">"2021-07-01"</span>), </span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> target_states</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -490,25 +491,22 @@ Coefficients:
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical prediction: is death_rate low (&lt;= 0.01) or high (&gt; 0.01)?</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># US territories (e.g. American Samoa "as") have too few observations for</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># step_growth_rate to interpolate within its rolling window, so we restrict</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># to the 50 states + DC.</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>us_states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">tolower</span>(state.abb), <span class="st">"dc"</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  training_set <span class="sc">|&gt;</span> <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> us_states),</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>classifier_fcst</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  training_set <span class="sc">|&gt;</span> <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> <span class="fu">c</span>(<span class="fu">tolower</span>(state.abb), <span class="st">"dc"</span>)),</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>classifier_fcst</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 4
   geo_value .pred_class forecast_date target_date
