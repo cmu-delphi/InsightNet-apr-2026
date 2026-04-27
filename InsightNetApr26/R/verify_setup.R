@@ -4,10 +4,11 @@ required_pkgs <- tibble::tribble(
   "dplyr",       NA,   NA,           "dplyr",
   "epidatasets", ">=", "0.0.1",      "cmu-delphi/epidatasets",
   "epidatr",     ">=", "1.2.2",      "cmu-delphi/epidatr",
-  "epipredict",  ">=", "0.1.5",      "cmu-delphi/epipredict@dev",
-  "epiprocess",  ">=", "0.12.0",     "cmu-delphi/epiprocess@dev",
+  "epipredict",  ">=", "0.1.5",      "cmu-delphi/epipredict",
+  "epiprocess",  ">=", "0.12.0",     "cmu-delphi/epiprocess",
   "ggplot2",     NA,   NA,           "ggplot2",
-  "parsnip",     NA,   NA,           "parsnip"
+  "parsnip",     NA,   NA,           "parsnip",
+  "rtestim",     ">=", "1.0.0", "dajmcdon/rtestim"
 )
 
 #' Verify and install system setup
@@ -20,39 +21,39 @@ required_pkgs <- tibble::tribble(
 #' @export
 verify_setup <- function(install = TRUE) {
   cli::cli_h1("Verifying Workshop Setup")
-  
+
   # Get current status using pak
   statuses <- pak::pkg_status(required_pkgs$package)
-  
+
   # Identify missing or outdated packages
   to_install <- c()
-  
+
   for (i in seq_len(nrow(required_pkgs))) {
     pkg <- required_pkgs$package[i]
     op <- required_pkgs$op[i]
     req_v <- required_pkgs$req_version[i]
     remote <- required_pkgs$remote[i]
-    
+
     # Check if installed
     pkg_status <- statuses[statuses$package == pkg, ]
-    
+
     is_installed <- nrow(pkg_status) > 0 && !is.na(pkg_status$version)
     needs_update <- FALSE
-    
+
     if (is_installed && !is.na(req_v)) {
       curr_v <- pkg_status$version
       if (!do.call(op, list(curr_v, req_v))) {
         needs_update <- TRUE
       }
     }
-    
+
     if (!is_installed || needs_update) {
       reason <- if (!is_installed) "missing" else paste("outdated (need", op, req_v, ")")
       cli::cli_alert_warning("Package {.pkg {pkg}} is {reason}.")
       to_install <- c(to_install, remote)
     }
   }
-  
+
   # Perform install if needed
   if (length(to_install) > 0) {
     if (install) {
@@ -62,7 +63,7 @@ verify_setup <- function(install = TRUE) {
       cli::cli_alert_success("install complete. Please re-run verify_setup() to confirm.")
     } else {
       cli::cli_abort(c(
-        "Setup incomplete.", 
+        "Setup incomplete.",
         "i" = "Run {.fn InsightNetApr26::verify_setup} to fix automatically."
       ))
     }

@@ -7,10 +7,9 @@ Authors@R: c(
     person("Ryan", "Tibshirani", , "ryantibs@cmu.edu", role = "aut"),
     person("Delphi Research Group", role = c("cph", "fnd"))
   )
-Description: Manages dependencies and setup for the InsightNet Workshop Apr 2026.
+Description: Manages dependencies and setup for the InsightNet Workshop
+    Apr 2026.
 License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
 Depends: 
     R (>= 4.1)
 Imports: 
@@ -25,11 +24,15 @@ Suggests:
     epipredict,
     epiprocess,
     ggplot2,
-    parsnip
+    parsnip,
+    rtestim
 Remotes: 
     cmu-delphi/epidatasets,
     cmu-delphi/epidatr,
-    cmu-delphi/epipredict@dev,
-    cmu-delphi/epiprocess@dev
+    cmu-delphi/epipredict,
+    cmu-delphi/epiprocess,
+    dajmcdon/rtestim
+Encoding: UTF-8
+LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

@@ -16,22 +16,22 @@ EPIDATA_V2_URL <- "https://delphi.cmu.edu/cast-api/epidata/v2"
 `%nin%` <- function(x, y) !(x %in% y)
 
 build_cast_api_query <- function(
-    source = c("nssp", "nhsn"),
-    signal = NULL,
-    geo_type = c("state", "nation"),
-    columns = NULL,
-    fill_method = c("source", "fill_ave", "fill_zero"),
-    limit = -1,
-    offset = 0,
-    version_query = NULL,
-    geo_value = NULL,
-    time_value = NULL
+  source = c("nssp", "nhsn"),
+  signal = NULL,
+  geo_type = c("state", "nation"),
+  columns = NULL,
+  fill_method = c("source", "fill_ave", "fill_zero"),
+  limit = -1,
+  offset = 0,
+  version_query = NULL,
+  geo_value = NULL,
+  time_value = NULL
 ) {
   source <- rlang::arg_match(source)
   fill_method <- rlang::arg_match(fill_method)
   geo_type <- rlang::arg_match(geo_type)
   columns <- columns %||% c("geo_value", "time_value", "value", "report_ts_nominal_start")
-  
+
   httr2::request(EPIDATA_V2_URL) %>%
     httr2::req_url_path_append("archive/") %>%
     httr2::req_url_query(
@@ -52,13 +52,13 @@ build_cast_api_query <- function(
 get_cast_api_data <- function(...) {
   req <- build_cast_api_query(...)
   filename <- tempfile(fileext = ".csv")
-  
+
   # Check for proxy environment variable if any (Delphi specific)
   # proxy_port <- Sys.getenv("CAST_API_PROXY_PORT", "")
   # if (proxy_port != "") {
   #   req <- req %>% httr2::req_proxy(url = "socks5h://localhost", port = as.integer(proxy_port))
   # }
-  
+
   req <- req %>% httr2::req_perform(path = filename)
   readr::read_csv(filename, show_col_types = FALSE)
 }
@@ -81,7 +81,7 @@ get_nhsn_data_archive <- function(disease = c("covid", "flu")) {
     columns = c("geo_value", "time_value", "value", "report_ts_nominal_start", "report_ts_nominal_end"),
     version_query = glue::glue("<={Sys.Date()}")
   )
-  
+
   message("Combining and converting to epi_archive...")
   nhsn_data <- nhsn_state %>%
     rbind(nhsn_nation) %>%
@@ -93,7 +93,7 @@ get_nhsn_data_archive <- function(disease = c("covid", "flu")) {
     arrange(geo_value, time_value, version) %>%
     distinct(geo_value, time_value, version, .keep_all = TRUE) %>%
     epiprocess::as_epi_archive(compactify = TRUE)
-  
+
   nhsn_data
 }
 
@@ -111,7 +111,7 @@ nssp_data <- epidatr::pub_covidcast(
 
 # issues = # pub_covidcast returns a data frame with 'issue' which we use as 'version'
 nhsn_archive_data <- nssp_data %>%
-  mutate(geo_value_comp = covidcast::abbr_to_name(stringr::str_to_upper(geo_value))) |> 
+  mutate(geo_value_comp = covidcast::abbr_to_name(stringr::str_to_upper(geo_value))) |>
   rename(version = issue) %>%
   # mutate(geo_value = tolower(geo_value)) %>%
   arrange(geo_value, time_value, version) %>%
@@ -120,7 +120,7 @@ nhsn_archive_data <- nssp_data %>%
 this_week <- round_date(Sys.Date() - 3, "week", 6)
 
 recent_archive <- nhsn_archive_data %>%
-  filter(this_week - time_value < 10*7)
+  filter(this_week - time_value < 10 * 7)
 
 recent_archive$time_type <- "day"
 
@@ -151,37 +151,45 @@ autoplot(filtered_archive, "value") +
   facet_wrap(~geo_value, ncol = 3, scales = "free") +
   theme(strip.text.x = element_text(size = 8)) +
   ylim(0, NA) +
-  labs(title = "States with the largest mean revision",
-       subtitle = paste("Generated on", Sys.Date()))
+  labs(
+    title = "States with the largest mean revision",
+    subtitle = paste("Generated on", Sys.Date())
+  )
 
 recent_archive %>%
-  filter(geo_value %in% c("nc", "ga", "ny", "me")) |> 
+  filter(geo_value %in% c("nc", "ga", "ny", "me")) |>
   autoplot("value") +
-  facet_wrap(~covidcast::abbr_to_name(stringr::str_to_upper(geo_value)), ncol = 2, scales = "free") +
-  theme(strip.text.x = element_text(size = 8),
-        legend.position = "right") +
+  facet_wrap(~ covidcast::abbr_to_name(stringr::str_to_upper(geo_value)), ncol = 2, scales = "free") +
+  theme(
+    strip.text.x = element_text(size = 8),
+    legend.position = "right"
+  ) +
   guides(colour = guide_colorbar(barwidth = 0.5, barheight = 10)) +
   scale_y_continuous(n.breaks = 3) +
   # ylim(0, NA) +
   scale_x_date(breaks = breaks_pretty(), label = label_date_short()) +
-  labs(title = "Revision History of NSSP COVID-19 ED Visits (% of ED Visits)",
-subtitle = NULL)
+  labs(
+    title = "Revision History of NSSP COVID-19 ED Visits (% of ED Visits)",
+    subtitle = NULL
+  )
 
 
 # Save plot
 ggsave(paste0("plots/archive.png"),
-       bg = "transparent",
-       width = 160,                 # Ancho de la gráfica
-       height = 80,
-       units = "mm",
-       dpi = 300)
+  bg = "transparent",
+  width = 160, # Ancho de la gráfica
+  height = 80,
+  units = "mm",
+  dpi = 300
+)
 
 last_plot() +
   labs(title = "Revision History of NSSP \nCOVID-19 ED Visits (% of ED Visits)")
 
 ggsave(paste0("plots/archive_sq.png"),
-       bg = "transparent",
-       width = 120*1.2,                 # Ancho de la gráfica
-       height = 90*1.2,
-       units = "mm",
-       dpi = 300)
+  bg = "transparent",
+  width = 120 * 1.2, # Ancho de la gráfica
+  height = 90 * 1.2,
+  units = "mm",
+  dpi = 300
+)

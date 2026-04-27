@@ -1,6 +1,6 @@
 ---
 title: "MINI-PROJECT 1: Finding indicators and fetching data"
-author: "Delphi Tooling Team"
+author: "Delphi + MICOM"
 date: today
 execute:
   warning: false
@@ -19,9 +19,20 @@ This notebook covers the first mini-project, focusing on finding indicators and 
 #| label: load-packages
 if (!requireNamespace("pak", quietly = TRUE)) install.packages("pak")
 if (!requireNamespace("InsightNetApr26", quietly = TRUE)) {
-    pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
+  pak::pkg_install("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
 }
 InsightNetApr26::verify_setup()
+
+# If pak demands Rtools and you don't have it, you can use this instead:
+#
+# if (!requireNamespace("remotes", quietly = TRUE)) {
+# install.packages("remotes")
+# }
+# remotes::install_github("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")
+# remotes::install_github("cmu-delphi/epidatr")
+# remotes::install_github("cmu-delphi/epidatasets")
+# remotes::install_github("cmu-delphi/epiprocess")
+# remotes::install_github("cmu-delphi/epipredict")
 
 library(epidatr)
 library(epiprocess)
@@ -44,12 +55,12 @@ We'll fetch the `smoothed_adj_cli` signal from the `doctor-visits` source for se
 ```{r}
 #| label: fetch-data
 res <- pub_covidcast(
-    source = "doctor-visits",
-    signal = "smoothed_adj_cli",
-    geo_type = "state",
-    time_type = "day",
-    geo_values = c("mi", "ny", "tx", "pa"),
-    time_values = epirange(20220101, 20220301)
+  source = "doctor-visits",
+  signal = "smoothed_adj_cli",
+  geo_type = "state",
+  time_type = "day",
+  geo_values = c("mi", "ny", "tx", "pa"),
+  time_values = epirange(20220101, 20220301)
 )
 ```
 
@@ -62,8 +73,8 @@ We convert the raw API response into an `epi_df` for easier analysis and plottin
 # Convert the data into epi_df format
 edf <- as_epi_df(res)
 
-# View the header of the resulting epi_df
-head(edf)
+# Show description + head of the resulting epi_df
+edf
 
 # Quickly plot the data using epiprocess::autoplot
 autoplot(edf, value)
