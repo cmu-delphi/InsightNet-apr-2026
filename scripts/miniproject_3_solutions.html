@@ -6,8 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Delphi Tooling Team">
-<meta name="dcterms.date" content="2026-04-24">
+<meta name="author" content="Delphi + MICOM">
+<meta name="dcterms.date" content="2026-04-27">
 
 <title>MINI-PROJECT 3: Customizing models – InsightNet Apr 2026</title>
 <style>
@@ -164,14 +164,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Delphi Tooling Team </p>
+             <p>Delphi + MICOM </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 24, 2026</p>
+      <p class="date">April 27, 2026</p>
     </div>
   </div>
   
@@ -189,17 +189,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pak"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"pak"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"InsightNetApr26"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"cmu-delphi/InsightNet-apr-2026/InsightNetApr26"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"cmu-delphi/InsightNet-apr-2026/InsightNetApr26"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>InsightNetApr26<span class="sc">::</span><span class="fu">verify_setup</span>()</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epidatr)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epiprocess)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epipredict)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parsnip)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>InsightNetApr26<span class="sc">::</span><span class="fu">verify_setup</span>()</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># If pak demands Rtools and you don't have it, you can use this instead:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># if (!requireNamespace("remotes", quietly = TRUE)) {</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("remotes")</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epidatr")</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epidatasets")</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epiprocess")</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epipredict")</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epidatr)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epiprocess)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epipredict)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(parsnip)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="basic-modelling" class="level2">
@@ -212,16 +222,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Filter out the observations after August 1, 2021, to create a training set.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We define our forecast date and filter the data to only include </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We define our forecast date and filter the data to only include</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># what was available at that time.</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>forecast_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">"2021-08-01"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>training_set <span class="ot">&lt;-</span> covid_case_death_rates <span class="sc">|&gt;</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time_value <span class="sc">&lt;=</span> forecast_date)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># pretend we have one day of latency:</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time_value <span class="sc">&lt;=</span> forecast_date <span class="sc">-</span> <span class="dv">1</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
 <p>ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn’t actually available at the time of the forecast, how would this “data leakage” give you a misleading impression of your model’s accuracy?</p>
 </blockquote>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is why, for serious applications, we want to use <code>epi_archive</code>s and <code>epix_as_of</code> or <code>epix_slide</code> rather than the filtering approach above, in order to faithfully reflect the data that would have been fed into a model and how the model would have behaved.</p>
+</div>
+</div>
 <ul>
 <li>Filter to four states of your choosing and use <code>autoplot()</code> to explore the <code>death_rate</code> and <code>case_rate</code> columns.</li>
 </ul>
@@ -229,10 +253,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick four states and visualize the trends</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>target_states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"ca"</span>, <span class="st">"fl"</span>, <span class="st">"ny"</span>, <span class="st">"pa"</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>training_set <span class="ot">&lt;-</span> training_set <span class="sc">|&gt;</span> </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> target_states)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(training_set, death_rate, case_rate) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(training_set, death_rate, case_rate, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> target_states)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -247,7 +268,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a default AR model</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fcst_ar <span class="ot">&lt;-</span> <span class="fu">arx_forecaster</span>(</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  training_set, </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
@@ -272,17 +293,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect predictions and pivot quantiles</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fcst_ar<span class="sc">$</span>predictions <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>fcst_ar<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_quantiles_wider</span>(.pred_distn) <span class="sc">|&gt;</span></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 11
-  geo_value  .pred forecast_date target_date `0.05`  `0.1`  `0.25`  `0.5` `0.75`
-  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-1 ca        0.102  2021-08-01    2021-08-08   0     0.0256 0.0653  0.102  0.138 
-2 fl        0.253  2021-08-01    2021-08-08   0.131 0.177  0.217   0.253  0.290 
-3 ny        0.0447 2021-08-01    2021-08-08   0     0      0.00811 0.0447 0.0813
-4 pa        0.0413 2021-08-01    2021-08-08   0     0      0.00471 0.0413 0.0779
+<pre><code># A tibble: 6 × 11
+  geo_value  .pred forecast_date target_date `0.05`  `0.1` `0.25`  `0.5` `0.75`
+  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+1 ak        0.0916 2021-07-31    2021-08-07  0      0      0.0463 0.0916 0.137 
+2 al        0.136  2021-07-31    2021-08-07  0      0.0227 0.0906 0.136  0.181 
+3 ar        0.286  2021-07-31    2021-08-07  0.0814 0.173  0.240  0.286  0.331 
+4 as        0.0366 2021-07-31    2021-08-07  0      0      0      0.0366 0.0819
+5 az        0.140  2021-07-31    2021-08-07  0      0.0265 0.0943 0.140  0.185 
+6 ca        0.0860 2021-07-31    2021-08-07  0      0      0.0406 0.0860 0.131 
 # ℹ 2 more variables: `0.9` &lt;dbl&gt;, `0.95` &lt;dbl&gt;</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Access model weights</span></span>
@@ -294,7 +317,7 @@ stats::lm(formula = ..y ~ ., data = data)
 
 Coefficients:
       (Intercept)   lag_0_death_rate   lag_7_death_rate  lag_14_death_rate  
-          0.01513            0.82169            0.26770           -0.21301  </code></pre>
+          0.03658            0.37151            0.20792            0.15187  </code></pre>
 </div>
 </div>
 <blockquote class="blockquote">
@@ -304,24 +327,31 @@ Coefficients:
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a flatline baseline model</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fcst_flat <span class="ot">&lt;-</span> <span class="fu">flatline_forecaster</span>(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  training_set, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span></span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>fcst_flat</span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Observe how quantiles widen over time</span></span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>fcst_flat<span class="sc">$</span>predictions <span class="sc">|&gt;</span> </span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>fcst_flat<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
 <span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_quantiles_wider</span>(.pred_distn)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 11
-  geo_value  .pred forecast_date target_date `0.05` `0.1` `0.25`  `0.5` `0.75`
-  &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
-1 ca        0.103  2021-08-01    2021-08-08  0      0     0.0561 0.103  0.151 
-2 fl        0.269  2021-08-01    2021-08-08  0.0876 0.152 0.222  0.269  0.316 
-3 ny        0.0347 2021-08-01    2021-08-08  0      0     0      0.0347 0.0820
-4 pa        0.0324 2021-08-01    2021-08-08  0      0     0      0.0324 0.0797
-# ℹ 2 more variables: `0.9` &lt;dbl&gt;, `0.95` &lt;dbl&gt;</code></pre>
+<pre><code># A tibble: 56 × 11
+   geo_value  .pred forecast_date target_date `0.05`   `0.1` `0.25`  `0.5`
+   &lt;chr&gt;      &lt;dbl&gt; &lt;date&gt;        &lt;date&gt;       &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
+ 1 ak        0.0988 2021-07-31    2021-08-07   0     0       0.0500 0.0988
+ 2 al        0.154  2021-07-31    2021-08-07   0     0.00908 0.105  0.154 
+ 3 ar        0.438  2021-07-31    2021-08-07   0.188 0.294   0.390  0.438 
+ 4 as        0      2021-07-31    2021-08-07   0     0       0      0     
+ 5 az        0.146  2021-07-31    2021-08-07   0     0.00153 0.0975 0.146 
+ 6 ca        0.0697 2021-07-31    2021-08-07   0     0       0.0209 0.0697
+ 7 co        0.130  2021-07-31    2021-08-07   0     0       0.0816 0.130 
+ 8 ct        0.0281 2021-07-31    2021-08-07   0     0       0      0.0281
+ 9 dc        0.0601 2021-07-31    2021-08-07   0     0       0.0113 0.0601
+10 de        1.95   2021-07-31    2021-08-07   1.70  1.81    1.91   1.95  
+# ℹ 46 more rows
+# ℹ 3 more variables: `0.75` &lt;dbl&gt;, `0.9` &lt;dbl&gt;, `0.95` &lt;dbl&gt;</code></pre>
 </div>
 </div>
 </section>
@@ -460,29 +490,32 @@ Coefficients:
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical prediction: is death_rate low (&lt;= 0.01) or high (&gt; 0.01)?</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  training_set,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>classifier_fcst</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We filter to our target states here because the growth_rate step requires at</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># least two non-NA observations per geo; small territories in the full dataset</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># don't meet this threshold.</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  training_set <span class="sc">|&gt;</span> <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> target_states),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>classifier_fcst</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 4
   geo_value .pred_class forecast_date target_date
   &lt;chr&gt;     &lt;fct&gt;       &lt;date&gt;        &lt;date&gt;     
-1 ca        (0.01, Inf] 2021-08-01    2021-08-08 
-2 fl        (0.01, Inf] 2021-08-01    2021-08-08 
-3 ny        (0.01, Inf] 2021-08-01    2021-08-08 
-4 pa        (0.01, Inf] 2021-08-01    2021-08-08 </code></pre>
+1 ca        (0.01, Inf] 2021-07-31    2021-08-07 
+2 fl        (0.01, Inf] 2021-07-31    2021-08-07 
+3 ny        (0.01, Inf] 2021-07-31    2021-08-07 
+4 pa        (0.01, Inf] 2021-07-31    2021-08-07 </code></pre>
 </div>
 </div>
 
@@ -894,7 +927,7 @@ Coefficients:
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>This work by the <a href="https://delphi.cmu.edu">Delphi Research Group</a> is licensed under the <a href="../LICENSE.md">MIT license</a>.</p>
+<p>Workshop at Insight-Net 2026 meeting, by <a href="https://delphi.cmu.edu">Delphi</a> and <a href="https://www.micom-insight.net/">MICOM</a> centers.</p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;

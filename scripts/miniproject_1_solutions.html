@@ -6,8 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Delphi Tooling Team">
-<meta name="dcterms.date" content="2026-04-24">
+<meta name="author" content="Delphi + MICOM">
+<meta name="dcterms.date" content="2026-04-27">
 
 <title>MINI-PROJECT 1: Finding indicators and fetching data – InsightNet Apr 2026</title>
 <style>
@@ -164,14 +164,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Delphi Tooling Team </p>
+             <p>Delphi + MICOM </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 24, 2026</p>
+      <p class="date">April 27, 2026</p>
     </div>
   </div>
   
@@ -193,12 +193,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pak"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"pak"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"InsightNetApr26"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"cmu-delphi/InsightNet-apr-2026/InsightNetApr26"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"cmu-delphi/InsightNet-apr-2026/InsightNetApr26"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>InsightNetApr26<span class="sc">::</span><span class="fu">verify_setup</span>()</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epidatr)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epiprocess)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># If pak demands Rtools and you don't have it, you can use this instead:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># if (!requireNamespace("remotes", quietly = TRUE)) {</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("remotes")</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epidatr")</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epidatasets")</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epiprocess")</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epipredict")</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epidatr)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epiprocess)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="finding-indicators" class="level2">
@@ -210,12 +221,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We’ll fetch the <code>smoothed_adj_cli</code> signal from the <code>doctor-visits</code> source for selected states over a specific time range.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">source =</span> <span class="st">"doctor-visits"</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">signal =</span> <span class="st">"smoothed_adj_cli"</span>,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_type =</span> <span class="st">"day"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">20220101</span>, <span class="dv">20220301</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"doctor-visits"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"smoothed_adj_cli"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"day"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">20220101</span>, <span class="dv">20220301</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
@@ -226,26 +237,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the data into epi_df format</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>edf <span class="ot">&lt;-</span> <span class="fu">as_epi_df</span>(res)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View the header of the resulting epi_df</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(edf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show description + head of the resulting epi_df</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>edf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>An `epi_df` object, 6 x 15 with metadata:
+<pre><code>An `epi_df` object, 240 x 15 with metadata:
 * geo_type  = state
 * time_type = day
 * other_keys = signal
 * as_of     = 2022-05-11
 Latency (lag between last available observation and epi_df's as_of, by time series):
-* lag  = 129–130 days
+* lag  = 71 days
 * Empty time series detected
-# A tibble: 6 × 15
-  geo_value signal     time_value source geo_type time_type direction issue     
-  &lt;chr&gt;     &lt;chr&gt;      &lt;date&gt;     &lt;chr&gt;  &lt;fct&gt;    &lt;fct&gt;         &lt;dbl&gt; &lt;date&gt;    
-1 mi        smoothed_… 2022-01-01 docto… state    day              NA 2022-03-15
-2 ny        smoothed_… 2022-01-01 docto… state    day              NA 2022-03-15
-3 pa        smoothed_… 2022-01-01 docto… state    day              NA 2022-03-15
-4 tx        smoothed_… 2022-01-01 docto… state    day              NA 2022-03-15
-5 mi        smoothed_… 2022-01-02 docto… state    day              NA 2022-03-16
-6 ny        smoothed_… 2022-01-02 docto… state    day              NA 2022-03-16
+# A tibble: 240 × 15
+   geo_value signal    time_value source geo_type time_type direction issue     
+ * &lt;chr&gt;     &lt;chr&gt;     &lt;date&gt;     &lt;chr&gt;  &lt;fct&gt;    &lt;fct&gt;         &lt;dbl&gt; &lt;date&gt;    
+ 1 mi        smoothed… 2022-01-01 docto… state    day              NA 2022-03-15
+ 2 ny        smoothed… 2022-01-01 docto… state    day              NA 2022-03-15
+ 3 pa        smoothed… 2022-01-01 docto… state    day              NA 2022-03-15
+ 4 tx        smoothed… 2022-01-01 docto… state    day              NA 2022-03-15
+ 5 mi        smoothed… 2022-01-02 docto… state    day              NA 2022-03-16
+ 6 ny        smoothed… 2022-01-02 docto… state    day              NA 2022-03-16
+ 7 pa        smoothed… 2022-01-02 docto… state    day              NA 2022-03-16
+ 8 tx        smoothed… 2022-01-02 docto… state    day              NA 2022-03-16
+ 9 mi        smoothed… 2022-01-03 docto… state    day              NA 2022-03-17
+10 ny        smoothed… 2022-01-03 docto… state    day              NA 2022-03-17
+# ℹ 230 more rows
 # ℹ 7 more variables: lag &lt;dbl&gt;, missing_value &lt;dbl&gt;, missing_stderr &lt;dbl&gt;,
 #   missing_sample_size &lt;dbl&gt;, value &lt;dbl&gt;, stderr &lt;dbl&gt;, sample_size &lt;dbl&gt;</code></pre>
 </div>
@@ -668,7 +684,7 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>This work by the <a href="https://delphi.cmu.edu">Delphi Research Group</a> is licensed under the <a href="../LICENSE.md">MIT license</a>.</p>
+<p>Workshop at Insight-Net 2026 meeting, by <a href="https://delphi.cmu.edu">Delphi</a> and <a href="https://www.micom-insight.net/">MICOM</a> centers.</p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;

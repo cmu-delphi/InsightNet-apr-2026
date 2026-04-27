@@ -6,8 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Delphi Tooling Team">
-<meta name="dcterms.date" content="2026-04-24">
+<meta name="author" content="Delphi + MICOM">
+<meta name="dcterms.date" content="2026-04-27">
 
 <title>MINI-PROJECT 2: EDA and correlation analysis – InsightNet Apr 2026</title>
 <style>
@@ -173,14 +173,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Delphi Tooling Team </p>
+             <p>Delphi + MICOM </p>
           </div>
   </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 24, 2026</p>
+      <p class="date">April 27, 2026</p>
     </div>
   </div>
   
@@ -196,14 +196,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"pak"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) <span class="fu">install.packages</span>(<span class="st">"pak"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">"InsightNetApr26"</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"cmu-delphi/InsightNet-apr-2026/InsightNetApr26"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  pak<span class="sc">::</span><span class="fu">pkg_install</span>(<span class="st">"cmu-delphi/InsightNet-apr-2026/InsightNetApr26"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>InsightNetApr26<span class="sc">::</span><span class="fu">verify_setup</span>()</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epidatr)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epiprocess)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># If pak demands Rtools and you don't have it, you can use this instead:</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># if (!requireNamespace("remotes", quietly = TRUE)) {</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("remotes")</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/InsightNet-apr-2026/InsightNetApr26")</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epidatr")</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epidatasets")</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epiprocess")</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co"># remotes::install_github("cmu-delphi/epipredict")</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epidatr)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(epiprocess)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="general-exploratory-data-analysis-eda-utilities" class="level2">
 <h2 class="anchored" data-anchor-id="general-exploratory-data-analysis-eda-utilities">2.1 General Exploratory Data Analysis (EDA) utilities</h2>
@@ -218,12 +229,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"confirmed_admissions_rsv_ew"</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"week"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="st">"ca,mi,ny,pa"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="st">"*"</span>,</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">202501</span>, <span class="dv">202601</span>)</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, value, issue)</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>edf <span class="ot">&lt;-</span> epidata_nhsn_state <span class="sc">|&gt;</span> </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>edf <span class="ot">&lt;-</span> epidata_nhsn_state <span class="sc">|&gt;</span></span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_df</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
@@ -232,27 +243,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>edf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>An `epi_df` object, 216 x 4 with metadata:
+<pre><code>An `epi_df` object, 3,024 x 4 with metadata:
 * geo_type  = state
 * time_type = week
 * as_of     = 2026-04-19
 Latency (lag between last available observation and epi_df's as_of, by time series):
-* lag  = 15 weeks
+* lag  = 15–23 weeks (see summary() for per-signal details)
 
-# A tibble: 216 × 4
+# A tibble: 3,024 × 4
    geo_value time_value value issue     
  * &lt;chr&gt;     &lt;date&gt;     &lt;dbl&gt; &lt;date&gt;    
- 1 ca        2024-12-29   943 2026-04-19
- 2 mi        2024-12-29   552 2026-04-19
- 3 ny        2024-12-29  1230 2026-04-19
- 4 pa        2024-12-29  1301 2026-04-19
- 5 ca        2025-01-05   810 2026-04-19
- 6 mi        2025-01-05   641 2026-04-19
- 7 ny        2025-01-05   889 2026-04-19
- 8 pa        2025-01-05  1382 2026-04-19
- 9 ca        2025-01-12   769 2026-04-19
-10 mi        2025-01-12   495 2026-04-19
-# ℹ 206 more rows</code></pre>
+ 1 ak        2024-12-29    37 2026-04-19
+ 2 al        2024-12-29   171 2026-04-19
+ 3 ar        2024-12-29   108 2026-04-19
+ 4 as        2024-12-29     3 2026-04-19
+ 5 az        2024-12-29   208 2026-04-19
+ 6 ca        2024-12-29   943 2026-04-19
+ 7 co        2024-12-29   168 2026-04-19
+ 8 ct        2024-12-29   204 2026-04-19
+ 9 dc        2024-12-29     3 2026-04-19
+10 de        2024-12-29   155 2026-04-19
+# ℹ 3,014 more rows</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(edf)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -261,14 +272,14 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 * as_of     = 2026-04-19
 ----------
 Time range:
-* min time value              = 2024-12-29 (same for every time series)
-* max time value              = 2026-01-04 (same for every time series)
+* min time value              = 2024-12-29 (but some time series start later)
+* max time value              = 2026-01-04 (but some time series end earlier)
 Gaps:
-* time gaps                   = none detected
-* average rows per time value = 4.00
+* explicit (non-lag NAs in 1/56 key combinations, affecting 1 signal)
+* average rows per time value = 56.00
 Latency (lag between last available time_value and epi_df's as_of, by time series):
-* value: lag 15 weeks (max time 2026-01-04) (!)
-(!): notable latency (lag &gt; 2 weeks)</code></pre>
+* value: lag 15–23 weeks (max time 2026-01-04); lagging keys: as (!)
+(!): notable latency (lag &gt; 2 weeks; lagging keys)</code></pre>
 </div>
 </div>
 <blockquote class="blockquote">
@@ -286,35 +297,38 @@ Latency (lag between last available time_value and epi_df's as_of, by time serie
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>edf <span class="ot">&lt;-</span> edf <span class="sc">|&gt;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide_mean</span>(<span class="st">"value"</span>, <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">3</span>, <span class="at">units =</span> <span class="st">"weeks"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>   <span class="fu">epi_slide_mean</span>(<span class="st">"value"</span>, <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">8</span>, <span class="at">units =</span> <span class="st">"weeks"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide_mean</span>(<span class="st">"value"</span>, <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">3</span>, <span class="at">units =</span> <span class="st">"weeks"</span>), <span class="at">.align =</span> <span class="st">"center"</span>,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.new_col_names =</span> <span class="st">"value_3wmean_center"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide_sum</span>(<span class="st">"value"</span>, <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">4</span>, <span class="at">units =</span> <span class="st">"weeks"</span>))</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>edf <span class="sc">|&gt;</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, value, value_3wav, value_8wav, value_3wmean_center, value_4wsum) <span class="sc">|&gt;</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide_mean</span>(<span class="st">"value"</span>, <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">8</span>, <span class="at">units =</span> <span class="st">"weeks"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide_mean</span>(<span class="st">"value"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">3</span>, <span class="at">units =</span> <span class="st">"weeks"</span>), <span class="at">.align =</span> <span class="st">"center"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">.new_col_names =</span> <span class="st">"value_3wmean_center"</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_slide_sum</span>(<span class="st">"value"</span>, <span class="at">.window_size =</span> <span class="fu">as.difftime</span>(<span class="dv">4</span>, <span class="at">units =</span> <span class="st">"weeks"</span>))</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>edf <span class="sc">|&gt;</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, value, value_3wav, value_8wav, value_3wmean_center, value_4wsum) <span class="sc">|&gt;</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>An `epi_df` object, 10 x 7 with metadata:
+<pre><code>An `epi_df` object, 3,024 x 7 with metadata:
 * geo_type  = state
 * time_type = week
 * as_of     = 2026-04-19
 Latency (lag between last available observation and epi_df's as_of, by time series):
-* lag across all time series = 59 weeks
+* lag across all time series = 15–28 weeks (see summary() for per-signal details)
 
-# A tibble: 10 × 7
+# A tibble: 3,024 × 7
    geo_value time_value value value_3wav value_8wav value_3wmean_center
    &lt;chr&gt;     &lt;date&gt;     &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;               &lt;dbl&gt;
- 1 ca        2024-12-29   943        NA         NA                  NA 
- 2 ca        2025-01-05   810        NA         NA                 841.
- 3 ca        2025-01-12   769       841.        NA                 776.
- 4 ca        2025-01-19   748       776.        NA                 760 
- 5 ca        2025-01-26   763       760         NA                 745.
- 6 ca        2025-02-02   723       745.        NA                 721.
- 7 ca        2025-02-09   678       721.        NA                 675 
- 8 ca        2025-02-16   624       675        757.                612.
- 9 ca        2025-02-23   535       612.       706.                533 
-10 ca        2025-03-02   440       533        660                 456.
+ 1 ak        2024-12-29    37       NA         NA                  NA  
+ 2 ak        2025-01-05    24       NA         NA                  24.7
+ 3 ak        2025-01-12    13       24.7       NA                  19.7
+ 4 ak        2025-01-19    22       19.7       NA                  21.7
+ 5 ak        2025-01-26    30       21.7       NA                  22.3
+ 6 ak        2025-02-02    15       22.3       NA                  19.3
+ 7 ak        2025-02-09    13       19.3       NA                  19  
+ 8 ak        2025-02-16    29       19         22.9                23  
+ 9 ak        2025-02-23    27       23         21.6                25  
+10 ak        2025-03-02    19       25         21                  19.3
+# ℹ 3,014 more rows
 # ℹ 1 more variable: value_4wsum &lt;dbl&gt;</code></pre>
 </div>
 </div>
@@ -344,7 +358,7 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </ul></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf, value, <span class="at">.facet_by =</span> <span class="st">"geo_value"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf, value, <span class="at">.facet_by =</span> <span class="st">"geo_value"</span>, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ca"</span>, <span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"pa"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -352,10 +366,10 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf, value, <span class="at">.interactive =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf, value, <span class="at">.interactive =</span> <span class="cn">TRUE</span>, <span class="at">.max_keys =</span> <span class="cn">Inf</span>, <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ca"</span>, <span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"pa"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-9e5db1d6b6d8dc06ea75" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-9e5db1d6b6d8dc06ea75">{"x":{"data":[{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[943,810,769,748,763,723,678,624,535,440,392,348,256,208,157,99,100,68,46,38,33,24,20,16,9,6,12,10,4,20,10,10,10,12,12,10,20,21,9,18,21,26,22,43,38,71,73,96,136,150,191,278,409,407],"text":["time_value: 2024-12-29<br />.response:  943<br />.colours: ca","time_value: 2025-01-05<br />.response:  810<br />.colours: ca","time_value: 2025-01-12<br />.response:  769<br />.colours: ca","time_value: 2025-01-19<br />.response:  748<br />.colours: ca","time_value: 2025-01-26<br />.response:  763<br />.colours: ca","time_value: 2025-02-02<br />.response:  723<br />.colours: ca","time_value: 2025-02-09<br />.response:  678<br />.colours: ca","time_value: 2025-02-16<br />.response:  624<br />.colours: ca","time_value: 2025-02-23<br />.response:  535<br />.colours: ca","time_value: 2025-03-02<br />.response:  440<br />.colours: ca","time_value: 2025-03-09<br />.response:  392<br />.colours: ca","time_value: 2025-03-16<br />.response:  348<br />.colours: ca","time_value: 2025-03-23<br />.response:  256<br />.colours: ca","time_value: 2025-03-30<br />.response:  208<br />.colours: ca","time_value: 2025-04-06<br />.response:  157<br />.colours: ca","time_value: 2025-04-13<br />.response:   99<br />.colours: ca","time_value: 2025-04-20<br />.response:  100<br />.colours: ca","time_value: 2025-04-27<br />.response:   68<br />.colours: ca","time_value: 2025-05-04<br />.response:   46<br />.colours: ca","time_value: 2025-05-11<br />.response:   38<br />.colours: ca","time_value: 2025-05-18<br />.response:   33<br />.colours: ca","time_value: 2025-05-25<br />.response:   24<br />.colours: ca","time_value: 2025-06-01<br />.response:   20<br />.colours: ca","time_value: 2025-06-08<br />.response:   16<br />.colours: ca","time_value: 2025-06-15<br />.response:    9<br />.colours: ca","time_value: 2025-06-22<br />.response:    6<br />.colours: ca","time_value: 2025-06-29<br />.response:   12<br />.colours: ca","time_value: 2025-07-06<br />.response:   10<br />.colours: ca","time_value: 2025-07-13<br />.response:    4<br />.colours: ca","time_value: 2025-07-20<br />.response:   20<br />.colours: ca","time_value: 2025-07-27<br />.response:   10<br />.colours: ca","time_value: 2025-08-03<br />.response:   10<br />.colours: ca","time_value: 2025-08-10<br />.response:   10<br />.colours: ca","time_value: 2025-08-17<br />.response:   12<br />.colours: ca","time_value: 2025-08-24<br />.response:   12<br />.colours: ca","time_value: 2025-08-31<br />.response:   10<br />.colours: ca","time_value: 2025-09-07<br />.response:   20<br />.colours: ca","time_value: 2025-09-14<br />.response:   21<br />.colours: ca","time_value: 2025-09-21<br />.response:    9<br />.colours: ca","time_value: 2025-09-28<br />.response:   18<br />.colours: ca","time_value: 2025-10-05<br />.response:   21<br />.colours: ca","time_value: 2025-10-12<br />.response:   26<br />.colours: ca","time_value: 2025-10-19<br />.response:   22<br />.colours: ca","time_value: 2025-10-26<br />.response:   43<br />.colours: ca","time_value: 2025-11-02<br />.response:   38<br />.colours: ca","time_value: 2025-11-09<br />.response:   71<br />.colours: ca","time_value: 2025-11-16<br />.response:   73<br />.colours: ca","time_value: 2025-11-23<br />.response:   96<br />.colours: ca","time_value: 2025-11-30<br />.response:  136<br />.colours: ca","time_value: 2025-12-07<br />.response:  150<br />.colours: ca","time_value: 2025-12-14<br />.response:  191<br />.colours: ca","time_value: 2025-12-21<br />.response:  278<br />.colours: ca","time_value: 2025-12-28<br />.response:  409<br />.colours: ca","time_value: 2026-01-04<br />.response:  407<br />.colours: ca"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(68,1,84,1)","dash":"solid"},"hoveron":"points","name":"ca","legendgroup":"ca","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[552,641,495,512,575,488,467,449,482,404,365,261,241,225,156,174,135,74,32,32,12,15,10,19,4,3,5,2,1,0,0,0,2,1,1,1,1,2,2,2,4,6,7,14,10,9,10,22,25,42,79,92,127,130],"text":["time_value: 2024-12-29<br />.response:  552<br />.colours: mi","time_value: 2025-01-05<br />.response:  641<br />.colours: mi","time_value: 2025-01-12<br />.response:  495<br />.colours: mi","time_value: 2025-01-19<br />.response:  512<br />.colours: mi","time_value: 2025-01-26<br />.response:  575<br />.colours: mi","time_value: 2025-02-02<br />.response:  488<br />.colours: mi","time_value: 2025-02-09<br />.response:  467<br />.colours: mi","time_value: 2025-02-16<br />.response:  449<br />.colours: mi","time_value: 2025-02-23<br />.response:  482<br />.colours: mi","time_value: 2025-03-02<br />.response:  404<br />.colours: mi","time_value: 2025-03-09<br />.response:  365<br />.colours: mi","time_value: 2025-03-16<br />.response:  261<br />.colours: mi","time_value: 2025-03-23<br />.response:  241<br />.colours: mi","time_value: 2025-03-30<br />.response:  225<br />.colours: mi","time_value: 2025-04-06<br />.response:  156<br />.colours: mi","time_value: 2025-04-13<br />.response:  174<br />.colours: mi","time_value: 2025-04-20<br />.response:  135<br />.colours: mi","time_value: 2025-04-27<br />.response:   74<br />.colours: mi","time_value: 2025-05-04<br />.response:   32<br />.colours: mi","time_value: 2025-05-11<br />.response:   32<br />.colours: mi","time_value: 2025-05-18<br />.response:   12<br />.colours: mi","time_value: 2025-05-25<br />.response:   15<br />.colours: mi","time_value: 2025-06-01<br />.response:   10<br />.colours: mi","time_value: 2025-06-08<br />.response:   19<br />.colours: mi","time_value: 2025-06-15<br />.response:    4<br />.colours: mi","time_value: 2025-06-22<br />.response:    3<br />.colours: mi","time_value: 2025-06-29<br />.response:    5<br />.colours: mi","time_value: 2025-07-06<br />.response:    2<br />.colours: mi","time_value: 2025-07-13<br />.response:    1<br />.colours: mi","time_value: 2025-07-20<br />.response:    0<br />.colours: mi","time_value: 2025-07-27<br />.response:    0<br />.colours: mi","time_value: 2025-08-03<br />.response:    0<br />.colours: mi","time_value: 2025-08-10<br />.response:    2<br />.colours: mi","time_value: 2025-08-17<br />.response:    1<br />.colours: mi","time_value: 2025-08-24<br />.response:    1<br />.colours: mi","time_value: 2025-08-31<br />.response:    1<br />.colours: mi","time_value: 2025-09-07<br />.response:    1<br />.colours: mi","time_value: 2025-09-14<br />.response:    2<br />.colours: mi","time_value: 2025-09-21<br />.response:    2<br />.colours: mi","time_value: 2025-09-28<br />.response:    2<br />.colours: mi","time_value: 2025-10-05<br />.response:    4<br />.colours: mi","time_value: 2025-10-12<br />.response:    6<br />.colours: mi","time_value: 2025-10-19<br />.response:    7<br />.colours: mi","time_value: 2025-10-26<br />.response:   14<br />.colours: mi","time_value: 2025-11-02<br />.response:   10<br />.colours: mi","time_value: 2025-11-09<br />.response:    9<br />.colours: mi","time_value: 2025-11-16<br />.response:   10<br />.colours: mi","time_value: 2025-11-23<br />.response:   22<br />.colours: mi","time_value: 2025-11-30<br />.response:   25<br />.colours: mi","time_value: 2025-12-07<br />.response:   42<br />.colours: mi","time_value: 2025-12-14<br />.response:   79<br />.colours: mi","time_value: 2025-12-21<br />.response:   92<br />.colours: mi","time_value: 2025-12-28<br />.response:  127<br />.colours: mi","time_value: 2026-01-04<br />.response:  130<br />.colours: mi"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(49,104,142,1)","dash":"solid"},"hoveron":"points","name":"mi","legendgroup":"mi","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[1230,889,716,625,611,522,426,392,295,328,256,240,195,171,120,109,95,60,58,44,38,19,26,23,12,13,16,14,14,16,10,17,12,13,19,27,31,30,45,30,47,37,48,57,66,106,134,207,281,364,390,468,552,549],"text":["time_value: 2024-12-29<br />.response: 1230<br />.colours: ny","time_value: 2025-01-05<br />.response:  889<br />.colours: ny","time_value: 2025-01-12<br />.response:  716<br />.colours: ny","time_value: 2025-01-19<br />.response:  625<br />.colours: ny","time_value: 2025-01-26<br />.response:  611<br />.colours: ny","time_value: 2025-02-02<br />.response:  522<br />.colours: ny","time_value: 2025-02-09<br />.response:  426<br />.colours: ny","time_value: 2025-02-16<br />.response:  392<br />.colours: ny","time_value: 2025-02-23<br />.response:  295<br />.colours: ny","time_value: 2025-03-02<br />.response:  328<br />.colours: ny","time_value: 2025-03-09<br />.response:  256<br />.colours: ny","time_value: 2025-03-16<br />.response:  240<br />.colours: ny","time_value: 2025-03-23<br />.response:  195<br />.colours: ny","time_value: 2025-03-30<br />.response:  171<br />.colours: ny","time_value: 2025-04-06<br />.response:  120<br />.colours: ny","time_value: 2025-04-13<br />.response:  109<br />.colours: ny","time_value: 2025-04-20<br />.response:   95<br />.colours: ny","time_value: 2025-04-27<br />.response:   60<br />.colours: ny","time_value: 2025-05-04<br />.response:   58<br />.colours: ny","time_value: 2025-05-11<br />.response:   44<br />.colours: ny","time_value: 2025-05-18<br />.response:   38<br />.colours: ny","time_value: 2025-05-25<br />.response:   19<br />.colours: ny","time_value: 2025-06-01<br />.response:   26<br />.colours: ny","time_value: 2025-06-08<br />.response:   23<br />.colours: ny","time_value: 2025-06-15<br />.response:   12<br />.colours: ny","time_value: 2025-06-22<br />.response:   13<br />.colours: ny","time_value: 2025-06-29<br />.response:   16<br />.colours: ny","time_value: 2025-07-06<br />.response:   14<br />.colours: ny","time_value: 2025-07-13<br />.response:   14<br />.colours: ny","time_value: 2025-07-20<br />.response:   16<br />.colours: ny","time_value: 2025-07-27<br />.response:   10<br />.colours: ny","time_value: 2025-08-03<br />.response:   17<br />.colours: ny","time_value: 2025-08-10<br />.response:   12<br />.colours: ny","time_value: 2025-08-17<br />.response:   13<br />.colours: ny","time_value: 2025-08-24<br />.response:   19<br />.colours: ny","time_value: 2025-08-31<br />.response:   27<br />.colours: ny","time_value: 2025-09-07<br />.response:   31<br />.colours: ny","time_value: 2025-09-14<br />.response:   30<br />.colours: ny","time_value: 2025-09-21<br />.response:   45<br />.colours: ny","time_value: 2025-09-28<br />.response:   30<br />.colours: ny","time_value: 2025-10-05<br />.response:   47<br />.colours: ny","time_value: 2025-10-12<br />.response:   37<br />.colours: ny","time_value: 2025-10-19<br />.response:   48<br />.colours: ny","time_value: 2025-10-26<br />.response:   57<br />.colours: ny","time_value: 2025-11-02<br />.response:   66<br />.colours: ny","time_value: 2025-11-09<br />.response:  106<br />.colours: ny","time_value: 2025-11-16<br />.response:  134<br />.colours: ny","time_value: 2025-11-23<br />.response:  207<br />.colours: ny","time_value: 2025-11-30<br />.response:  281<br />.colours: ny","time_value: 2025-12-07<br />.response:  364<br />.colours: ny","time_value: 2025-12-14<br />.response:  390<br />.colours: ny","time_value: 2025-12-21<br />.response:  468<br />.colours: ny","time_value: 2025-12-28<br />.response:  552<br />.colours: ny","time_value: 2026-01-04<br />.response:  549<br />.colours: ny"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(53,183,121,1)","dash":"solid"},"hoveron":"points","name":"ny","legendgroup":"ny","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[1301,1382,1063,940,865,760,695,596,523,523,433,451,339,257,187,169,142,105,86,77,77,134,63,42,35,41,22,38,38,34,52,33,42,35,32,36,41,33,35,51,41,48,55,48,39,100,89,141,152,230,291,388,493,429],"text":["time_value: 2024-12-29<br />.response: 1301<br />.colours: pa","time_value: 2025-01-05<br />.response: 1382<br />.colours: pa","time_value: 2025-01-12<br />.response: 1063<br />.colours: pa","time_value: 2025-01-19<br />.response:  940<br />.colours: pa","time_value: 2025-01-26<br />.response:  865<br />.colours: pa","time_value: 2025-02-02<br />.response:  760<br />.colours: pa","time_value: 2025-02-09<br />.response:  695<br />.colours: pa","time_value: 2025-02-16<br />.response:  596<br />.colours: pa","time_value: 2025-02-23<br />.response:  523<br />.colours: pa","time_value: 2025-03-02<br />.response:  523<br />.colours: pa","time_value: 2025-03-09<br />.response:  433<br />.colours: pa","time_value: 2025-03-16<br />.response:  451<br />.colours: pa","time_value: 2025-03-23<br />.response:  339<br />.colours: pa","time_value: 2025-03-30<br />.response:  257<br />.colours: pa","time_value: 2025-04-06<br />.response:  187<br />.colours: pa","time_value: 2025-04-13<br />.response:  169<br />.colours: pa","time_value: 2025-04-20<br />.response:  142<br />.colours: pa","time_value: 2025-04-27<br />.response:  105<br />.colours: pa","time_value: 2025-05-04<br />.response:   86<br />.colours: pa","time_value: 2025-05-11<br />.response:   77<br />.colours: pa","time_value: 2025-05-18<br />.response:   77<br />.colours: pa","time_value: 2025-05-25<br />.response:  134<br />.colours: pa","time_value: 2025-06-01<br />.response:   63<br />.colours: pa","time_value: 2025-06-08<br />.response:   42<br />.colours: pa","time_value: 2025-06-15<br />.response:   35<br />.colours: pa","time_value: 2025-06-22<br />.response:   41<br />.colours: pa","time_value: 2025-06-29<br />.response:   22<br />.colours: pa","time_value: 2025-07-06<br />.response:   38<br />.colours: pa","time_value: 2025-07-13<br />.response:   38<br />.colours: pa","time_value: 2025-07-20<br />.response:   34<br />.colours: pa","time_value: 2025-07-27<br />.response:   52<br />.colours: pa","time_value: 2025-08-03<br />.response:   33<br />.colours: pa","time_value: 2025-08-10<br />.response:   42<br />.colours: pa","time_value: 2025-08-17<br />.response:   35<br />.colours: pa","time_value: 2025-08-24<br />.response:   32<br />.colours: pa","time_value: 2025-08-31<br />.response:   36<br />.colours: pa","time_value: 2025-09-07<br />.response:   41<br />.colours: pa","time_value: 2025-09-14<br />.response:   33<br />.colours: pa","time_value: 2025-09-21<br />.response:   35<br />.colours: pa","time_value: 2025-09-28<br />.response:   51<br />.colours: pa","time_value: 2025-10-05<br />.response:   41<br />.colours: pa","time_value: 2025-10-12<br />.response:   48<br />.colours: pa","time_value: 2025-10-19<br />.response:   55<br />.colours: pa","time_value: 2025-10-26<br />.response:   48<br />.colours: pa","time_value: 2025-11-02<br />.response:   39<br />.colours: pa","time_value: 2025-11-09<br />.response:  100<br />.colours: pa","time_value: 2025-11-16<br />.response:   89<br />.colours: pa","time_value: 2025-11-23<br />.response:  141<br />.colours: pa","time_value: 2025-11-30<br />.response:  152<br />.colours: pa","time_value: 2025-12-07<br />.response:  230<br />.colours: pa","time_value: 2025-12-14<br />.response:  291<br />.colours: pa","time_value: 2025-12-21<br />.response:  388<br />.colours: pa","time_value: 2025-12-28<br />.response:  493<br />.colours: pa","time_value: 2026-01-04<br />.response:  429<br />.colours: pa"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(253,231,37,1)","dash":"solid"},"hoveron":"points","name":"pa","legendgroup":"pa","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":23.970112079701121,"r":7.9701120797011216,"b":40.647571606475722,"l":37.459526774595282},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[20067.450000000001,20475.549999999999],"tickmode":"array","ticktext":["Jan 2025","Apr 2025","Jul 2025","Oct 2025","Jan 2026"],"tickvals":[20089,20179,20270,20362,20454],"categoryorder":"array","categoryarray":["Jan 2025","Apr 2025","Jul 2025","Oct 2025","Jan 2026"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505603,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"Lato","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(229,229,229,1)","gridwidth":0.39850560398505613,"zeroline":false,"anchor":"y","title":{"text":"time_value","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-69.100000000000009,1451.0999999999999],"tickmode":"array","ticktext":["0","500","1000"],"tickvals":[0,500,999.99999999999989],"categoryorder":"array","categoryarray":["0","500","1000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"Lato","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(229,229,229,1)","gridwidth":0.39850560398505613,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}},"hoverformat":".2f","fixedrange":true},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(242,242,242,1)","width":0.72455564360919289,"linetype":"solid"},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"Lato","size":12.7521793275218},"orientation":"h","x":0.5,"y":1.02,"xanchor":"center","yanchor":"bottom","title":{"text":"Location","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"modeBarButtonsToRemove":["zoomIn2d","zoomOut2d"]},"source":"A","attrs":{"1823e1eb5925b":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"1823e1eb5925b","visdat":{"1823e1eb5925b":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-21ba299149ae6a0a0e73" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-21ba299149ae6a0a0e73">{"x":{"data":[{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[943,810,769,748,763,723,678,624,535,440,392,348,256,208,157,99,100,68,46,38,33,24,20,16,9,6,12,10,4,20,10,10,10,12,12,10,20,21,9,18,21,26,22,43,38,71,73,96,136,150,191,278,409,407],"text":["time_value: 2024-12-29<br />.response:  943<br />.colours: ca","time_value: 2025-01-05<br />.response:  810<br />.colours: ca","time_value: 2025-01-12<br />.response:  769<br />.colours: ca","time_value: 2025-01-19<br />.response:  748<br />.colours: ca","time_value: 2025-01-26<br />.response:  763<br />.colours: ca","time_value: 2025-02-02<br />.response:  723<br />.colours: ca","time_value: 2025-02-09<br />.response:  678<br />.colours: ca","time_value: 2025-02-16<br />.response:  624<br />.colours: ca","time_value: 2025-02-23<br />.response:  535<br />.colours: ca","time_value: 2025-03-02<br />.response:  440<br />.colours: ca","time_value: 2025-03-09<br />.response:  392<br />.colours: ca","time_value: 2025-03-16<br />.response:  348<br />.colours: ca","time_value: 2025-03-23<br />.response:  256<br />.colours: ca","time_value: 2025-03-30<br />.response:  208<br />.colours: ca","time_value: 2025-04-06<br />.response:  157<br />.colours: ca","time_value: 2025-04-13<br />.response:   99<br />.colours: ca","time_value: 2025-04-20<br />.response:  100<br />.colours: ca","time_value: 2025-04-27<br />.response:   68<br />.colours: ca","time_value: 2025-05-04<br />.response:   46<br />.colours: ca","time_value: 2025-05-11<br />.response:   38<br />.colours: ca","time_value: 2025-05-18<br />.response:   33<br />.colours: ca","time_value: 2025-05-25<br />.response:   24<br />.colours: ca","time_value: 2025-06-01<br />.response:   20<br />.colours: ca","time_value: 2025-06-08<br />.response:   16<br />.colours: ca","time_value: 2025-06-15<br />.response:    9<br />.colours: ca","time_value: 2025-06-22<br />.response:    6<br />.colours: ca","time_value: 2025-06-29<br />.response:   12<br />.colours: ca","time_value: 2025-07-06<br />.response:   10<br />.colours: ca","time_value: 2025-07-13<br />.response:    4<br />.colours: ca","time_value: 2025-07-20<br />.response:   20<br />.colours: ca","time_value: 2025-07-27<br />.response:   10<br />.colours: ca","time_value: 2025-08-03<br />.response:   10<br />.colours: ca","time_value: 2025-08-10<br />.response:   10<br />.colours: ca","time_value: 2025-08-17<br />.response:   12<br />.colours: ca","time_value: 2025-08-24<br />.response:   12<br />.colours: ca","time_value: 2025-08-31<br />.response:   10<br />.colours: ca","time_value: 2025-09-07<br />.response:   20<br />.colours: ca","time_value: 2025-09-14<br />.response:   21<br />.colours: ca","time_value: 2025-09-21<br />.response:    9<br />.colours: ca","time_value: 2025-09-28<br />.response:   18<br />.colours: ca","time_value: 2025-10-05<br />.response:   21<br />.colours: ca","time_value: 2025-10-12<br />.response:   26<br />.colours: ca","time_value: 2025-10-19<br />.response:   22<br />.colours: ca","time_value: 2025-10-26<br />.response:   43<br />.colours: ca","time_value: 2025-11-02<br />.response:   38<br />.colours: ca","time_value: 2025-11-09<br />.response:   71<br />.colours: ca","time_value: 2025-11-16<br />.response:   73<br />.colours: ca","time_value: 2025-11-23<br />.response:   96<br />.colours: ca","time_value: 2025-11-30<br />.response:  136<br />.colours: ca","time_value: 2025-12-07<br />.response:  150<br />.colours: ca","time_value: 2025-12-14<br />.response:  191<br />.colours: ca","time_value: 2025-12-21<br />.response:  278<br />.colours: ca","time_value: 2025-12-28<br />.response:  409<br />.colours: ca","time_value: 2026-01-04<br />.response:  407<br />.colours: ca"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(68,1,84,1)","dash":"solid"},"hoveron":"points","name":"ca","legendgroup":"ca","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[552,641,495,512,575,488,467,449,482,404,365,261,241,225,156,174,135,74,32,32,12,15,10,19,4,3,5,2,1,0,0,0,2,1,1,1,1,2,2,2,4,6,7,14,10,9,10,22,25,42,79,92,127,130],"text":["time_value: 2024-12-29<br />.response:  552<br />.colours: mi","time_value: 2025-01-05<br />.response:  641<br />.colours: mi","time_value: 2025-01-12<br />.response:  495<br />.colours: mi","time_value: 2025-01-19<br />.response:  512<br />.colours: mi","time_value: 2025-01-26<br />.response:  575<br />.colours: mi","time_value: 2025-02-02<br />.response:  488<br />.colours: mi","time_value: 2025-02-09<br />.response:  467<br />.colours: mi","time_value: 2025-02-16<br />.response:  449<br />.colours: mi","time_value: 2025-02-23<br />.response:  482<br />.colours: mi","time_value: 2025-03-02<br />.response:  404<br />.colours: mi","time_value: 2025-03-09<br />.response:  365<br />.colours: mi","time_value: 2025-03-16<br />.response:  261<br />.colours: mi","time_value: 2025-03-23<br />.response:  241<br />.colours: mi","time_value: 2025-03-30<br />.response:  225<br />.colours: mi","time_value: 2025-04-06<br />.response:  156<br />.colours: mi","time_value: 2025-04-13<br />.response:  174<br />.colours: mi","time_value: 2025-04-20<br />.response:  135<br />.colours: mi","time_value: 2025-04-27<br />.response:   74<br />.colours: mi","time_value: 2025-05-04<br />.response:   32<br />.colours: mi","time_value: 2025-05-11<br />.response:   32<br />.colours: mi","time_value: 2025-05-18<br />.response:   12<br />.colours: mi","time_value: 2025-05-25<br />.response:   15<br />.colours: mi","time_value: 2025-06-01<br />.response:   10<br />.colours: mi","time_value: 2025-06-08<br />.response:   19<br />.colours: mi","time_value: 2025-06-15<br />.response:    4<br />.colours: mi","time_value: 2025-06-22<br />.response:    3<br />.colours: mi","time_value: 2025-06-29<br />.response:    5<br />.colours: mi","time_value: 2025-07-06<br />.response:    2<br />.colours: mi","time_value: 2025-07-13<br />.response:    1<br />.colours: mi","time_value: 2025-07-20<br />.response:    0<br />.colours: mi","time_value: 2025-07-27<br />.response:    0<br />.colours: mi","time_value: 2025-08-03<br />.response:    0<br />.colours: mi","time_value: 2025-08-10<br />.response:    2<br />.colours: mi","time_value: 2025-08-17<br />.response:    1<br />.colours: mi","time_value: 2025-08-24<br />.response:    1<br />.colours: mi","time_value: 2025-08-31<br />.response:    1<br />.colours: mi","time_value: 2025-09-07<br />.response:    1<br />.colours: mi","time_value: 2025-09-14<br />.response:    2<br />.colours: mi","time_value: 2025-09-21<br />.response:    2<br />.colours: mi","time_value: 2025-09-28<br />.response:    2<br />.colours: mi","time_value: 2025-10-05<br />.response:    4<br />.colours: mi","time_value: 2025-10-12<br />.response:    6<br />.colours: mi","time_value: 2025-10-19<br />.response:    7<br />.colours: mi","time_value: 2025-10-26<br />.response:   14<br />.colours: mi","time_value: 2025-11-02<br />.response:   10<br />.colours: mi","time_value: 2025-11-09<br />.response:    9<br />.colours: mi","time_value: 2025-11-16<br />.response:   10<br />.colours: mi","time_value: 2025-11-23<br />.response:   22<br />.colours: mi","time_value: 2025-11-30<br />.response:   25<br />.colours: mi","time_value: 2025-12-07<br />.response:   42<br />.colours: mi","time_value: 2025-12-14<br />.response:   79<br />.colours: mi","time_value: 2025-12-21<br />.response:   92<br />.colours: mi","time_value: 2025-12-28<br />.response:  127<br />.colours: mi","time_value: 2026-01-04<br />.response:  130<br />.colours: mi"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(49,104,142,1)","dash":"solid"},"hoveron":"points","name":"mi","legendgroup":"mi","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[1230,889,716,625,611,522,426,392,295,328,256,240,195,171,120,109,95,60,58,44,38,19,26,23,12,13,16,14,14,16,10,17,12,13,19,27,31,30,45,30,47,37,48,57,66,106,134,207,281,364,390,468,552,549],"text":["time_value: 2024-12-29<br />.response: 1230<br />.colours: ny","time_value: 2025-01-05<br />.response:  889<br />.colours: ny","time_value: 2025-01-12<br />.response:  716<br />.colours: ny","time_value: 2025-01-19<br />.response:  625<br />.colours: ny","time_value: 2025-01-26<br />.response:  611<br />.colours: ny","time_value: 2025-02-02<br />.response:  522<br />.colours: ny","time_value: 2025-02-09<br />.response:  426<br />.colours: ny","time_value: 2025-02-16<br />.response:  392<br />.colours: ny","time_value: 2025-02-23<br />.response:  295<br />.colours: ny","time_value: 2025-03-02<br />.response:  328<br />.colours: ny","time_value: 2025-03-09<br />.response:  256<br />.colours: ny","time_value: 2025-03-16<br />.response:  240<br />.colours: ny","time_value: 2025-03-23<br />.response:  195<br />.colours: ny","time_value: 2025-03-30<br />.response:  171<br />.colours: ny","time_value: 2025-04-06<br />.response:  120<br />.colours: ny","time_value: 2025-04-13<br />.response:  109<br />.colours: ny","time_value: 2025-04-20<br />.response:   95<br />.colours: ny","time_value: 2025-04-27<br />.response:   60<br />.colours: ny","time_value: 2025-05-04<br />.response:   58<br />.colours: ny","time_value: 2025-05-11<br />.response:   44<br />.colours: ny","time_value: 2025-05-18<br />.response:   38<br />.colours: ny","time_value: 2025-05-25<br />.response:   19<br />.colours: ny","time_value: 2025-06-01<br />.response:   26<br />.colours: ny","time_value: 2025-06-08<br />.response:   23<br />.colours: ny","time_value: 2025-06-15<br />.response:   12<br />.colours: ny","time_value: 2025-06-22<br />.response:   13<br />.colours: ny","time_value: 2025-06-29<br />.response:   16<br />.colours: ny","time_value: 2025-07-06<br />.response:   14<br />.colours: ny","time_value: 2025-07-13<br />.response:   14<br />.colours: ny","time_value: 2025-07-20<br />.response:   16<br />.colours: ny","time_value: 2025-07-27<br />.response:   10<br />.colours: ny","time_value: 2025-08-03<br />.response:   17<br />.colours: ny","time_value: 2025-08-10<br />.response:   12<br />.colours: ny","time_value: 2025-08-17<br />.response:   13<br />.colours: ny","time_value: 2025-08-24<br />.response:   19<br />.colours: ny","time_value: 2025-08-31<br />.response:   27<br />.colours: ny","time_value: 2025-09-07<br />.response:   31<br />.colours: ny","time_value: 2025-09-14<br />.response:   30<br />.colours: ny","time_value: 2025-09-21<br />.response:   45<br />.colours: ny","time_value: 2025-09-28<br />.response:   30<br />.colours: ny","time_value: 2025-10-05<br />.response:   47<br />.colours: ny","time_value: 2025-10-12<br />.response:   37<br />.colours: ny","time_value: 2025-10-19<br />.response:   48<br />.colours: ny","time_value: 2025-10-26<br />.response:   57<br />.colours: ny","time_value: 2025-11-02<br />.response:   66<br />.colours: ny","time_value: 2025-11-09<br />.response:  106<br />.colours: ny","time_value: 2025-11-16<br />.response:  134<br />.colours: ny","time_value: 2025-11-23<br />.response:  207<br />.colours: ny","time_value: 2025-11-30<br />.response:  281<br />.colours: ny","time_value: 2025-12-07<br />.response:  364<br />.colours: ny","time_value: 2025-12-14<br />.response:  390<br />.colours: ny","time_value: 2025-12-21<br />.response:  468<br />.colours: ny","time_value: 2025-12-28<br />.response:  552<br />.colours: ny","time_value: 2026-01-04<br />.response:  549<br />.colours: ny"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(53,183,121,1)","dash":"solid"},"hoveron":"points","name":"ny","legendgroup":"ny","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[20086,20093,20100,20107,20114,20121,20128,20135,20142,20149,20156,20163,20170,20177,20184,20191,20198,20205,20212,20219,20226,20233,20240,20247,20254,20261,20268,20275,20282,20289,20296,20303,20310,20317,20324,20331,20338,20345,20352,20359,20366,20373,20380,20387,20394,20401,20408,20415,20422,20429,20436,20443,20450,20457],"y":[1301,1382,1063,940,865,760,695,596,523,523,433,451,339,257,187,169,142,105,86,77,77,134,63,42,35,41,22,38,38,34,52,33,42,35,32,36,41,33,35,51,41,48,55,48,39,100,89,141,152,230,291,388,493,429],"text":["time_value: 2024-12-29<br />.response: 1301<br />.colours: pa","time_value: 2025-01-05<br />.response: 1382<br />.colours: pa","time_value: 2025-01-12<br />.response: 1063<br />.colours: pa","time_value: 2025-01-19<br />.response:  940<br />.colours: pa","time_value: 2025-01-26<br />.response:  865<br />.colours: pa","time_value: 2025-02-02<br />.response:  760<br />.colours: pa","time_value: 2025-02-09<br />.response:  695<br />.colours: pa","time_value: 2025-02-16<br />.response:  596<br />.colours: pa","time_value: 2025-02-23<br />.response:  523<br />.colours: pa","time_value: 2025-03-02<br />.response:  523<br />.colours: pa","time_value: 2025-03-09<br />.response:  433<br />.colours: pa","time_value: 2025-03-16<br />.response:  451<br />.colours: pa","time_value: 2025-03-23<br />.response:  339<br />.colours: pa","time_value: 2025-03-30<br />.response:  257<br />.colours: pa","time_value: 2025-04-06<br />.response:  187<br />.colours: pa","time_value: 2025-04-13<br />.response:  169<br />.colours: pa","time_value: 2025-04-20<br />.response:  142<br />.colours: pa","time_value: 2025-04-27<br />.response:  105<br />.colours: pa","time_value: 2025-05-04<br />.response:   86<br />.colours: pa","time_value: 2025-05-11<br />.response:   77<br />.colours: pa","time_value: 2025-05-18<br />.response:   77<br />.colours: pa","time_value: 2025-05-25<br />.response:  134<br />.colours: pa","time_value: 2025-06-01<br />.response:   63<br />.colours: pa","time_value: 2025-06-08<br />.response:   42<br />.colours: pa","time_value: 2025-06-15<br />.response:   35<br />.colours: pa","time_value: 2025-06-22<br />.response:   41<br />.colours: pa","time_value: 2025-06-29<br />.response:   22<br />.colours: pa","time_value: 2025-07-06<br />.response:   38<br />.colours: pa","time_value: 2025-07-13<br />.response:   38<br />.colours: pa","time_value: 2025-07-20<br />.response:   34<br />.colours: pa","time_value: 2025-07-27<br />.response:   52<br />.colours: pa","time_value: 2025-08-03<br />.response:   33<br />.colours: pa","time_value: 2025-08-10<br />.response:   42<br />.colours: pa","time_value: 2025-08-17<br />.response:   35<br />.colours: pa","time_value: 2025-08-24<br />.response:   32<br />.colours: pa","time_value: 2025-08-31<br />.response:   36<br />.colours: pa","time_value: 2025-09-07<br />.response:   41<br />.colours: pa","time_value: 2025-09-14<br />.response:   33<br />.colours: pa","time_value: 2025-09-21<br />.response:   35<br />.colours: pa","time_value: 2025-09-28<br />.response:   51<br />.colours: pa","time_value: 2025-10-05<br />.response:   41<br />.colours: pa","time_value: 2025-10-12<br />.response:   48<br />.colours: pa","time_value: 2025-10-19<br />.response:   55<br />.colours: pa","time_value: 2025-10-26<br />.response:   48<br />.colours: pa","time_value: 2025-11-02<br />.response:   39<br />.colours: pa","time_value: 2025-11-09<br />.response:  100<br />.colours: pa","time_value: 2025-11-16<br />.response:   89<br />.colours: pa","time_value: 2025-11-23<br />.response:  141<br />.colours: pa","time_value: 2025-11-30<br />.response:  152<br />.colours: pa","time_value: 2025-12-07<br />.response:  230<br />.colours: pa","time_value: 2025-12-14<br />.response:  291<br />.colours: pa","time_value: 2025-12-21<br />.response:  388<br />.colours: pa","time_value: 2025-12-28<br />.response:  493<br />.colours: pa","time_value: 2026-01-04<br />.response:  429<br />.colours: pa"],"type":"scatter","mode":"lines","line":{"width":1.8897637795275593,"color":"rgba(253,231,37,1)","dash":"solid"},"hoveron":"points","name":"pa","legendgroup":"pa","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":23.970112079701121,"r":7.9701120797011216,"b":40.647571606475722,"l":37.459526774595282},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[20067.450000000001,20475.549999999999],"tickmode":"array","ticktext":["Jan 2025","Apr 2025","Jul 2025","Oct 2025","Jan 2026"],"tickvals":[20089,20179,20270,20362,20454],"categoryorder":"array","categoryarray":["Jan 2025","Apr 2025","Jul 2025","Oct 2025","Jan 2026"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505603,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"Lato","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(229,229,229,1)","gridwidth":0.39850560398505613,"zeroline":false,"anchor":"y","title":{"text":"time_value","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-69.100000000000009,1451.0999999999999],"tickmode":"array","ticktext":["0","500","1000"],"tickvals":[0,500,999.99999999999989],"categoryorder":"array","categoryarray":["0","500","1000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.9850560398505608,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"Lato","size":12.7521793275218},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(229,229,229,1)","gridwidth":0.39850560398505613,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}},"hoverformat":".2f","fixedrange":true},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(242,242,242,1)","width":0.72455564360919289,"linetype":"solid"},"yref":"paper","xref":"paper","layer":"below","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"Lato","size":12.7521793275218},"orientation":"h","x":0.5,"y":1.02,"xanchor":"center","yanchor":"bottom","title":{"text":"Location","font":{"color":"rgba(0,0,0,1)","family":"Lato","size":15.940224159402241}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false,"modeBarButtonsToRemove":["zoomIn2d","zoomOut2d"]},"source":"A","attrs":{"1672a54e45dc5":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"1672a54e45dc5","visdat":{"1672a54e45dc5":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_heatmap</span>(edf, value) <span class="sc">+</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">"2025-06-01"</span>, <span class="st">"2026-01-01"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -377,10 +391,12 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>edf <span class="sc">|&gt;</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(geo_value <span class="sc">==</span> <span class="st">"mi"</span>,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">!</span><span class="fu">is.na</span>(value)) <span class="sc">|&gt;</span></span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gr =</span> <span class="fu">growth_rate</span>(value)) <span class="sc">|&gt;</span> </span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(value, gr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    geo_value <span class="sc">==</span> <span class="st">"mi"</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(value)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">gr =</span> <span class="fu">growth_rate</span>(value)) <span class="sc">|&gt;</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>(value, gr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -401,7 +417,7 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>mod_rt <span class="ot">&lt;-</span> <span class="fu">cv_estimate_rt</span>(</span>
 <span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">observed_counts =</span> cancovid<span class="sc">$</span>incident_cases,</span>
 <span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> cancovid<span class="sc">$</span>date</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_rt, <span class="at">which_lambda =</span> <span class="st">"lambda.1se"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
@@ -424,20 +440,20 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># NCHS Influenza Deaths: weekly new deaths per 100k</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>edf_flu_deaths <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>edf_flu_death_rate <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"nchs-mortality"</span>,</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"deaths_flu_incidence_prop"</span>,</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"week"</span>,</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="st">"ca,mi,ny,pa"</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="st">"*"</span></span>
 <span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, <span class="at">flu_deaths =</span> value) <span class="sc">|&gt;</span> </span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, <span class="at">flu_death_rate =</span> value) <span class="sc">|&gt;</span></span>
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_df</span>()</span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ILINet: weighted percent influenza-like illness</span></span>
 <span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>edf_ili_raw <span class="ot">&lt;-</span> <span class="fu">pub_fluview</span>(</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">regions =</span> <span class="st">"ca,mi,ny,pa"</span>,</span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">epiweeks =</span> <span class="fu">epirange</span>(<span class="dv">201001</span>, <span class="dv">202520</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">regions =</span> <span class="st">"al,ak,az,ar,ca,co,ct,de,dc,fl,ga,hi,id,il,in,ia,ks,ky,la,me,md,ma,mi,mn,ms,mo,mt,ne,nv,nh,nj,nm,ny,nc,nd,oh,ok,or,pa,ri,sc,sd,tn,tx,ut,vt,va,wa,wv,wi,wy"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">epiweeks =</span> <span class="fu">epirange</span>(<span class="dv">202004</span>, <span class="dv">202520</span>)</span>
 <span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>edf_ili <span class="ot">&lt;-</span> edf_ili_raw <span class="sc">|&gt;</span></span>
@@ -445,43 +461,43 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_df</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>edf_joined <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  edf_flu_deaths,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>edf_joined <span class="ot">&lt;-</span> <span class="fu">full_join</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  edf_flu_death_rate,</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  edf_ili,</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"geo_value"</span>, <span class="st">"time_value"</span>)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>edf_joined</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>edf_joined</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>An `epi_df` object, 639 x 4 with metadata:
+<pre><code>An `epi_df` object, 16,896 x 4 with metadata:
 * geo_type  = state
 * time_type = week
-* as_of     = 2026-04-24 10:20:58.703022
+* as_of     = 2026-04-27 05:07:05.485001
 Latency (lag between last available observation and epi_df's as_of, by time series):
-* lag across all time series = 49–54 weeks (see summary() for per-signal details)
-
-# A tibble: 639 × 4
-   geo_value time_value flu_deaths  wili
-   &lt;chr&gt;     &lt;date&gt;          &lt;dbl&gt; &lt;dbl&gt;
- 1 ca        2020-01-26      0.152  4.98
- 2 mi        2020-01-26      0.120  3.72
- 3 ny        2020-01-26      0.185  7.54
- 4 pa        2020-01-26      0.109  4.91
- 5 ca        2020-02-02      0.173  5.06
- 6 ny        2020-02-02      0.202  7.28
- 7 pa        2020-02-02      0.133  5.08
- 8 ca        2020-02-09      0.198  4.80
- 9 mi        2020-02-09      0.191  4.04
-10 ny        2020-02-09      0.155  6.10
-# ℹ 629 more rows</code></pre>
+* lag across all time series = 3–50 weeks (see summary() for per-signal details)
+* Empty time series detected
+# A tibble: 16,896 × 4
+   geo_value time_value flu_death_rate  wili
+   &lt;chr&gt;     &lt;date&gt;              &lt;dbl&gt; &lt;dbl&gt;
+ 1 al        2020-01-26          0.286  9.03
+ 2 az        2020-01-26          0.179  4.43
+ 3 ca        2020-01-26          0.152  4.98
+ 4 ct        2020-01-26          0.337  9.09
+ 5 dc        2020-01-26          0      3.41
+ 6 de        2020-01-26          0      2.60
+ 7 fl        2020-01-26          0.163 NA   
+ 8 hi        2020-01-26          0      4.48
+ 9 il        2020-01-26          0.126  6.72
+10 ma        2020-01-26          0.203  5.55
+# ℹ 16,886 more rows</code></pre>
 </div>
 </div>
 <ul>
 <li>Use <code>autoplot()</code> with both indicators selected as parameters to view the data on one plot.</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf_joined, flu_deaths, wili)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(edf_joined, flu_death_rate, wili, </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">.facet_filter =</span> geo_value <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"ca"</span>, <span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"pa"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -502,62 +518,81 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-location temporal correlation</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">epi_cor</span>(edf_joined, flu_deaths, wili,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">epi_cor</span>(edf_joined, flu_death_rate, wili,</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_by =</span> geo_value</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 2
-  geo_value   cor
-  &lt;chr&gt;     &lt;dbl&gt;
-1 ca        0.801
-2 mi        0.846
-3 ny        0.599
-4 pa        0.709</code></pre>
+<pre><code># A tibble: 52 × 2
+   geo_value    cor
+   &lt;chr&gt;      &lt;dbl&gt;
+ 1 ak        NA    
+ 2 al         0.869
+ 3 ar         0.768
+ 4 az         0.832
+ 5 ca         0.801
+ 6 co         0.821
+ 7 ct         0.775
+ 8 dc        NA    
+ 9 de         0.434
+10 fl         0.558
+# ℹ 42 more rows</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">epi_cor</span>(edf_joined, flu_deaths, wili,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">epi_cor</span>(edf_joined, flu_death_rate, wili,</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_by =</span> time_value, <span class="at">method =</span> <span class="st">"spearman"</span></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 248 × 2
-   time_value   cor
-   &lt;date&gt;     &lt;dbl&gt;
- 1 2020-01-26   0.8
- 2 2020-02-02   0.5
- 3 2020-02-09  -0.4
- 4 2020-02-16  -0.2
- 5 2020-02-23  -0.4
- 6 2020-03-01  -0.8
- 7 2020-03-08  -0.4
- 8 2020-03-15  -0.4
- 9 2020-03-22   0.4
-10 2020-03-29   0.4
-# ℹ 238 more rows</code></pre>
+<pre><code># A tibble: 99 × 2
+   time_value    cor
+   &lt;date&gt;      &lt;dbl&gt;
+ 1 2020-01-26  0.556
+ 2 2020-02-02  0.434
+ 3 2020-02-09  0.436
+ 4 2020-02-16  0.322
+ 5 2020-02-23  0.318
+ 6 2020-03-01  0.11 
+ 7 2020-03-08  0.174
+ 8 2020-03-15 -0.252
+ 9 2020-03-22  0.352
+10 2020-03-29  0.397
+# ℹ 89 more rows</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">epi_cor</span>(edf_joined, flu_deaths, wili,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">epi_cor</span>(edf_joined, flu_death_rate, wili,</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_by =</span> geo_value, <span class="at">method =</span> <span class="st">"spearman"</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 2
-  geo_value   cor
-  &lt;chr&gt;     &lt;dbl&gt;
-1 ca        0.899
-2 mi        0.751
-3 ny        0.763
-4 pa        0.810</code></pre>
+<pre><code># A tibble: 46 × 2
+   geo_value   cor
+   &lt;chr&gt;     &lt;dbl&gt;
+ 1 al        0.658
+ 2 ar        0.489
+ 3 az        0.696
+ 4 ca        0.899
+ 5 co        0.654
+ 6 ct        0.487
+ 7 de        0.166
+ 8 fl        0.537
+ 9 ga        0.763
+10 ia        0.547
+# ℹ 36 more rows</code></pre>
 </div>
 </div>
 <p>Use <code>ggplot2</code> or any other plotting package to analyze how the correlation changes over time.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cor_spatial <span class="ot">&lt;-</span> <span class="fu">epi_cor</span>(edf_joined, flu_deaths, wili,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>cor_spatial <span class="ot">&lt;-</span> <span class="fu">epi_cor</span>(edf_joined, flu_death_rate, wili,</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">cor_by =</span> time_value, <span class="at">method =</span> <span class="st">"spearman"</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(cor_spatial, <span class="fu">aes</span>(<span class="at">x =</span> time_value, <span class="at">y =</span> cor)) <span class="sc">+</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>cor_spatial <span class="sc">|&gt;</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>() <span class="sc">|&gt;</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time_value, <span class="at">y =</span> cor)) <span class="sc">+</span></span>
 <span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Spearman rho"</span>,</span>
-<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"NCHS flu deaths vs. weighted ILI: spatial correlation over time"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Spearman rho"</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"NCHS flu death rate vs. weighted %ILI: spatial correlation over time"</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -565,30 +600,34 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </figure>
 </div>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ^ skipped time values are from NA correlations due to mortality being</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="co">#   0 across all locations</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>⚔️ Use the <code>dt1</code> and <code>dt2</code> parameters in <code>epi_cor()</code> to find the exact lag that maximizes the correlation between your candidate and guiding indicators. You can even wrap this in a <code>lapply()</code> over a range of lags to build a “lag-lead” visualization of the relationship between the two signals.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>lag_summary <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="sc">-</span><span class="dv">8</span><span class="sc">:</span><span class="dv">8</span>, \(lag) {</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_cor</span>(edf_joined, flu_deaths, wili,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cor_by =</span> geo_value, <span class="at">dt1 =</span> <span class="sc">-</span>lag, <span class="at">method =</span> <span class="st">"spearman"</span></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">lag =</span> lag)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">|&gt;</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(lag) <span class="sc">|&gt;</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_cor =</span> <span class="fu">mean</span>(cor, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">q25      =</span> <span class="fu">quantile</span>(cor, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">q75      =</span> <span class="fu">quantile</span>(cor, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups  =</span> <span class="st">"drop"</span></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(lag_summary, <span class="fu">aes</span>(<span class="at">x =</span> lag)) <span class="sc">+</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mean_cor)) <span class="sc">+</span></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> mean_cor)) <span class="sc">+</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Lag (weeks)"</span>, <span class="at">y =</span> <span class="st">"Spearman correlation"</span>,</span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"NCHS flu deaths vs. weighted ILI:</span><span class="sc">\n</span><span class="st">mean correlation by lag"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>lag_summary <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="sc">-</span><span class="dv">8</span><span class="sc">:</span><span class="dv">8</span>, \(lag) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">epi_cor</span>(edf_joined, flu_death_rate, wili,</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">cor_by =</span> geo_value, <span class="at">dt1 =</span> <span class="sc">-</span>lag, <span class="at">method =</span> <span class="st">"spearman"</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">lag =</span> lag)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">|&gt;</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_rows</span>() <span class="sc">|&gt;</span></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(lag) <span class="sc">|&gt;</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_cor =</span> <span class="fu">mean</span>(cor, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">q25      =</span> <span class="fu">quantile</span>(cor, <span class="fl">0.25</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">q75      =</span> <span class="fu">quantile</span>(cor, <span class="fl">0.75</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups  =</span> <span class="st">"drop"</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(lag_summary, <span class="fu">aes</span>(<span class="at">x =</span> lag)) <span class="sc">+</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">y =</span> mean_cor)) <span class="sc">+</span></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> mean_cor)) <span class="sc">+</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Lag (weeks)"</span>, <span class="at">y =</span> <span class="st">"Spearman correlation"</span>,</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"NCHS flu death_rate vs. weighted ILI:</span><span class="sc">\n</span><span class="st">mean correlation by lag"</span></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -608,15 +647,21 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <p><strong>Hint:</strong> For version-aware processing, including revision analysis and modelling, the training data needs to include the revision history. Since we’re using Delphi-hosted data right now, we can fetch data versions from the Delphi Epidata API by specifying <code>issues = "*"</code> in the API call.</p>
 </blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>archive_raw <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"doctor-visits"</span>,</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"smoothed_adj_cli"</span>,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"day"</span>,</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">20200101</span>, <span class="dv">20200601</span>),</span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">issues =</span> <span class="st">"*"</span></span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>archive_raw <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"doctor-visits"</span>,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"smoothed_adj_cli"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"day"</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">20200101</span>, <span class="dv">20200601</span>),</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">issues =</span> <span class="st">"*"</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># ^ to perform this query, you may need to register for an API key at</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="co"># https://docs.google.com/forms/d/e/1FAIpQLSe5i-lgb9hcMVepntMIeEo8LUZUMTUnQD3hbrQI3vSteGsl4w/viewform</span></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a><span class="co"># then usethis::edit_r_environ() to open your .Renviron configuration</span></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="co"># file and add the line `DELPHI_EPIDATA_KEY=yourkeyhere` (without</span></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"># quotes) in the file and save it, then run</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a><span class="co"># readRenviron("~/.Renviron") or restart R.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Convert the data into <code>epi_archive</code> format using <code>as_epi_archive()</code>.</li>
@@ -625,9 +670,9 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <p><strong>Hint:</strong> <code>as_epi_archive()</code> requires a column called <code>version</code>. Since the Delphi Epidata API returns the <code>issue</code> column, you may need to rename this column with <code>rename(version = issue)</code>.</p>
 </blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>archive_data <span class="ot">&lt;-</span> archive_raw <span class="sc">|&gt;</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, <span class="at">version =</span> issue, value) <span class="sc">|&gt;</span></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_archive</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>archive_data <span class="ot">&lt;-</span> archive_raw <span class="sc">|&gt;</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(geo_value, time_value, <span class="at">version =</span> issue, value) <span class="sc">|&gt;</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_archive</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <ul>
 <li>Plot the data using <code>autoplot()</code>.</li>
@@ -636,7 +681,7 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <p><strong>Hint:</strong> To view the help file for this method, type <code>?autoplot.epi_archive</code> in R or visit <a href="https://cmu-delphi.github.io/epiprocess/dev/reference/autoplot.epi_archive.html">this link</a>.</p>
 </blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(archive_data, value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(archive_data, value)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -652,7 +697,7 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <li>“Slice” the archive at a specific version date using <code>epix_as_of()</code>. <a href="https://cmu-delphi.github.io/epiprocess/dev/reference/epix_as_of.html">Documentation</a></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>snapshot_early <span class="ot">&lt;-</span> <span class="fu">epix_as_of</span>(archive_data, <span class="at">version =</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>snapshot_early <span class="ot">&lt;-</span> <span class="fu">epix_as_of</span>(archive_data, <span class="at">version =</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-01"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <blockquote class="blockquote">
 <p>ⓘ When you extract a snapshot using <code>epix_as_of()</code>, you are essentially “time-travelling” to see the state of knowledge on that date. If the preliminary values on a date were much lower than the final values, how might that lead to a false sense of security during an emerging surge?</p>
@@ -662,29 +707,33 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </blockquote>
 <p>⚔️ Instead of fetching the entire history, use the <code>as_of</code> parameter in <code>pub_covidcast()</code> to fetch the data exactly as it was reported on a specific date. Convert it to an <code>epi_df</code> and compare it to the slice you took above.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>edf_as_of <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"doctor-visits"</span>,</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"smoothed_adj_cli"</span>,</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
-<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"day"</span>,</span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
-<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">20200101</span>, <span class="dv">20200601</span>),</span>
-<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">as_of =</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-01"</span>)</span>
-<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_df</span>()</span>
-<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
-<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  edf_as_of <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">version =</span> <span class="st">"as_of arg"</span>),</span>
-<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  snapshot_early<span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">version =</span> <span class="st">"snapshot from epi_archive"</span>)</span>
-<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(geo_value <span class="sc">==</span> <span class="st">"pa"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> time_value, <span class="at">y =</span> value, </span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">color =</span> version, <span class="at">lty =</span> version)) <span class="sc">+</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Doctor visits (% CLI)"</span>,</span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"pub_covidcast as_of vs. snapshot from epi_archive"</span>, </span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">""</span>,</span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> <span class="st">""</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>edf_as_of <span class="ot">&lt;-</span> <span class="fu">pub_covidcast</span>(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">source =</span> <span class="st">"doctor-visits"</span>,</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">signal =</span> <span class="st">"smoothed_adj_cli"</span>,</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_type =</span> <span class="st">"state"</span>,</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_type =</span> <span class="st">"day"</span>,</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">geo_values =</span> <span class="fu">c</span>(<span class="st">"mi"</span>, <span class="st">"ny"</span>, <span class="st">"tx"</span>, <span class="st">"pa"</span>),</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_values =</span> <span class="fu">epirange</span>(<span class="dv">20200101</span>, <span class="dv">20200601</span>),</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">as_of =</span> <span class="fu">as.Date</span>(<span class="st">"2020-06-01"</span>)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_epi_df</span>()</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  edf_as_of <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">version =</span> <span class="st">"as_of arg"</span>),</span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  snapshot_early <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">version =</span> <span class="st">"snapshot from epi_archive"</span>)</span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(geo_value <span class="sc">==</span> <span class="st">"pa"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> time_value, <span class="at">y =</span> value,</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> version, <span class="at">lty =</span> version</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Doctor visits (% CLI)"</span>,</span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"pub_covidcast as_of vs. snapshot from epi_archive"</span>,</span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">""</span>,</span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">lty =</span> <span class="st">""</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -700,8 +749,8 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <p><strong>Hint:</strong> use <code>$revision_behavior</code> on the object returned by <code>revision_analysis()</code> to access the summary statistics dataframe for each revision date (i.e.&nbsp;“key”).</p>
 </blockquote>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>rev_result <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value)</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>rev_result<span class="sc">$</span>revision_behavior</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>rev_result <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>rev_result<span class="sc">$</span>revision_behavior</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 488 × 11
    time_value geo_value n_revisions min_lag max_lag  lag_near_latest spread
@@ -729,19 +778,21 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </blockquote>
 <p>⚔️ Try out using the <code>within_latest</code> parameter within <code>revision_analysis()</code> to change the reliable threshold value. How does changing that value affect the output value of <code>lag_near_latest</code>?</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>rev_tight <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value,</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">within_latest =</span> <span class="fl">0.1</span>)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>rev_loose <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value,</span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">within_latest =</span> <span class="fl">0.3</span>)</span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  rev_tight<span class="sc">$</span>revision_behavior  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">threshold =</span> <span class="st">"10%"</span>),</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  rev_result<span class="sc">$</span>revision_behavior <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">threshold =</span> <span class="st">"20%"</span>),</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>  rev_loose<span class="sc">$</span>revision_behavior  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">threshold =</span> <span class="st">"30%"</span>)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(threshold) <span class="sc">|&gt;</span></span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_lag =</span> <span class="fu">median</span>(lag_near_latest, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>rev_tight <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">within_latest =</span> <span class="fl">0.1</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>rev_loose <span class="ot">&lt;-</span> <span class="fu">revision_analysis</span>(archive_data, value,</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">within_latest =</span> <span class="fl">0.3</span></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>  rev_tight<span class="sc">$</span>revision_behavior <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">threshold =</span> <span class="st">"10%"</span>),</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>  rev_result<span class="sc">$</span>revision_behavior <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">threshold =</span> <span class="st">"20%"</span>),</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>  rev_loose<span class="sc">$</span>revision_behavior <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">threshold =</span> <span class="st">"30%"</span>)</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(threshold) <span class="sc">|&gt;</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">median_lag =</span> <span class="fu">median</span>(lag_near_latest, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 2
   threshold median_lag
@@ -753,12 +804,12 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 </div>
 <p>⚔️ Use <code>dplyr</code>’s <code>group_by()</code> and <code>summarize()</code> to calculate revision statistics for each location.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>rev_result<span class="sc">$</span>revision_behavior <span class="sc">|&gt;</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(geo_value) <span class="sc">|&gt;</span></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_spread            =</span> <span class="fu">mean</span>(spread, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_lag_near_latest =</span> <span class="fu">median</span>(lag_near_latest, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    ) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>rev_result<span class="sc">$</span>revision_behavior <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(geo_value) <span class="sc">|&gt;</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_spread            =</span> <span class="fu">mean</span>(spread, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_lag_near_latest =</span> <span class="fu">median</span>(lag_near_latest, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 3
   geo_value mean_spread median_lag_near_latest
@@ -1178,7 +1229,7 @@ Latency (lag between last available observation and epi_df's as_of, by time seri
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>This work by the <a href="https://delphi.cmu.edu">Delphi Research Group</a> is licensed under the <a href="../LICENSE.md">MIT license</a>.</p>
+<p>Workshop at Insight-Net 2026 meeting, by <a href="https://delphi.cmu.edu">Delphi</a> and <a href="https://www.micom-insight.net/">MICOM</a> centers.</p>
 </div>   
     <div class="nav-footer-center">
       &nbsp;
