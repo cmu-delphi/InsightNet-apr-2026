@@ -102,7 +102,7 @@ fcst_ar
 ```{r}
 #| label: forecast-components
 # Quick plot
-autoplot(fcst_ar)
+autoplot(fcst_ar, .facet_filter = geo_value %in% target_states)
 
 # Inspect predictions and pivot quantiles
 fcst_ar$predictions |>
@@ -149,7 +149,7 @@ fcst_multi <- arx_forecaster(
 
 fcst_multi
 
-autoplot(fcst_multi)
+autoplot(fcst_multi, .facet_filter = geo_value %in% target_states)
 ```
 
 - By default, `arx_forecaster()` uses linear regression. Swap this for `quantile_reg()`. 
@@ -165,7 +165,7 @@ fcst_qr <- arx_forecaster(
 
 fcst_qr
 
-autoplot(fcst_qr)
+autoplot(fcst_qr, .facet_filter = geo_value %in% target_states)
 ```
 
 - Further customize your model by modifying the `arx_args_list()` arguments via the `args_list` parameter in `arx_forecaster()`. 
@@ -195,7 +195,7 @@ fcst_custom <- arx_forecaster(
 
 fcst_custom
 
-autoplot(fcst_custom)
+autoplot(fcst_custom, .facet_filter = geo_value %in% target_states)
 ```
 
 ⚔️ Create a forecast trajectory over a range of dates and plot it with `autoplot()`. This creates a full trajectory showing how uncertainty grows with the horizon.
@@ -225,7 +225,8 @@ autoplot(
   object = all_canned_results[[1]]$epi_workflow,
   predictions = results,
   observed_response = covid_case_death_rates |>
-    filter(geo_value %in% target_states, time_value > "2021-07-01")
+    filter(time_value > "2021-07-01"), 
+    .facet_filter = geo_value %in% target_states
 )
 ```
 
@@ -240,8 +241,9 @@ autoplot(
 ```{r}
 #| label: classification-model
 # Categorical prediction: is death_rate low (<= 0.01) or high (> 0.01)?
+
 classifier_fcst <- arx_classifier(
-  training_set,
+  training_set |> filter(geo_value %in% c(tolower(state.abb), "dc")),
   outcome = "death_rate",
   predictors = c("case_rate", "death_rate"),
   args_list = arx_class_args_list(
