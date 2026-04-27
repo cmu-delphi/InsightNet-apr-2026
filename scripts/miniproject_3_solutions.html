@@ -490,32 +490,35 @@ Coefficients:
 </blockquote>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical prediction: is death_rate low (&lt;= 0.01) or high (&gt; 0.01)?</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We filter to our target states here because the growth_rate step requires at</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># least two non-NA observations per geo; small territories in the full dataset</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># don't meet this threshold.</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  training_set <span class="sc">|&gt;</span> <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> target_states),</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>classifier_fcst</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># US territories (e.g. American Samoa "as") have too few observations for</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># step_growth_rate to interpolate within its rolling window, so we restrict</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># to the 50 states + DC.</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>us_states <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">tolower</span>(state.abb), <span class="st">"dc"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>classifier_fcst <span class="ot">&lt;-</span> <span class="fu">arx_classifier</span>(</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  training_set <span class="sc">|&gt;</span> <span class="fu">filter</span>(geo_value <span class="sc">%in%</span> us_states),</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">"death_rate"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">predictors =</span> <span class="fu">c</span>(<span class="st">"case_rate"</span>, <span class="st">"death_rate"</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">args_list =</span> <span class="fu">arx_class_args_list</span>(</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">breaks =</span> <span class="fl">0.01</span>,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">ahead =</span> <span class="dv">7</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>classifier_fcst</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a><span class="co"># View the classification probabilities</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>classifier_fcst<span class="sc">$</span>predictions <span class="sc">|&gt;</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 4
+<pre><code># A tibble: 6 × 4
   geo_value .pred_class forecast_date target_date
   &lt;chr&gt;     &lt;fct&gt;       &lt;date&gt;        &lt;date&gt;     
-1 ca        (0.01, Inf] 2021-07-31    2021-08-07 
-2 fl        (0.01, Inf] 2021-07-31    2021-08-07 
-3 ny        (0.01, Inf] 2021-07-31    2021-08-07 
-4 pa        (0.01, Inf] 2021-07-31    2021-08-07 </code></pre>
+1 ak        (0.01, Inf] 2021-07-31    2021-08-07 
+2 al        (0.01, Inf] 2021-07-31    2021-08-07 
+3 ar        (0.01, Inf] 2021-07-31    2021-08-07 
+4 az        (0.01, Inf] 2021-07-31    2021-08-07 
+5 ca        (0.01, Inf] 2021-07-31    2021-08-07 
+6 co        (-Inf,0.01] 2021-07-31    2021-08-07 </code></pre>
 </div>
 </div>
 
