@@ -215,9 +215,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="basic-modelling" class="level2">
 <h2 class="anchored" data-anchor-id="basic-modelling">3.1 Basic Modelling</h2>
 <p>⭐ We will use the built-in <code>covid_case_death_rates</code> dataset provided by the <code>epidatasets</code> package, which automatically loads with the other Delphi tools.</p>
-<blockquote class="blockquote">
-<p>Hint: You can get a partial view of the dataset by entering <code>covid_case_death_rates</code> in the R console.</p>
-</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You can get a partial view of the dataset by entering <code>covid_case_death_rates</code> in the R console.</p>
+</div>
+</div>
 <ul>
 <li>Filter out the observations after August 1, 2021, to create a training set.</li>
 </ul>
@@ -230,9 +240,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># pretend we have one day of latency:</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time_value <span class="sc">&lt;=</span> forecast_date <span class="sc">-</span> <span class="dv">1</span>L)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<blockquote class="blockquote">
-<p>ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn’t actually available at the time of the forecast, how would this “data leakage” give you a misleading impression of your model’s accuracy?</p>
-</blockquote>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn’t actually available at the time of the forecast, how would this “data leakage” give you a misleading impression of your model’s accuracy?</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -263,7 +283,7 @@ Note
 </div>
 </div>
 <ul>
-<li>Let’s fit an autoregressive model using lagged values of the <code>death_rate</code> column as features with <code>arx_forecaster()</code> on our training set. &gt; Hint: you need to provide the dataset and the outcome argument to <code>arx_forecaster()</code></li>
+<li>Let’s fit an autoregressive model using lagged values of the <code>death_rate</code> column as features with <code>arx_forecaster()</code> on our training set. ::: {.callout-tip} you need to provide the dataset and the outcome argument to <code>arx_forecaster()</code> :::</li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a default AR model</span></span>
@@ -320,9 +340,19 @@ Coefficients:
           0.03658            0.37151            0.20792            0.15187  </code></pre>
 </div>
 </div>
-<blockquote class="blockquote">
-<p>ⓘ How heavily does the model weigh data from exactly one week ago compared to yesterday? Try running <code>hardhat::extract_fit_engine(your_forecast$epi_workflow)</code> to examine the fitted coefficients for each lag. Which lag contributes the most to the forecast?</p>
-</blockquote>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How heavily does the model weigh data from exactly one week ago compared to yesterday? Try running <code>hardhat::extract_fit_engine(your_forecast$epi_workflow)</code> to examine the fitted coefficients for each lag. Which lag contributes the most to the forecast?</p>
+</div>
+</div>
 <p>⚔️ Compare your autoregressive model fitted with <code>arx_forecaster()</code> to a simple model. The flatline forecaster is a common baseline that assumes the future will be exactly the last observed value, with uncertainty that grows as the forecast horizon grows. Fit a flatline model using <code>flatline_forecaster()</code> and examine the predictions to see how the quantiles behave.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit a flatline baseline model</span></span>
@@ -405,15 +435,35 @@ Coefficients:
 <ul>
 <li>Further customize your model by modifying the <code>arx_args_list()</code> arguments via the <code>args_list</code> parameter in <code>arx_forecaster()</code>.</li>
 </ul>
-<blockquote class="blockquote">
-<p>Hint: you can access the <code>arx_args_list()</code> documentation by typing <code>?arx_args_list</code> in R.</p>
-</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>you can access the <code>arx_args_list()</code> documentation by typing <code>?arx_args_list</code> in R.</p>
+</div>
+</div>
 <ul>
 <li>Use the <code>lags</code> argument in <code>arx_args_list()</code> to specify provide a vector of integers representing the historical days for each indicator.</li>
 </ul>
-<blockquote class="blockquote">
-<p>Hint: <code>lags = c(0, 7, 14)</code> tells the model to use data from today, one week ago, and two weeks ago as predictors. If you are using multiple indicators as predictors, you can provide a list of vectors (e.g., <code>lags = list(c(0, 7), c(0, 14))</code>) where each vector corresponds to one of your indicators.</p>
-</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>lags = c(0, 7, 14)</code> tells the model to use data from today, one week ago, and two weeks ago as predictors. If you are using multiple indicators as predictors, you can provide a list of vectors (e.g., <code>lags = list(c(0, 7), c(0, 14))</code>) where each vector corresponds to one of your indicators.</p>
+</div>
+</div>
 <ul>
 <li>Set the <code>ahead</code> argument to 28.</li>
 </ul>
@@ -443,9 +493,19 @@ Coefficients:
 </div>
 </div>
 <p>⚔️ Create a forecast trajectory over a range of dates and plot it with <code>autoplot()</code>. This creates a full trajectory showing how uncertainty grows with the horizon.</p>
-<blockquote class="blockquote">
-<p>Hint: see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads</p>
-</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads</p>
+</div>
+</div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We loop over horizons to create a trajectory (0 to 28 days)</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>all_canned_results <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">28</span>, \(days_ahead) {</span>
@@ -486,9 +546,19 @@ Coefficients:
 <ul>
 <li>Create a classifier to predict whether <code>death_rate</code> is <code>&lt;= 0.01</code> or <code>&gt; 0.01</code> using <code>case_rate</code> and <code>death_rate</code> as predictors.</li>
 </ul>
-<blockquote class="blockquote">
-<p>Hint: to configure the classifier, we use <code>arx_class_args_list()</code> as input in the <code>args_list</code> argument. The key parameter is <code>breaks</code>, which defines the thresholds for our categories.</p>
-</blockquote>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>to configure the classifier, we use <code>arx_class_args_list()</code> as input in the <code>args_list</code> argument. The key parameter is <code>breaks</code>, which defines the thresholds for our categories.</p>
+</div>
+</div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Categorical prediction: is death_rate low (&lt;= 0.01) or high (&gt; 0.01)?</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
