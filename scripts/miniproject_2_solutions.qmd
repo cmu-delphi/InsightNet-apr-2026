@@ -55,7 +55,7 @@ epidata_nhsn_state <- pub_covidcast(
   signal = "confirmed_admissions_rsv_ew",
   geo_type = "state",
   time_type = "week",
-  geo_values = "ca,mi,ny,pa",
+  geo_values = "*",
   time_values = epirange(202501, 202601)
 ) |>
   select(geo_value, time_value, value, issue)
@@ -111,9 +111,10 @@ autoplot(edf, value, value_8wav)
 
 ```{r}
 #| label: autoplot-heatmap
-autoplot(edf, value, .facet_by = "geo_value")
 
-autoplot(edf, value, .interactive = TRUE)
+autoplot(edf, value, .facet_by = "geo_value", .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
+
+autoplot(edf, value, .interactive = TRUE, .max_keys = Inf, .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
 
 plot_heatmap(edf, value) +
   coord_cartesian(xlim = as.Date(c("2025-06-01", "2026-01-01")))
@@ -175,14 +176,14 @@ edf_flu_death_rate <- pub_covidcast(
   signal = "deaths_flu_incidence_prop",
   geo_type = "state",
   time_type = "week",
-  geo_values = "ca,mi,ny,pa"
+  geo_values = "*"
 ) |>
   select(geo_value, time_value, flu_death_rate = value) |>
   as_epi_df()
 
 # ILINet: weighted percent influenza-like illness
 edf_ili_raw <- pub_fluview(
-  regions = "ca,mi,ny,pa",
+  regions = "al,ak,az,ar,ca,co,ct,de,dc,fl,ga,hi,id,il,in,ia,ks,ky,la,me,md,ma,mi,mn,ms,mo,mt,ne,nv,nh,nj,nm,ny,nc,nd,oh,ok,or,pa,ri,sc,sd,tn,tx,ut,vt,va,wa,wv,wi,wy",
   epiweeks = epirange(202004, 202520)
 )
 
@@ -208,8 +209,8 @@ edf_joined
 ```{r}
 #| label: autoplot-two
 #| error: true
-edf_joined |>
-  autoplot(flu_death_rate, wili)
+autoplot(edf_joined, flu_death_rate, wili, 
+         .facet_filter = geo_value %in% c("ca", "mi", "ny", "pa"))
 ```
 
   - Calculate a correlation using `epiprocess::epi_cor()`.

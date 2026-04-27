@@ -76,11 +76,9 @@ This is why, for serious applications, we want to use `epi_archive`s and `epix_a
 # Pick four states and visualize the trends
 target_states <- c("ca", "fl", "ny", "pa")
 
-training_set <- training_set |>
-  filter(geo_value %in% target_states)
-
-autoplot(training_set, death_rate, case_rate)
+autoplot(training_set, death_rate, case_rate, .facet_filter = geo_value %in% target_states)
 ```
+
 
 - Let’s fit an autoregressive model using lagged values of the `death_rate` column as features with `arx_forecaster()` on our training set.
 > Hint: you need to provide the dataset and the outcome argument to `arx_forecaster()`
