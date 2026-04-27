@@ -65,11 +65,9 @@ training_set <- covid_case_death_rates |>
 
 > ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn't actually available at the time of the forecast, how would this "data leakage" give you a misleading impression of your model's accuracy?
 
-NOTE: this is why, for serious applications, we want to use
-`epi_archive`s and `epix_as_of` or `epix_slide` rather than the
-filtering approach above, in order to faithfully reflecting reflecting
-the data that would have been fed into a model and how the model would
-have behaved.
+::: {.callout-note}
+This is why, for serious applications, we want to use `epi_archive`s and `epix_as_of` or `epix_slide` rather than the filtering approach above, in order to faithfully reflect the data that would have been fed into a model and how the model would have behaved.
+:::
 
 - Filter to four states of your choosing and use `autoplot()` to explore the `death_rate` and `case_rate` columns.
 
