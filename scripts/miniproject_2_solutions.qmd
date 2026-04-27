@@ -46,7 +46,10 @@ source(here::here("scripts", "setup.R"))
 
 For example, we start with NHSN weekly RSV hospital admissions, pulling all states across multiple seasons.
 
-> **Hint:** The epiprocess documentation and vignettes are available at [cmu-delphi.github.io/epiprocess](https://cmu-delphi.github.io/epiprocess).
+::: {.callout-tip}
+## Hint
+The epiprocess documentation and vignettes are available at [cmu-delphi.github.io/epiprocess](https://cmu-delphi.github.io/epiprocess).
+:::
 
 ```{r}
 #| label: fetch-data
@@ -72,12 +75,18 @@ edf
 summary(edf)
 ```
 
-> ⓘ Look at the "Latency" section in the `summary()` output. The `(!)` symbol appears when there is a "notable" lag. For an up-to-date indicator, you would see no warning and typically a lag of only a few days. If your chosen indicator has a notable lag, how does that impact its use for real-time surveillance?
+::: {.callout-note appearance="simple"}
+## 
+Look at the "Latency" section in the `summary()` output. The `(!)` symbol appears when there is a "notable" lag. For an up-to-date indicator, you would see no warning and typically a lag of only a few days. If your chosen indicator has a notable lag, how does that impact its use for real-time surveillance?
+:::
 
   - Use `epi_slide_mean()` and `epi_slide_sum()` to calculate moving averages and weekly totals in a new column of your `epi_df`. 
     - Try `.window_size` and `.align` parameters to control the sliding window size and the alignment of the sliding window, respectively.
 
-> **Hint:** Because this data has `time_type = "week"`, `.window_size` must be expressed as a `difftime` (e.g., `as.difftime(3, units = "weeks")`).
+::: {.callout-tip}
+## Hint
+Because this data has `time_type = "week"`, `.window_size` must be expressed as a `difftime` (e.g., `as.difftime(3, units = "weeks")`).
+:::
 
 ```{r}
 #| label: sliding
@@ -95,7 +104,10 @@ edf |>
   print(n = 10)
 ```
 
-> ⓘ Plot the different columns you calculated, and compare the results. How does changing the `.window_size` from 1 to 8 weeks impact the "noise" in your plot? Is there a trade-off between smoothness and time-accuracy?
+::: {.callout-note appearance="simple"}
+## 
+Plot the different columns you calculated, and compare the results. How does changing the `.window_size` from 1 to 8 weeks impact the "noise" in your plot? Is there a trade-off between smoothness and time-accuracy?
+:::
 
 ```{r}
 #| label: sliding-plot
@@ -120,7 +132,10 @@ plot_heatmap(edf, value) +
   coord_cartesian(xlim = as.Date(c("2025-06-01", "2026-01-01")))
 ```
 
-> ⓘ If not included already, try selecting all states and use `plot_heatmap()` to identify which states show the most synchronous highs or lows of the metric you're viewing. Can you spot any regional clusters or outliers? Do you see a pattern in where data is most frequently missing?
+::: {.callout-note appearance="simple"}
+## 
+If not included already, try selecting all states and use `plot_heatmap()` to identify which states show the most synchronous highs or lows of the metric you're viewing. Can you spot any regional clusters or outliers? Do you see a pattern in where data is most frequently missing?
+:::
 
   - Estimate the indicator's relative change using `growth_rate()` and plot it side by side using `autoplot()`.
 
@@ -140,7 +155,10 @@ edf |>
   autoplot(value, gr)
 ```
 
-> ⓘ What does the growth rate measure? How is it changing as your data changes?
+::: {.callout-note appearance="simple"}
+## 
+What does the growth rate measure? How is it changing as your data changes?
+:::
 
 ⚔️ Explore `rtestim` to estimate the effective reproductive number, Rt, using an indicator based on actual case counts. The main entry point is `cv_estimate_rt()`, which selects the smoothness parameter through cross-validation. Pass it a numeric vector of case counts from a single location.
 
@@ -164,7 +182,10 @@ plot(mod_rt, which_lambda = "lambda.1se")
 
   - Join these two datasets into a single wide format `epi_df`.
 
-> **Hint:** Turn the two sets into individual `epi_df`s first, then join them [`epiprocess::as_epi_df()`].
+::: {.callout-tip}
+## Hint
+Turn the two sets into individual `epi_df`s first, then join them [`epiprocess::as_epi_df()`].
+:::
 
 ```{r}
 #| label: fetch-two-indicators
@@ -218,7 +239,10 @@ autoplot(edf_joined, flu_death_rate, wili,
     - Set `cor_by` to `geo_value` and `time_value` to estimate the correlation over time within the same location (per-location temporal correlation) and across regions at a specific moment (correlation over time).
     - You can also vary the `method` (using `"pearson"` for linear relationship or `"spearman"` for ranked-based correlation).
 
-> **Hint:** You can find the "correlation" vignettes [here](https://cmu-delphi.github.io/epiprocess/dev/articles/correlation.html).
+::: {.callout-tip}
+## Hint
+You can find the "correlation" vignettes [here](https://cmu-delphi.github.io/epiprocess/dev/articles/correlation.html).
+:::
 
 ```{r}
 #| label: correlation
@@ -291,13 +315,19 @@ ggplot(lag_summary, aes(x = lag)) +
   )
 ```
 
-> ⓘ If you see a high spatial correlation but a low temporal correlation, what does that tell you about the relationship between the two indicators? Is it possible for two signals to be highly correlated in space but not in time?
+::: {.callout-note appearance="simple"}
+## 
+If you see a high spatial correlation but a low temporal correlation, what does that tell you about the relationship between the two indicators? Is it possible for two signals to be highly correlated in space but not in time?
+:::
 
 ## 2.3 Revision behavior - Understanding how data matures over time
 
 ⭐ Fetch and visualize the version history of an indicator — you can choose your own indicator, or follow along with the Day-adjusted COVID-related Doctor Visits indicator.
 
-> **Hint:** For version-aware processing, including revision analysis and modelling, the training data needs to include the revision history. Since we're using Delphi-hosted data right now, we can fetch data versions from the Delphi Epidata API by specifying `issues = "*"` in the API call.
+::: {.callout-tip}
+## Hint
+For version-aware processing, including revision analysis and modelling, the training data needs to include the revision history. Since we're using Delphi-hosted data right now, we can fetch data versions from the Delphi Epidata API by specifying `issues = "*"` in the API call.
+:::
 
 ```{r}
 #| label: fetch-archive
@@ -320,7 +350,10 @@ archive_raw <- pub_covidcast(
 
   - Convert the data into `epi_archive` format using `as_epi_archive()`.
 
-> **Hint:** `as_epi_archive()` requires a column called `version`. Since the Delphi Epidata API returns the `issue` column, you may need to rename this column with `rename(version = issue)`.
+::: {.callout-tip}
+## Hint
+`as_epi_archive()` requires a column called `version`. Since the Delphi Epidata API returns the `issue` column, you may need to rename this column with `rename(version = issue)`.
+:::
 
 ```{r}
 #| label: to-archive
@@ -331,14 +364,20 @@ archive_data <- archive_raw |>
 
   - Plot the data using `autoplot()`.
 
-> **Hint:** To view the help file for this method, type `?autoplot.epi_archive` in R or visit [this link](https://cmu-delphi.github.io/epiprocess/dev/reference/autoplot.epi_archive.html).
+::: {.callout-tip}
+## Hint
+To view the help file for this method, type `?autoplot.epi_archive` in R or visit [this link](https://cmu-delphi.github.io/epiprocess/dev/reference/autoplot.epi_archive.html).
+:::
 
 ```{r}
 #| label: autoplot-archive
 autoplot(archive_data, value)
 ```
 
-> ⓘ Look at the divergence in the `autoplot()` lines. Which version tends to be the most "optimistic" or "pessimistic" compared to the final data (in black)? Do you notice any systematic bias in the initial reports?
+::: {.callout-note appearance="simple"}
+## 
+Look at the divergence in the `autoplot()` lines. Which version tends to be the most "optimistic" or "pessimistic" compared to the final data (in black)? Do you notice any systematic bias in the initial reports?
+:::
 
   - "Slice" the archive at a specific version date using `epix_as_of()`. [Documentation](https://cmu-delphi.github.io/epiprocess/dev/reference/epix_as_of.html)
 
@@ -347,9 +386,15 @@ autoplot(archive_data, value)
 snapshot_early <- epix_as_of(archive_data, version = as.Date("2020-06-01"))
 ```
 
-> ⓘ When you extract a snapshot using `epix_as_of()`, you are essentially "time-travelling" to see the state of knowledge on that date. If the preliminary values on a date were much lower than the final values, how might that lead to a false sense of security during an emerging surge?
+::: {.callout-note appearance="simple"}
+## 
+When you extract a snapshot using `epix_as_of()`, you are essentially "time-travelling" to see the state of knowledge on that date. If the preliminary values on a date were much lower than the final values, how might that lead to a false sense of security during an emerging surge?
+:::
 
-> ⓘ How might this ability to view history and current in a report assist in decision-making around a particular metric? Do you handle this in any particular way at your institution/agency?
+::: {.callout-note appearance="simple"}
+## 
+How might this ability to view history and current in a report assist in decision-making around a particular metric? Do you handle this in any particular way at your institution/agency?
+:::
 
 ⚔️ Instead of fetching the entire history, use the `as_of` parameter in `pub_covidcast()` to fetch the data exactly as it was reported on a specific date. Convert it to an `epi_df` and compare it to the slice you took above.
 
@@ -386,7 +431,10 @@ bind_rows(
 
   - Use `revision_analysis()` to explore how signals change across revisions.
 
-> **Hint:** use `$revision_behavior` on the object returned by `revision_analysis()` to access the summary statistics dataframe for each revision date (i.e. "key").
+::: {.callout-tip}
+## Hint
+Use `$revision_behavior` on the object returned by `revision_analysis()` to access the summary statistics dataframe for each revision date (i.e. "key").
+:::
 
 ```{r}
 #| label: revision-analysis
@@ -394,9 +442,12 @@ rev_result <- revision_analysis(archive_data, value)
 rev_result$revision_behavior
 ```
 
-> ⓘ A key metric generated by `revision_analysis()` is `lag_near_latest` (often called stabilization lag), which measures the number of days it takes for a data point to "settle" within a reliable threshold (e.g., 20%) of its final backfilled value.
+::: {.callout-note appearance="simple"}
+## 
+A key metric generated by `revision_analysis()` is `lag_near_latest` (often called stabilization lag), which measures the number of days it takes for a data point to "settle" within a reliable threshold (e.g., 20%) of its final backfilled value.
 
-> If the average stabilization lag is 20 days, what does that imply for a public health official trying to use yesterday's data to make a decision? How might you adjust your confidence in a signal based on these maturity metrics?
+If the average stabilization lag is 20 days, what does that imply for a public health official trying to use yesterday's data to make a decision? How might you adjust your confidence in a signal based on these maturity metrics?
+:::
 
 ⚔️ Try out using the `within_latest` parameter within `revision_analysis()` to change the reliable threshold value. How does changing that value affect the output value of `lag_near_latest`?
 

@@ -48,7 +48,10 @@ source(here::here("scripts", "setup.R"))
 
 ⭐ We will use the built-in `covid_case_death_rates` dataset provided by the `epidatasets` package, which automatically loads with the other Delphi tools. 
 
-> Hint: You can get a partial view of the dataset by entering `covid_case_death_rates` in the R console.
+::: {.callout-tip}
+## Hint
+You can get a partial view of the dataset by entering `covid_case_death_rates` in the R console.
+:::
 
 - Filter out the observations after August 1, 2021, to create a training set.
 
@@ -63,9 +66,13 @@ training_set <- covid_case_death_rates |>
   filter(time_value <= forecast_date - 1L)
 ```
 
-> ⓘ In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn't actually available at the time of the forecast, how would this "data leakage" give you a misleading impression of your model's accuracy?
+::: {.callout-note appearance="simple"}
+## 
+In a real-world scenario, reporting delays mean that recent data is often missing or subject to revision. If you accidentally trained your model on data that wasn't actually available at the time of the forecast, how would this "data leakage" give you a misleading impression of your model's accuracy?
+:::
 
-::: {.callout-note}
+::: {.callout-important}
+## Note
 This is why, for serious applications, we want to use `epi_archive`s and `epix_as_of` or `epix_slide` rather than the filtering approach above, in order to faithfully reflect the data that would have been fed into a model and how the model would have behaved.
 :::
 
@@ -81,7 +88,10 @@ autoplot(training_set, death_rate, case_rate, .facet_filter = geo_value %in% tar
 
 
 - Let’s fit an autoregressive model using lagged values of the `death_rate` column as features with `arx_forecaster()` on our training set.
-> Hint: you need to provide the dataset and the outcome argument to `arx_forecaster()`
+::: {.callout-tip}
+## Hint
+you need to provide the dataset and the outcome argument to `arx_forecaster()`
+:::
 
 ```{r}
 #| label: basic-ar
@@ -113,7 +123,10 @@ fcst_ar$predictions |>
 hardhat::extract_fit_engine(fcst_ar$epi_workflow)
 ```
 
-> ⓘ How heavily does the model weigh data from exactly one week ago compared to yesterday? Try running `hardhat::extract_fit_engine(your_forecast$epi_workflow)` to examine the fitted coefficients for each lag. Which lag contributes the most to the forecast?
+::: {.callout-note appearance="simple"}
+## 
+How heavily does the model weigh data from exactly one week ago compared to yesterday? Try running `hardhat::extract_fit_engine(your_forecast$epi_workflow)` to examine the fitted coefficients for each lag. Which lag contributes the most to the forecast?
+:::
 
 ⚔️ Compare your autoregressive model fitted with `arx_forecaster()` to a simple model. The flatline forecaster is a common baseline that assumes the future will be exactly the last observed value, with uncertainty that grows as the forecast horizon grows. Fit a flatline model using `flatline_forecaster()` and examine the predictions to see how the quantiles behave.
 
@@ -170,11 +183,17 @@ autoplot(fcst_qr, .facet_filter = geo_value %in% target_states)
 
 - Further customize your model by modifying the `arx_args_list()` arguments via the `args_list` parameter in `arx_forecaster()`. 
 
-> Hint: you can access the `arx_args_list()` documentation by typing `?arx_args_list` in R.
+::: {.callout-tip}
+## Hint
+you can access the `arx_args_list()` documentation by typing `?arx_args_list` in R.
+:::
 
   - Use the `lags` argument in `arx_args_list()` to specify provide a vector of integers representing the historical days for each indicator. 
 
-> Hint: `lags = c(0, 7, 14)` tells the model to use data from today, one week ago, and two weeks ago as predictors. If you are using multiple indicators as predictors, you can provide a list of vectors (e.g., `lags = list(c(0, 7), c(0, 14))`) where each vector corresponds to one of your indicators.
+::: {.callout-tip}
+## Hint
+`lags = c(0, 7, 14)` tells the model to use data from today, one week ago, and two weeks ago as predictors. If you are using multiple indicators as predictors, you can provide a list of vectors (e.g., `lags = list(c(0, 7), c(0, 14))`) where each vector corresponds to one of your indicators.
+:::
 
   - Set the `ahead` argument to 28. 
 
@@ -200,7 +219,10 @@ autoplot(fcst_custom, .facet_filter = geo_value %in% target_states)
 
 ⚔️ Create a forecast trajectory over a range of dates and plot it with `autoplot()`. This creates a full trajectory showing how uncertainty grows with the horizon.
 
-> Hint: see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads
+::: {.callout-tip}
+## Hint
+see this example on creating models for multiple ahead arguments: cmu-delphi.github.io/epipredict/articles/epipredict.html#generating-multiple-aheads
+:::
 
 ```{r}
 #| label: trajectory-plot
@@ -236,7 +258,10 @@ autoplot(
 
 - Create a classifier to predict whether `death_rate` is `<= 0.01` or `> 0.01` using `case_rate` and `death_rate` as predictors.
 
-> Hint: to configure the classifier, we use `arx_class_args_list()` as input in the `args_list` argument. The key parameter is `breaks`, which defines the thresholds for our categories.
+::: {.callout-tip}
+## Hint
+to configure the classifier, we use `arx_class_args_list()` as input in the `args_list` argument. The key parameter is `breaks`, which defines the thresholds for our categories.
+:::
 
 ```{r}
 #| label: classification-model
